@@ -7,31 +7,32 @@ import Home from './pages/Home';
 import SubjectsPage from './pages/SubjectsPage';
 import SubjectDetailPage from './pages/SubjectDetailPage';
 import PracticePage from './pages/PracticePage';
-import MockStartScreen from './pages/MockStartScreen'; // 👈 Import MockStartScreen
+import MockStartScreen from './pages/MockStartScreen'; 
 import SectionalTestList from './pages/SectionalTestList';
-
-const AboutPage = () => <div className="pt-32 text-center text-3xl font-bold text-purple-400">ℹ️ About Us (Coming Soon)</div>;
-
-// Dummy Quiz Page jab tak hum agla step na karein
-const QuizPage = () => <div className="pt-32 text-center text-3xl font-bold text-green-400">📝 Actual Quiz Engine (Coming Next!)</div>;
+import QuizPage from './pages/QuizPage';
+import ChapterPracticePage from './pages/ChapterPracticePage';
+import AboutPage from './pages/AboutPage'; // 👈 AboutPage Import kiya
 
 export default function App() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-slate-100 font-sans selection:bg-[#0d59f2] selection:text-white flex flex-col">
-      <Navbar />
-      <div className="flex-grow">
+      
+      <div className="flex-grow flex flex-col h-full">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/practice" element={<PracticePage />} />
-          
-          {/* 👇 Naye Routes 👇 */}
-          <Route path="/practice/start/:type/:testId" element={<MockStartScreen />} />
-          <Route path="/practice/run/:type/:testId" element={<QuizPage />} />
+          {/* Main Layout routes with Navbar */}
+          <Route path="/" element={<><Navbar /><Home /></>} />
+          <Route path="/practice" element={<><Navbar /><PracticePage /></>} />
+          <Route path="/practice/start/:type/:testId" element={<><Navbar /><MockStartScreen /></>} />
           <Route path="/practice/subject/:subjectId" element={<><Navbar /><SectionalTestList /></>} />
+          <Route path="/subjects" element={<><Navbar /><SubjectsPage /></>} />
+          <Route path="/practice/:subjectId" element={<><Navbar /><SubjectDetailPage /></>} />
           
-          <Route path="/subjects" element={<SubjectsPage />} />
-          <Route path="/practice/:subjectId" element={<SubjectDetailPage />} />
-          <Route path="/about" element={<AboutPage />} />
+          {/* 👇 Naya About Route 👇 */}
+          <Route path="/about" element={<><Navbar /><AboutPage /></>} />
+          
+          {/* Immersive Quiz/Practice Routes without Navbar */}
+          <Route path="/practice/run/:type/:testId" element={<QuizPage />} />
+          <Route path="/quiz/:subjectId/:topicId" element={<ChapterPracticePage />} />
         </Routes>
       </div>
     </div>

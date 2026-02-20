@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ChevronRight, ArrowLeft, BookOpen, Target, Timer, Play } from 'lucide-react';
+import { ArrowLeft, Target, Timer, Play } from 'lucide-react';
 import { subjectsData } from '../data/syllabusData';
 
 export default function SectionalTestList() {
@@ -11,14 +11,24 @@ export default function SectionalTestList() {
     window.scrollTo(0, 0);
   }, []);
 
-  const subject = subjectsData.find(s => s.id.toLowerCase() === (subjectId || '').toLowerCase());
+  // Safe search logic taaki error na aaye
+  const cleanSubjectId = subjectId ? subjectId.replace(/[{}$]/g, '') : '';
+  const subject = subjectsData.find(s => s.id.toLowerCase() === cleanSubjectId.toLowerCase());
   
-  if (!subject) return <div className="pt-32 text-center text-white">Subject not found</div>;
+  if (!subject) {
+    return (
+      <div className="min-h-screen bg-[#0f1115] pt-32 flex flex-col items-center">
+        <h1 className="text-3xl font-bold text-white mb-4">Subject Not Found</h1>
+        <p className="text-slate-400 mb-6">Looks like the link is broken.</p>
+        <button onClick={() => navigate('/practice')} className="px-6 py-2 bg-blue-600 text-white rounded-lg">Go Back</button>
+      </div>
+    );
+  }
 
   // Generate 20 Sectional Mocks
   const tests = Array.from({ length: 20 }, (_, i) => ({
-    id: `${subject.id}-${i + 1}`,
-    title: `${subject.title} Mock Test ${i + 1}`,
+    id: subject.id + '-' + (i + 1),
+    title: subject.title + ' Mock Test ' + (i + 1),
     questions: 50,
     time: "60 Mins",
     marks: 50
@@ -48,7 +58,7 @@ export default function SectionalTestList() {
               </div>
 
               <button 
-                onClick={() => navigate(`/practice/start/sectional/${test.id}`)}
+                onClick={() => navigate('/practice/start/sectional/' + test.id)}
                 className="w-full py-3 rounded-xl bg-[#282e39] group-hover:bg-blue-600 text-white text-sm font-semibold transition-colors flex items-center justify-center gap-2"
               >
                 View Details <Play className="w-4 h-4" />

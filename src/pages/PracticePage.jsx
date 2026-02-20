@@ -3,12 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Timer, Target, Award, Play, ArrowRight, Brain, Calculator, BookOpen, Globe, FlaskConical, Terminal, Activity } from 'lucide-react';
 import { subjectsData } from '../data/syllabusData';
 
-// Icons Mapping
-const IconMap = {
-  Calculator, BookOpen, Globe, Brain, FlaskConical, Terminal, Activity
-};
+const IconMap = { Calculator, BookOpen, Globe, Brain, FlaskConical, Terminal, Activity };
 
-// Colors Mapping for Sectional Mocks
 const ColorStyles = {
   blue: { text: "text-blue-400", bgLight: "bg-blue-500/10", borderLight: "border-blue-500/20", glow: "rgba(59,130,246,0.15)", gradient: "from-blue-500/20 to-transparent" },
   pink: { text: "text-pink-400", bgLight: "bg-pink-500/10", borderLight: "border-pink-500/20", glow: "rgba(236,72,153,0.15)", gradient: "from-pink-500/20 to-transparent" },
@@ -23,12 +19,11 @@ export default function PracticePage() {
   const navigate = useNavigate();
   const [showAllMocks, setShowAllMocks] = useState(false);
 
-  // Generate All 50 Full Mocks
   const allFullMocks = Array.from({ length: 50 }, (_, i) => ({
     id: `adre-mock-${i + 1}`,
     title: `ADRE Full Mock Test ${i + 1}`,
     questions: 150,
-    time: "180 Mins", // 👈 3 Hours update kar diya
+    time: "180 Mins", 
     marks: 150,
     isPremium: i > 1
   }));
@@ -133,8 +128,9 @@ export default function PracticePage() {
                 </div>
 
                 <div className="mt-auto">
+                  {/* 👇 FIX: + laga kar URL generate kiya 👇 */}
                   <button 
-                    onClick={() => navigate(`/practice/start/full/${mock.id}`)}
+                    onClick={() => navigate('/practice/start/full/' + mock.id)}
                     className="w-full py-3 rounded-xl bg-[#1e2128] border border-white/5 hover:border-blue-500/50 hover:bg-blue-600 text-white text-sm font-semibold transition-all duration-300 flex items-center justify-center gap-2 group/btn cursor-pointer"
                   >
                     Start Test <Play className="w-4 h-4 fill-current transition-transform group-hover/btn:translate-x-1" />
@@ -160,7 +156,7 @@ export default function PracticePage() {
               return (
                 <div 
                   key={subject.id}
-                  onClick={() => navigate(`/practice/subject/${subject.id}`)}
+                  onClick={() => navigate('/practice/subject/' + subject.id)} // 👈 FIX YAHAN BHI HAI
                   className="glass-card rounded-xl p-5 cursor-pointer group flex items-center gap-4 hover:border-white/20"
                 >
                   <div className={`w-12 h-12 rounded-lg ${style.bgLight} border ${style.borderLight} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
@@ -168,7 +164,7 @@ export default function PracticePage() {
                   </div>
                   <div>
                     <h3 className="text-slate-200 font-bold group-hover:text-white transition-colors">{subject.title}</h3>
-                    <p className="text-xs text-slate-500 mt-0.5">20 Tests</p> {/* 👈 20 Tests update kar diya */}
+                    <p className="text-xs text-slate-500 mt-0.5">20 Tests</p>
                   </div>
                 </div>
               );

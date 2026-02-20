@@ -87,17 +87,18 @@ export default function Navbar() {
             {/* DESKTOP NAVIGATION */}
             <div className="flex items-center gap-6 shrink-0">
               <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300">
-                <button onClick={() => navigate('/')} className={`hover:text-white transition-colors ${isActive('/') ? 'text-white' : ''}`}>Home</button>
-                <button onClick={() => navigate('/practice')} className={`hover:text-white transition-colors ${isActive('/practice') ? 'text-white' : ''}`}>Practice</button>
+                <button onClick={() => navigate('/')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/') ? 'text-white' : ''}`}>Home</button>
+                <button onClick={() => navigate('/practice')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/practice') ? 'text-white' : ''}`}>Practice</button>
+                {/* 👇 FIX: About page link added here 👇 */}
+                <button onClick={() => navigate('/about')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/about') ? 'text-white' : ''}`}>About</button>
                 
                 {/* ADVANCED SUBJECTS DROPDOWN */}
                 <div className="group dropdown-trigger relative h-20 flex items-center">
-                  <button className="flex items-center gap-1 hover:text-white transition-colors focus:outline-none group-hover:text-white">
+                  <button className="flex items-center gap-1 hover:text-white transition-colors focus:outline-none group-hover:text-white cursor-pointer">
                     Subjects
                     <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                   </button>
                   
-                  {/* 👇 FIX APPLIED HERE: right-0 use kiya hai taaki andar ki taraf khule 👇 */}
                   <div className="dropdown-menu absolute top-full right-0 w-[600px] pt-4">
                     <div className="glass-nav rounded-2xl border border-[#27272a] p-6 shadow-2xl shadow-violet-500/10 relative overflow-hidden bg-[#0a0a0a]">
                       {/* Glow Effects */}
@@ -106,7 +107,7 @@ export default function Navbar() {
                       
                       <div className="relative z-10 grid grid-cols-2 gap-4 text-left">
                         {/* Subject Cards */}
-                        <button onClick={() => { navigate('/practice/GK'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] w-full text-left">
+                        <button onClick={() => { navigate('/practice/GK'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 transition-transform duration-300 shrink-0">
                             <Globe className="w-6 h-6" />
                           </div>
@@ -116,7 +117,7 @@ export default function Navbar() {
                           </div>
                         </button>
                         
-                        <button onClick={() => { navigate('/practice/Maths'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)] w-full text-left">
+                        <button onClick={() => { navigate('/practice/Maths'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 transition-transform duration-300 shrink-0">
                             <Calculator className="w-6 h-6" />
                           </div>
@@ -126,7 +127,7 @@ export default function Navbar() {
                           </div>
                         </button>
 
-                        <button onClick={() => { navigate('/practice/Reasoning'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(249,115,22,0.3)] w-full text-left">
+                        <button onClick={() => { navigate('/practice/Reasoning'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(249,115,22,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20 transition-transform duration-300 shrink-0">
                             <Brain className="w-6 h-6" />
                           </div>
@@ -136,7 +137,7 @@ export default function Navbar() {
                           </div>
                         </button>
 
-                        <button onClick={() => { navigate('/practice/English'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(236,72,153,0.3)] w-full text-left">
+                        <button onClick={() => { navigate('/practice/English'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(236,72,153,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/20 transition-transform duration-300 shrink-0">
                             <BookOpen className="w-6 h-6" />
                           </div>
@@ -146,7 +147,7 @@ export default function Navbar() {
                           </div>
                         </button>
 
-                        <button onClick={() => { navigate('/practice/Science'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] w-full text-left">
+                        <button onClick={() => { navigate('/practice/Science'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-violet-500/20 transition-transform duration-300 shrink-0">
                             <FlaskConical className="w-6 h-6" />
                           </div>
@@ -156,7 +157,7 @@ export default function Navbar() {
                           </div>
                         </button>
 
-                        <button onClick={() => { navigate('/practice/Computer'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(14,165,233,0.3)] w-full text-left">
+                        <button onClick={() => { navigate('/practice/Computer'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(14,165,233,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20 transition-transform duration-300 shrink-0">
                             <Terminal className="w-6 h-6" />
                           </div>
@@ -171,7 +172,7 @@ export default function Navbar() {
                       <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center relative z-10">
                         <button 
                           onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} 
-                          className="text-xs font-medium text-[#0d59f2] hover:text-[#3b82f6] flex items-center gap-1 transition-colors"
+                          className="text-xs font-medium text-[#0d59f2] hover:text-[#3b82f6] flex items-center gap-1 transition-colors cursor-pointer"
                         >
                           View all subjects <ArrowRight className="w-3 h-3" />
                         </button>
@@ -183,7 +184,7 @@ export default function Navbar() {
               </nav>
 
               {/* MOBILE MENU ICON */}
-              <button className="lg:hidden text-slate-400 hover:text-white transition-colors" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              <button className="lg:hidden text-slate-400 hover:text-white transition-colors cursor-pointer" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
@@ -204,9 +205,11 @@ export default function Navbar() {
             <input className="block w-full pl-10 pr-3 py-3 border border-[#27272a] rounded-xl leading-5 bg-[#161616] text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#0d59f2]" placeholder="Search..." type="text"/>
           </div>
           <nav className="flex flex-col gap-6 text-xl font-medium text-slate-300">
-            <button onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-white">Home</button>
-            <button onClick={() => { navigate('/practice'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-white">Practice</button>
-            <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-[#0d59f2]">View All Subjects →</button>
+            <button onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-white cursor-pointer">Home</button>
+            <button onClick={() => { navigate('/practice'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-white cursor-pointer">Practice</button>
+            {/* 👇 FIX: About page link added to mobile menu too 👇 */}
+            <button onClick={() => { navigate('/about'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-white cursor-pointer">About</button>
+            <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-[#0d59f2] cursor-pointer">View All Subjects →</button>
           </nav>
         </div>
       )}
