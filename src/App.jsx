@@ -4,10 +4,16 @@ import { Routes, Route } from 'react-router-dom';
 // Components
 import Navbar from './components/layout/Navbar';
 import Home from './pages/Home'; 
-import SubjectsPage from './pages/SubjectsPage'; // 👈 Import new page
+import SubjectsPage from './pages/SubjectsPage';
+import SubjectDetailPage from './pages/SubjectDetailPage';
+import PracticePage from './pages/PracticePage';
+import MockStartScreen from './pages/MockStartScreen'; // 👈 Import MockStartScreen
+import SectionalTestList from './pages/SectionalTestList';
 
 const AboutPage = () => <div className="pt-32 text-center text-3xl font-bold text-purple-400">ℹ️ About Us (Coming Soon)</div>;
-const PracticePage = () => <div className="pt-32 text-center text-3xl font-bold text-green-400">📝 Quiz UI (Next Step)</div>;
+
+// Dummy Quiz Page jab tak hum agla step na karein
+const QuizPage = () => <div className="pt-32 text-center text-3xl font-bold text-green-400">📝 Actual Quiz Engine (Coming Next!)</div>;
 
 export default function App() {
   return (
@@ -16,8 +22,15 @@ export default function App() {
       <div className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/practice/*" element={<PracticePage />} />
-          <Route path="/subjects" element={<SubjectsPage />} /> {/* 👈 Naya Route */}
+          <Route path="/practice" element={<PracticePage />} />
+          
+          {/* 👇 Naye Routes 👇 */}
+          <Route path="/practice/start/:type/:testId" element={<MockStartScreen />} />
+          <Route path="/practice/run/:type/:testId" element={<QuizPage />} />
+          <Route path="/practice/subject/:subjectId" element={<><Navbar /><SectionalTestList /></>} />
+          
+          <Route path="/subjects" element={<SubjectsPage />} />
+          <Route path="/practice/:subjectId" element={<SubjectDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
         </Routes>
       </div>

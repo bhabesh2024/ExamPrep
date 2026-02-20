@@ -6,7 +6,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true); // For future dark mode toggle logic
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   // Helper to check active links
   const isActive = (path) => location.pathname === path;
@@ -72,7 +72,7 @@ export default function Navbar() {
                 />
               </div>
               
-              {/* Theme Toggle (Visual only for now as per design) */}
+              {/* Theme Toggle */}
               <div aria-label="Toggle Dark Mode" className="bg-white/5 border border-white/10 backdrop-blur-sm h-10 w-[64px] rounded-full relative cursor-pointer flex items-center shrink-0" role="button" onClick={() => setIsDarkMode(!isDarkMode)}>
                 <div className="absolute inset-0 flex justify-between items-center px-1.5 text-[18px]">
                   <Sun className="w-4 h-4 text-amber-500/80" />
@@ -97,10 +97,10 @@ export default function Navbar() {
                     <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                   </button>
                   
-                  {/* Dropdown Menu */}
-                  <div className="dropdown-menu absolute top-full right-0 w-[600px] pt-4 -mr-20">
+                  {/* 👇 FIX APPLIED HERE: right-0 use kiya hai taaki andar ki taraf khule 👇 */}
+                  <div className="dropdown-menu absolute top-full right-0 w-[600px] pt-4">
                     <div className="glass-nav rounded-2xl border border-[#27272a] p-6 shadow-2xl shadow-violet-500/10 relative overflow-hidden bg-[#0a0a0a]">
-                      {/* Glow Effects inside Dropdown */}
+                      {/* Glow Effects */}
                       <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-[60px] pointer-events-none"></div>
                       <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0d59f2]/10 rounded-full blur-[60px] pointer-events-none"></div>
                       
