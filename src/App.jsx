@@ -1,35 +1,30 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
-function App() {
-  const [count, setCount] = useState(0)
+// Components import karein
+import Navbar from './components/layout/Navbar';
+import Home from './pages/Home'; 
 
+// Dummy pages jab tak asli na ban jayein
+const TestPage = () => <div className="pt-32 text-center text-3xl font-bold text-blue-400">📝 Test Library (Coming Soon)</div>;
+const AboutPage = () => <div className="pt-32 text-center text-3xl font-bold text-purple-400">ℹ️ About Us (Coming Soon)</div>;
+
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="min-h-screen bg-[#0a0a0a] text-slate-100 font-sans selection:bg-[#0d59f2] selection:text-white flex flex-col">
+      
+      {/* Global Navbar */}
+      <Navbar />
 
-export default App
+      {/* Pages Container */}
+      <div className="flex-grow">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/test/*" element={<TestPage />} />
+          <Route path="/about" element={<AboutPage />} />
+        </Routes>
+      </div>
+
+    </div>
+  );
+}
