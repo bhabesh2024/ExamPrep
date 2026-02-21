@@ -1,0 +1,18 @@
+{
+  "Fiscal Policies": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Inflation and Measures to control it": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Important Financial Institutions": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Government Schemes": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ]
+}

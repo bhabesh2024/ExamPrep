@@ -1,0 +1,14 @@
+{
+  "Physics": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Chemistry": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Biology": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ]
+}

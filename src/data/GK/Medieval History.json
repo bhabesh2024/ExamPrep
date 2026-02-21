@@ -1,0 +1,10 @@
+{
+  "Delhi Sultanate": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Mughal Empire": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ]
+}

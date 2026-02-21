@@ -1,0 +1,10 @@
+{
+  "Transport and Communication": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Soil and Crops of India": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ]
+}

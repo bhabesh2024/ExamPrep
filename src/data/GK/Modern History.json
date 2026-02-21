@@ -1,0 +1,26 @@
+{
+  "The Coming of Europeans": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "India under EIC": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Bengal Partition and Swadeshi Movement": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Expansion of British Empire in India": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Socio Religious Movements": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Gandhian Era": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ]
+}

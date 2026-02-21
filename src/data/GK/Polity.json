@@ -1,0 +1,542 @@
+{
+  "Preamble parts and schedule": [
+    {
+      "question": "What is the primary basis of citizenship in India?",
+      "questionAssamese": "ভাৰতত নাগৰিকত্বৰ প্রাথমিক ভিত্তি কি?",
+      "options": [
+        "Jus Soli",
+        "Jus Sanguinis",
+        "Naturalization",
+        "Registration"
+      ],
+      "answer": "Jus Soli",
+      "explanation": "India follows the principle of jus soli, which means that citizenship is determined by the place of birth.",
+      "explanationAssamese": "ভাৰত জুস ছ'লি নীতি অনুসৰণ করে, যাৰ অৰ্থ হ'ল নাগৰিকত্ব জন্মস্থান দ্বাৰা নির্ধাৰিত হয়।"
+    },
+    {
+      "question": "What is the effect of the Citizenship Act, 1955 on dual citizenship?",
+      "questionAssamese": "নাগৰিকত্ব আইন, ১৯৫৫ৰ দ্বৈত নাগৰিকত্বৰ ওপৰত কি প্ৰভাৱ?",
+      "options": [
+        "Allows dual citizenship",
+        "Prohibits dual citizenship",
+        "Regulates dual citizenship",
+        "Ignores dual citizenship"
+      ],
+      "answer": "Prohibits dual citizenship",
+      "explanation": "The Citizenship Act, 1955 prohibits dual citizenship, meaning that an individual cannot hold citizenship of both India and another country.",
+      "explanationAssamese": "নাগৰিকত্ব আইন, ১৯৫৫-এ দ্বৈত নাগৰিকত্বকে নিষিদ্ধ করে, যার অৰ্থ হ'ল একজন ব্যক্তি ভাৰত আৰু আন একটি দেশৰ নাগৰিকত্ব ধাৰণ করিব নোৱাৰে।"
+    },
+    {
+      "question": "What is the process of acquiring citizenship through naturalization?",
+      "questionAssamese": "প্ৰাকৃতিকৰণের মাধ্যমে নাগৰিকত্ব অৰ্জনৰ প্রক্রিয়া কি?",
+      "options": [
+        "Application and approval",
+        "Registration and verification",
+        "Examination and interview",
+        "All of the above"
+      ],
+      "answer": "All of the above",
+      "explanation": "The process of acquiring citizenship through naturalization involves application, approval, registration, verification, examination, and interview.",
+      "explanationAssamese": "প্ৰাকৃতিকৰণের মাধ্যমে নাগৰিকত্ব অৰ্জনৰ প্রক্রিয়াত আবেদন, অনুমোদন, নিবন্ধন, যাচাই, পরীক্ষা আৰু সাক্ষাৎকাৰ জড়িত।"
+    },
+    {
+      "question": "What is the consequence of misrepresentation in a citizenship application?",
+      "questionAssamese": "নাগৰিকত্ব আবেদনত ভুল উপস্থাপনৰ পরিণতি কি?",
+      "options": [
+        "Fine and imprisonment",
+        "Imprisonment only",
+        "Fine only",
+        "No penalty"
+      ],
+      "answer": "Fine and imprisonment",
+      "explanation": "Misrepresentation in a citizenship application can result in a fine and imprisonment.",
+      "explanationAssamese": "নাগৰিকত্ব আবেদনত ভুল উপস্থাপন জুরিমানা আৰু কাৰাদণ্ডৰ দুয়োটিৰে দণ্ডিত হ'ব পাৰে।"
+    },
+    {
+      "question": "What is the effect of the Citizenship Amendment Act, 2019 on the naturalization process?",
+      "questionAssamese": "নাগৰিকত্ব (সংশোধন) আইন, ২০১৯-এ প্ৰাকৃতিকৰণ প্রক্রিয়াৰ ওপর কি প্রভাব পৈছে?",
+      "options": [
+        "Reduces the residency requirement",
+        "Increases the residency requirement",
+        "Removes the language requirement",
+        "Adds a new eligibility criterion"
+      ],
+      "answer": "Reduces the residency requirement",
+      "explanation": "The Citizenship Amendment Act, 2019 reduces the residency requirement for naturalization from 11 years to 5 years for certain categories of applicants.",
+      "explanationAssamese": "নাগৰিকত্ব (সংশোধন) আইন, ২০১৯-এ কিছু শ্ৰেণীৰ আবেদনকাৰীৰ বাবে প্ৰাকৃতিকৰণৰ বাবে বসবাসৰ প্রয়োজনীয়তা ১১ বছৰৰ পৰা ৫ বছৰলৈ হ্ৰাস করিছে।"
+    },
+    {
+      "question": "What is the purpose of the Citizenship Amendment Act, 2019?",
+      "questionAssamese": "নাগৰিকত্ব (সংশোধন) আইন, ২০১৯-ৰ উদ্দেশ্য কি?",
+      "options": [
+        "To simplify the naturalization process",
+        "To reduce the residency requirement",
+        "To provide citizenship to persecuted minorities",
+        "To restrict citizenship to certain groups"
+      ],
+      "answer": "To provide citizenship to persecuted minorities",
+      "explanation": "The Citizenship Amendment Act, 2019 aims to provide citizenship to persecuted minorities from neighboring countries, particularly Hindus, Sikhs, Buddhists, Jains, Parsis, and Christians.",
+      "explanationAssamese": "নাগৰিকত্ব (সংশোধন) আইন, ২০১৯-এর লক্ষ্য হল প্ৰতিবেশী দেশসমূহৰ নিপীড়িত সংখ্যালঘুসমূহ, বিশেষত হিন্দু, শিখ, বৌদ্ধ, জৈন, পারসী আৰু খ্রিষ্টানসকলক নাগৰিকত্ব প্ৰদান করা।"
+    },
+    {
+      "question": "What is the effect of the Citizenship Amendment Act, 2019 on the status of illegal immigrants?",
+      "questionAssanges": "নাগৰিকত্ব (সংশোধন) আইন, ২০১৯-এ বেআইনি অভিবাসীসকলৰ অবস্থাৰ ওপর কি প্রভাব পৈছে?",
+      "options": [
+        "Provides amnesty to all illegal immigrants",
+        "Deports all illegal immigrants",
+        "Provides citizenship to certain categories of illegal immigrants",
+        "Makes no change to the status of illegal immigrants"
+      ],
+      "answer": "Provides citizenship to certain categories of illegal immigrants",
+      "explanation": "The Citizenship Amendment Act, 2019 provides citizenship to certain categories of illegal immigrants, particularly those who have entered India before December 31, 2014, and belong to certain religious minorities.",
+      "explanationAssanges": "নাগৰিকত্ব (সংশোধন) আইন, ২০১৯-এ বেআইনি অভিবাসীসকলৰ কিছু শ্ৰেণীক নাগৰিকত্ব প্ৰদান করে, বিশেষত যি সকলে ডিচেম্বৰ ৩১, ২০১৪-লৈ আগত হয় আৰু কিছু ধৰ্মীয় সংখ্যালঘুৰ অন্তৰ্গত।"
+    },
+    {
+      "question": "What is the difference between citizenship by birth and citizenship by descent?",
+      "questionAssanges": "জন্মৰ দ্বাৰা নাগৰিকত্ব আৰু বংশপরম্পৰাৰ দ্বাৰা নাগৰিকত্বৰ মাজত পাৰ্থক্য কি?",
+      "options": [
+        "Citizenship by birth is automatic, while citizenship by descent requires application",
+        "Citizenship by birth requires application, while citizenship by descent is automatic",
+        "Citizenship by birth is only for children of Indian citizens, while citizenship by descent is for children of foreign citizens",
+        "Citizenship by birth is for children born in India, while citizenship by descent is for children born abroad"
+      ],
+      "answer": "Citizenship by birth is automatic, while citizenship by descent requires application",
+      "explanation": "Citizenship by birth is automatic, meaning that a person born in India is automatically a citizen, while citizenship by descent requires an application and is granted to persons who are born outside India but have Indian parents or grandparents.",
+      "explanationAssanges": "জন্মৰ দ্বাৰা নাগৰিকত্ব স্বয়ংক্রিয়, অৰ্থাৎ ভাৰতত জন্মগ্ৰহণকাৰী একজন ব্যক্তি স্বয়ংক্রিয়ভাবে নাগৰিক, অন্যদিকে বংশপরম্পৰাৰ দ্বাৰা নাগৰিকত্বৰ বাবে আবেদনৰ প্ৰয়োজন আৰু এইটো ভাৰতীয় পিতৃমাতা বা দাদা-দাদীৰ সন্তান হিচাপে ভাৰতৰ বাহিৰত জন্মগ্ৰহণকাৰী ব্যক্তিসকলক প্ৰদান করা হয়।"
+    },
+    {
+      "question": "What is the significance of the Citizenship Amendment Act, 2019 in the context of Indian citizenship?",
+      "questionAssanges": "ভাৰতীয় নাগৰিকত্বৰ প্রেক্ষাপটত নাগৰিকত্ব (সংশোধন) আইন, ২০১৯-ৰ তাৎপৰ্য কি?",
+      "options": [
+        "It simplifies the citizenship process",
+        "It provides citizenship to persecuted minorities",
+        "It restricts citizenship to certain groups",
+        "It changes the definition of Indian citizenship"
+      ],
+      "answer": "It provides citizenship to persecuted minorities",
+      "explanation": "The Citizenship Amendment Act, 2019 is significant in the context of Indian citizenship as it provides citizenship to persecuted minorities from neighboring countries, particularly Hindus, Sikhs, Buddhists, Jains, Parsis, and Christians.",
+      "explanationAssanges": "নাগৰিকত্ব (সংশোধন) আইন, ২০১৯ ভাৰতীয় নাগৰিকত্বৰ প্রেক্ষাপটত তাৎপৰ্যপূর্ণ কাৰণ ইয়াত প্ৰতিবেশী দেশসমূহৰ নিপীড়িত সংখ্যালঘুসমূহ, বিশেষত হিন্দু, শিখ, বৌদ্ধ, জৈন, পারসী আৰু খ্রিষ্টানসকলক নাগৰিকত্ব প্ৰদান করে।"
+    },
+    {
+      "question": "What is the purpose of Article 3 of the Indian Constitution?",
+      "questionAssamese": "ভাৰতীয় সংবিধানৰ ৩ নং অনুচ্ছেদৰ উদ্দেশ্য কি?",
+      "options": [
+        "To define citizenship",
+        "To establish the Union of India",
+        "To provide for the formation of new states",
+        "To regulate the territory of India"
+      ],
+      "answer": "To provide for the formation of new states",
+      "explanation": "Article 3 of the Indian Constitution empowers Parliament to form new states or alter the boundaries of existing states.",
+      "explanationAssamese": "ভাৰতীয় সংবিধানের অনুচ্ছেদ ৩ সংসদকে নতুন রাজ্য গঠন বা বিদ্যমান রাজ্যগুলির সীমানা পরিবর্তন করার ক্ষমতা প্রদান করে।"
+    },
+    {
+      "question": "What is the term for a person who is not a citizen of India?",
+      "questionAssamese": "যিনি ভাৰতের নাগরিক নন এমন ব্যক্তির শব্দটি কি?",
+      "options": [
+        "Alien",
+        "Citizen",
+        "Resident",
+        "Immigrant"
+      ],
+      "answer": "Alien",
+      "explanation": "An alien is a person who is not a citizen of the country they are living in. In the context of Indian citizenship, an alien refers to a person who is not a citizen of India.",
+      "explanationAssamese": "একজন বিদেশী হলেন এমন একজন ব্যক্তি যিনি তারা যে দেশে বাস করছেন তার নাগরিক নন। ভাৰতীয় নাগরিকত্বের প্রেক্ষাপটে, একজন বিদেশী এমন একজন ব্যক্তিকে বোঝায় যিনি ভাৰতের নাগরিক নন।"
+    },
+    {
+      "question": "What is the purpose of the Citizenship Act, 1955?",
+      "questionAssamese": "১৯৫৫ সালের নাগরিকত্ব আইনের উদ্দেশ্য কি?",
+      "options": [
+        "To define citizenship",
+        "To regulate immigration",
+        "To provide for the formation of new states",
+        "To establish the Union of India"
+      ],
+      "answer": "To define citizenship",
+      "explanation": "The Citizenship Act, 1955 is a law that defines the criteria for acquiring and losing Indian citizenship. It provides for the different modes of acquiring citizenship, such as by birth, descent, naturalization, and registration.",
+      "explanationAssamese": "১৯৫৫ সালের নাগরিকত্ব আইন হল একটি আইন যা ভাৰতীয় নাগরিকত্ব অর্জন এবং হারানোর মানদণ্ডগুলি সংজ্ঞায়িত করে। এটি জন্ম, বংশ, প্রাকৃতিককরণ এবং নিবন্ধনের মাধ্যমে নাগরিকত্ব অর্জনের বিভিন্ন উপায় প্রদান করে।"
+    },
+    {
+      "question": "What is the effect of acquiring citizenship by naturalization?",
+      "questionAssamese": "প্ৰাকৃতিককৰণৰ দ্বাৰা নাগৰিকত্ব লাভ কৰাৰ প্ৰভাৱ কি?",
+      "options": [
+        "The person becomes a citizen of India",
+        "The person loses their previous citizenship",
+        "The person becomes a resident of India",
+        "The person is granted a visa"
+      ],
+      "answer": "The person becomes a citizen of India",
+      "explanation": "Naturalization is the process by which a person becomes a citizen of a country after meeting certain criteria, such as living in the country for a certain period of time, having good character, and swearing allegiance to the country. Once a person is naturalized, they become a citizen of the country and have the same rights and responsibilities as other citizens.",
+      "explanationAssamese": "প্ৰাকৃতিককৰণ হল একটি প্ৰক্ৰিয়া যাৰ দ্বাৰা একজন ব্যক্তি একটি দেশৰ নাগৰিক হয় কিছু নিৰ্দিষ্ট মানদণ্ড পূরণ কৰাৰ পাছত, যেমন একটি নিৰ্দিষ্ট সময়ৰ জন্য দেশটিতে বসবাস কৰা, ভাল চৰিত্ৰ থকা এবং দেশৰ প্ৰতি আনুগত্যৰ শপথ গ্ৰহণ কৰা। একবাৰ একজন ব্যক্তি প্ৰাকৃতিককৃত হয়, ততখন তারা দেশৰ নাগৰিক হয় এবং অন্যান্য নাগৰিকদেৰ মতো একে অধিকাৰ আৰু দায়িত্ব লাভ কৰে।"
+    },
+    {
+      "question": "Who is credited with preparing the draft of the Preamble of the Indian Constitution?",
+      "questionAssamese": "ভাৰতীয় সংবিধানৰ প্ৰস্তাবনাৰ খসড়া প্ৰস্তুত কৰাৰ কৃতিত্ব কার প্ৰদান করা হয়?",
+      "options": [
+        "Jawaharlal Nehru",
+        "B.R. Ambedkar",
+        "Mahatma Gandhi",
+        "Subhas Chandra Bose"
+      ],
+      "answer": "Jawaharlal Nehru",
+      "explanation": "Pandit Jawaharlal Nehru prepared the draft of the Preamble, which was later adopted as part of the Indian Constitution.",
+      "explanationAssamese": "পণ্ডিত জওহরলাল নেহেৰুয়ে প্ৰস্তাবনাৰ খসড়া প্ৰস্তুত করিছিল, যাক পিছলৈ ভাৰতীয় সংবিধানৰ অংশ হিচাপে গৃহীত কৰা হয়।",
+      "examReference": "Highly Expected"
+    },
+    {
+      "question": "What is the significance of the Preamble in the Indian Constitution?",
+      "questionAssamese": "ভাৰতীয় সংবিধানত প্ৰস্তাবনাৰ তাৎপৰ্য কি?",
+      "options": [
+        "Introduction to Constitution",
+        "Key to Constitution",
+        "Identity Card",
+        "Basic Structure"
+      ],
+      "answer": "Introduction to Constitution",
+      "explanation": "The Preamble serves as an introduction to the Constitution, outlining the fundamental principles and objectives of the Indian state.",
+      "explanationAssamese": "প্ৰস্তাবনাটো সংবিধানৰ এক পৰিচয় পত্ৰ, যিটো ভাৰতীয় ৰাজ্যৰ মৌলিক নীতি আৰু উদ্দেশ্যসমূহক বৰ্ণনা করে।",
+      "examReference": "UPSC 2019"
+    },
+    {
+      "question": "Which of the following is NOT a key word in the Preamble?",
+      "questionAssamese": "নিম্নলিখিতসমূহৰ মাজত কোনটো প্ৰস্তাবনাত এক মূল শব্দ নয়?",
+      "options": [
+        "Justice",
+        "Liberty",
+        "Equality",
+        "Federalism"
+      ],
+      "answer": "Federalism",
+      "explanation": "The key words in the Preamble are Sovereign, Socialist, Secular, Democratic, and Republic. Federalism is not explicitly mentioned as a key word.",
+      "explanationAssamese": "প্ৰস্তাবনাত মূল শব্দসমূহ হল সার্বভৌম, সমাজতান্ত্ৰিক, ধর্মনিৰপেক্ষ, গণতান্ত্ৰিক আৰু প্ৰজাতন্ত্ৰ। কেন্দ্ৰীয়তা স্পষ্টভাবে এক মূল শব্দ হিচাপে উল্লেখ নাই।",
+      "examReference": "APSC CCE 2018"
+    },
+    {
+      "question": "What is the meaning of the term 'Secular' in the context of the Indian Constitution?",
+      "questionAssamese": "ভাৰতীয় সংবিধানৰ প্ৰেক্ষাপটত 'ধর্মনিৰপেক্ষ' শব্দটোৰ অৰ্থ কি?",
+      "options": [
+        "Separation of Church and State",
+        "Equality of all Religions",
+        "Freedom of Worship",
+        "State Religion"
+      ],
+      "answer": "Equality of all Religions",
+      "explanation": "In the context of the Indian Constitution, 'Secular' means that all religions have equal status and support from the state, without any preference or discrimination.",
+      "explanationAssamese": "ভাৰতীয় সংবিধানৰ প্ৰেক্ষাপটত, 'ধর্মনিৰপেক্ষ' মানে হল সকল ধর্মই ৰাজ্যৰ পৰাই সমান মর্যাদা আৰু সমর্থন লাভ করে, কোনো পক্ষপাতিত্ব বা বৈষম্য নকরে।",
+      "examReference": "SSC CGL 2021"
+    },
+    {
+      "question": "Can the Preamble be amended?",
+      "questionAssamese": "প্ৰস্তাবনাটো সংশোধন করা যায়?",
+      "options": [
+        "Yes",
+        "No",
+        "Only by Parliament",
+        "Only by Supreme Court"
+      ],
+      "answer": "Yes",
+      "explanation": "The Preamble can be amended, subject to the condition that no amendment is done to the basic features of the Constitution, as held by the Supreme Court in the Keshavananda Bharti case (1973).",
+      "explanationAssamese": "প্ৰস্তাবনাটো সংশোধন করা যায়, কিন্তু সংবিধানৰ মৌলিক বৈশিষ্ট্যসমূহত কোনো সংশোধন নকৰা হয়, যা সুপ্ৰিম কোর্টে কেশবানন্দ ভাৰতী কেছ (1973)ত ধৰেছে।",
+      "examReference": "Highly Expected"
+    }
+  ],
+  "Indian Union and Territories": [
+    {
+      "question": "What is the nature of the Indian Union as per Article 1?",
+      "questionAssamese": "অনুচ্ছেদ ১ অনুসৰি ভাৰতীয় সংঘৰ প্ৰকৃতি কি?",
+      "options": [
+        "Federal",
+        "Unitary",
+        "Confederal",
+        "None"
+      ],
+      "answer": "Federal",
+      "explanation": "The Indian Union is a federal union of states, where no state has the right to secede from it.",
+      "explanationAssamese": "ভাৰতীয় সংঘ হ'ল ৰাজ্যসমূহৰ এক যুক্তৰাষ্ট্ৰীয় সংঘ, য'ত কোনো একক ৰাজ্যই ইয়াৰ পৰা বিচ্ছিন্ন হ'ব পৰা নাই।"
+    },
+    {
+      "question": "What is the power of Parliament as per Article 2?",
+      "questionAssamese": "অনুচ্ছেদ ২ অনুসৰি সংসদৰ ক্ষমতা কি?",
+      "options": [
+        "To amend the Constitution",
+        "To make laws for the Union",
+        "To admit new states",
+        "To declare war"
+      ],
+      "answer": "To admit new states",
+      "explanation": "Parliament has the power to admit new states into the Union of India.",
+      "explanationAssamese": "সংসদৰ ভাৰতীয় সংঘত নতুন ৰাজ্যসমূহক অন্তৰ্ভুক্ত কৰার ক্ষমতা আছে।"
+    },
+    {
+      "question": "What is the provision of Article 3 regarding the formation of new states?",
+      "questionAssamese": "নতুন ৰাজ্য গঠনৰ সম্পৰ্কে অনুচ্ছেদ ৩-এ কি বিধান কৰিছে?",
+      "options": [
+        "New states can be formed by Parliament",
+        "New states can be formed by the President",
+        "New states can be formed by the Supreme Court",
+        "New states cannot be formed"
+      ],
+      "answer": "New states can be formed by Parliament",
+      "explanation": "Parliament has the power to form new states by separating a part of an existing state or by merging two or more states.",
+      "explanationAssamese": "সংসদে বিদ্যমান একটি ৰাজ্যৰ একটি অংশ পৃথক কৰি বা একাধিক ৰাজ্যক একত্ৰিত কৰি নতুন ৰাজ্য গঠন কৰার ক্ষমতা আছে।"
+    },
+    {
+      "question": "What is the provision of Article 4 regarding the implementation of Articles 2 and 3?",
+      "questionAssamese": "অনুচ্ছেদ ২ আৰু ৩ কাৰ্যকর কৰার সম্পৰ্কে অনুচ্ছেদ ৪-এ কি বিধান কৰিছে?",
+      "options": [
+        "Parliament needs to amend the Constitution",
+        "Parliament can pass laws by simple majority",
+        "Parliament needs to consult the Supreme Court",
+        "Parliament needs to consult the President"
+      ],
+      "answer": "Parliament can pass laws by simple majority",
+      "explanation": "Parliament can pass laws to implement Articles 2 and 3 by simple majority, without the need for a constitutional amendment.",
+      "explanationAssamese": "সংসদে সহজ সংখ্যাগরিষ্ঠতাৰ দ্বাৰা আইন পাস কৰি অনুচ্ছেদ ২ আৰু ৩ কাৰ্যকর কৰিব পাৰে, সাংবিধানিক সংশোধনীৰ প্ৰয়োজন নাই।"
+    },
+    {
+      "question": "What is the provision of Article 5 regarding citizenship?",
+      "questionAssamese": "নাগৰিকত্বৰ সম্পৰ্কে অনুচ্ছেদ ৫-এ কি বিধান কৰিছে?",
+      "options": [
+        "Citizenship is granted by birth",
+        "Citizenship is granted by descent",
+        "Citizenship is granted by naturalization",
+        "Citizenship is granted by registration"
+      ],
+      "answer": "Citizenship is granted by birth",
+      "explanation": "Article 5 provides that a person who has their domicile in India and was born in India, or whose parents were born in India, is a citizen of India.",
+      "explanationAssamese": "অনুচ্ছেদ ৫-এ বিধান কৰিছে যে ভাৰতত বসবাসকাৰী একজন ব্যক্তি যিজনৰ জন্ম ভাৰতত হয়েছে বা যার পিতৃ-মাতৃ ভাৰতত জন্মগ্ৰহণ কৰিছে তেওঁ ভাৰতৰ নাগৰিক।"
+    },
+    {
+      "question": "What is the provision of Article 6 regarding persons who migrated from Pakistan?",
+      "questionAssamese": "পাকিস্তানৰ পৰা স্থানান্তৰিত ব্যক্তিসকলৰ সম্পৰ্কে অনুচ্ছেদ ৬-এ কি বিধান কৰিছে?",
+      "options": [
+        "They are considered citizens of India",
+        "They are considered aliens",
+        "They are considered refugees",
+        "They are considered stateless"
+      ],
+      "answer": "They are considered citizens of India",
+      "explanation": "Article 6 provides that persons who migrated from Pakistan to India before July 19, 1948, are considered citizens of India.",
+      "explanationAssamese": "অনুচ্ছেদ ৬-এ বিধান কৰিছে যে যি ব্যক্তিসকল ১৯৪৮ চনৰ জুলাই ১৯-এ পাকিস্তানৰ পৰা ভাৰতলৈ স্থানান্তরিত হৈছে তেওঁকে ভাৰতৰ নাগৰিক হিচাপে গণ্য কৰা হয়।"
+    },
+    {
+      "question": "What is the provision of Article 7 regarding persons who migrated to Pakistan?",
+      "questionAssamese": "পাকিস্তানলৈ স্থানান্তৰিত ব্যক্তিসকলৰ সম্পৰ্কে অনুচ্ছেদ ৭-এ কি বিধান কৰিছে?",
+      "options": [
+        "They are considered citizens of India",
+        "They are considered aliens",
+        "They are considered refugees",
+        "They are considered stateless"
+      ],
+      "answer": "They are considered aliens",
+      "explanation": "Article 7 provides that persons who migrated to Pakistan after March 1, 1947, are considered aliens.",
+      "explanationAssamese": "অনুচ্ছেদ ৭-এ বিধান কৰিছে যে যি ব্যক্তিসকল ১৯৪৭ চনৰ মার্চ ১-এ পাকিস্তানলৈ স্থানান্তৰিত হৈছে তেওঁকে পরকালীয়া হিচাপে গণ্য কৰা হয়।"
+    },
+    {
+      "question": "What is the provision of Article 8 regarding citizenship of persons of Indian origin?",
+      "questionAssamese": "ভাৰতীয় মূলৰ ব্যক্তিসকলৰ নাগৰিকত্বৰ সম্পৰ্কে অনুচ্ছেদ ৮-এ কি বিধান কৰিছে?",
+      "options": [
+        "They are considered citizens of India",
+        "They are considered aliens",
+        "They are considered refugees",
+        "They are considered stateless"
+      ],
+      "answer": "They are considered citizens of India",
+      "explanation": "Article 8 provides that persons of Indian origin who are living outside India are considered citizens of India.",
+      "explanationAssamese": "অনুচ্ছেদ ৮-এ বিধান কৰিছে যে ভাৰতীয় মূলৰ ব্যক্তিসকল যি ভাৰতৰ বাহিৰত বাস কৰে তেওঁকে ভাৰতৰ নাগৰিক হিচাপে গণ্য কৰা হয়।"
+    },
+    {
+      "question": "What is the provision of Article 9 regarding dual citizenship?",
+      "questionAssamese": "দ্বৈত নাগৰিকত্বৰ সম্পৰ্কে অনুচ্ছেদ ৯-এ কি বিধান কৰিছে?",
+      "options": [
+        "Dual citizenship is allowed",
+        "Dual citizenship is not allowed",
+        "Dual citizenship is allowed with permission",
+        "Dual citizenship is allowed with restrictions"
+      ],
+      "answer": "Dual citizenship is not allowed",
+      "explanation": "Article 9 provides that no person can have dual citizenship, i.e., citizenship of India and another country.",
+      "explanationAssamese": "অনুচ্ছেদ ৯-এ বিধান কৰিছে যে কোনো ব্যক্তি দ্বৈত নাগৰিকত্ব থাকিব নোৱাৰে, অর্থাৎ ভাৰত আৰু আন এক দেশৰ নাগৰিকত্ব।"
+    },
+    {
+      "question": "What is the provision of Article 10 regarding continuance of citizenship?",
+      "questionAssamese": "নাগৰিকত্বৰ অব্যাহতিৰ সম্পৰ্কে অনুচ্ছেদ ১০-এ কি বিধান কৰিছে?",
+      "options": [
+        "Citizenship continues until renounced",
+        "Citizenship continues until terminated",
+        "Citizenship continues until deprived",
+        "Citizenship continues until acquired"
+      ],
+      "answer": "Citizenship continues until renounced",
+      "explanation": "Article 10 provides that a person who is a citizen of India at the commencement of the Constitution continues to be a citizen of India until they renounce their citizenship.",
+      "explanationAssamese": "অনুচ্ছেদ ১০-এ বিধান কৰিছে যে সাংবিধানিক প্ৰবর্তনৰ সময়ত ভাৰতৰ একজন নাগৰিক হিচাপে থাকে যতক্ষণ না তেওঁ তেওঁৰ নাগৰিকত্ব ত্যাগ না কৰে।"
+    },
+    {
+      "question": "What is the provision of Article 11 regarding citizenship laws?",
+      "questionAssamese": "নাগৰিকত্বৰ আইনৰ সম্পৰ্কে অনুচ্ছেদ ১১-এ কি বিধান কৰিছে?",
+      "options": [
+        "Parliament can make laws regarding citizenship",
+        "State legislatures can make laws regarding citizenship",
+        "The President can make laws regarding citizenship",
+        "The Supreme Court can make laws regarding citizenship"
+      ],
+      "answer": "Parliament can make laws regarding citizenship",
+      "explanation": "Article 11 provides that Parliament has the power to make laws regarding citizenship, including the acquisition and termination of citizenship.",
+      "explanationAssamese": "অনুচ্ছেদ ১১-এ বিধান কৰিছে যে সংসদে নাগৰিকত্বৰ সম্পৰ্কে আইন প্ৰণয়ন কৰার ক্ষমতা আছে, যাৰ ভিতৰত নাগৰিকত্ব অৰ্জন আৰু সমাপ্তি কৰা অন্তৰ্ভুক্ত।"
+    }
+  ],
+  "Fundamental Rights": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "DPSP and Fundamental Duties": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "President and Vice President": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "Governor": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "Prime Minister and Council of Ministers": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "Chief Minister and State Council": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "Parliament": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "State Legislature": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "Supreme Court and High Courts": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "Local Governments": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ],
+  "Emergency Provisions": [
+    {
+      "id": 1,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    },
+    {
+      "id": 2,
+      "question": "Sample Q?",
+      "options": [],
+      "answer": ""
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "Laws of Motion": [
+    {
+      "id": 1,
+      "question": "Newton's first law of motion is also known as the law of...",
+      "options": ["Inertia", "Action-reaction", "Acceleration", "Momentum"],
+      "answer": "Inertia"
+    },
+    {
+      "id": 2,
+      "question": "What is the formula for force according to Newton's second law?",
+      "options": ["F = ma", "F = m/a", "F = a/m", "F = m-a"],
+      "answer": "F = ma"
+    },
+    {
+      "id": 3,
+      "question": "For every action, there is an equal and opposite reaction. This is Newton's...",
+      "options": ["First Law", "Second Law", "Third Law", "Law of Gravitation"],
+      "answer": "Third Law"
+    }
+  ]
+}

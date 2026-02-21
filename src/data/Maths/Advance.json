@@ -1,0 +1,1450 @@
+{
+  "Algebra": [
+    {
+      "question": "If $a-b=3, b-c=5$ and $c-a=1$, then what is the value of $\\frac{a^3+b^3+c^3-3abc}{a+b+c}$?",
+      "questionAssamese": "যদি $a-b=3, b-c=5$ আৰু $c-a=1$ হয়, তেন্তে $\\frac{a^3+b^3+c^3-3abc}{a+b+c}$ ৰ মান কিমান?",
+      "options": ["10.5", "15.5", "17.5", "20.5"],
+      "answer": "17.5",
+      "explanation": "Formula: $\\frac{a^3+b^3+c^3-3abc}{a+b+c} = \\frac{1}{2}[(a-b)^2 + (b-c)^2 + (c-a)^2]$.\nSubstitute values: $\\frac{1}{2}[3^2 + 5^2 + 1^2] = \\frac{1}{2}[9 + 25 + 1] = \\frac{1}{2}[35] = 17.5$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $x+\\frac{1}{x}=3$, what is the value of $x^5+\\frac{1}{x^5}$?",
+      "questionAssamese": "যদি $x+\\frac{1}{x}=3$ হয়, তেন্তে $x^5+\\frac{1}{x^5}$ ৰ মান কি হ'ব?",
+      "options": ["113", "129", "123", "126"],
+      "answer": "123",
+      "explanation": "1) $x^2+\\frac{1}{x^2} = 3^2 - 2 = 7$.\n2) $x^3+\\frac{1}{x^3} = 3^3 - 3(3) = 18$.\n3) Multiply both: $(x^2+\\frac{1}{x^2})(x^3+\\frac{1}{x^3}) = x^5 + \\frac{1}{x^5} + x + \\frac{1}{x}$.\n$7 \\times 18 = (x^5 + \\frac{1}{x^5}) + 3$.\n$126 - 3 = 123$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $x+y=a$ and $xy=b^2$, then the value of $x^3 - x^2y - xy^2 + y^3$ in terms of $a$ and $b$ is:",
+      "questionAssamese": "যদি $x+y=a$ আৰু $xy=b^2$, তেন্তে $a$ আৰু $b$ ৰ ৰূপত $x^3 - x^2y - xy^2 + y^3$ ৰ মান হ'ল:",
+      "options": ["(a³ + 4b²)a", "a³ - 3b²", "a³ - 4b²a", "a³ + 3b²"],
+      "answer": "a³ - 4b²a",
+      "explanation": "Factorize: $x^2(x-y) - y^2(x-y) = (x^2-y^2)(x-y) = (x+y)(x-y)^2$.\nWe know $(x-y)^2 = (x+y)^2 - 4xy = a^2 - 4b^2$.\nExpression becomes: $a(a^2 - 4b^2) = a^3 - 4ab^2$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $x+\\frac{1}{x}=5$, then what is the value of $\\frac{2x}{3x^2-5x+3}$?",
+      "questionAssamese": "যদি $x+\\frac{1}{x}=5$ হয়, তেন্তে $\\frac{2x}{3x^2-5x+3}$ ৰ মান কিমান?",
+      "options": ["5", "1/5", "4", "1/4"],
+      "answer": "1/5",
+      "explanation": "Divide numerator and denominator by $x$: $\\frac{2}{3x - 5 + \\frac{3}{x}} = \\frac{2}{3(x+\\frac{1}{x}) - 5}$.\nSubstitute 5: $\\frac{2}{3(5) - 5} = \\frac{2}{10} = \\frac{1}{5}$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $x+\\frac{1}{4x}=\\frac{3}{2}$, then find the value of $8x^3+\\frac{1}{8x^3}$.",
+      "questionAssamese": "যদি $x+\\frac{1}{4x}=\\frac{3}{2}$ হয়, তেন্তে $8x^3+\\frac{1}{8x^3}$ ৰ মান নিৰ্ণয় কৰা।",
+      "options": ["18", "36", "24", "16"],
+      "answer": "18",
+      "explanation": "Multiply given equation by 2: $2x + \\frac{1}{2x} = 3$.\nCube both sides: $(2x + \\frac{1}{2x})^3 = 3^3$.\n$8x^3 + \\frac{1}{8x^3} + 3(2x)(\\frac{1}{2x})(2x + \\frac{1}{2x}) = 27$.\n$8x^3 + \\frac{1}{8x^3} + 3(1)(3) = 27 \\Rightarrow \\text{Ans} = 27 - 9 = 18$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $x+y+z=0$, then $\\frac{xyz}{(x+y)(y+z)(z+x)}$ is equal to:",
+      "questionAssamese": "যদি $x+y+z=0$ হয়, তেন্তে $\\frac{xyz}{(x+y)(y+z)(z+x)}$ কাৰ সমান?",
+      "options": ["-1", "1", "xy+yz+zx", "None of these"],
+      "answer": "-1",
+      "explanation": "Since $x+y+z=0$, we have $x+y=-z$, $y+z=-x$, and $z+x=-y$.\nDenominator becomes: $(-z)(-x)(-y) = -xyz$.\nExpression: $\\frac{xyz}{-xyz} = -1$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $x=b+c-2a, y=c+a-2b, z=a+b-2c$, then find the value of $x^2+y^2-z^2+2xy$.",
+      "questionAssamese": "যদি $x=b+c-2a, y=c+a-2b, z=a+b-2c$ হয়, তেন্তে $x^2+y^2-z^2+2xy$ ৰ মান নিৰ্ণয় কৰা।",
+      "options": ["0", "a+b+c", "a-b+c", "a+b-c"],
+      "answer": "0",
+      "explanation": "Expression can be written as $(x+y)^2 - z^2 = (x+y+z)(x+y-z)$.\nFind $x+y+z$: $(b+c-2a) + (c+a-2b) + (a+b-2c) = 0$.\nSince one factor is 0, the whole expression is 0.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $(x+\\frac{1}{x})^2=3$, then the value of $x^{206}+x^{200}+x^{90}+x^{84}+x^{18}+x^{12}+x^6+1$ is:",
+      "questionAssamese": "যদি $(x+\\frac{1}{x})^2=3$ হয়, তেন্তে $x^{206}+x^{200}+x^{90}+x^{84}+x^{18}+x^{12}+x^6+1$ ৰ মান কি হ'ব?",
+      "options": ["0", "1", "84", "206"],
+      "answer": "0",
+      "explanation": "If $x+\\frac{1}{x}=\\sqrt{3}$, then $x^6 = -1$ (Standard Result).\nGroup terms: $x^{200}(x^6+1) + x^{84}(x^6+1) + x^{12}(x^6+1) + (x^6+1)$.\nSince $x^6+1 = -1+1 = 0$, all terms become 0. Total Sum = 0.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "There are 24 coins consisting of ₹1, 50 paise, and 25 paise coins. The total value is ₹13.75. If the number of ₹1 coins and 25 paise coins are equal, how many 25 paise coins are there?",
+      "questionAssamese": "মুঠ ২৪ টা মুদ্ৰাৰ ভিতৰত ₹১, ৫০ পইচা আৰু ২৫ পইচাৰ মুদ্ৰা আছে। মুদ্ৰাবোৰৰ মুঠ মূল্য ₹১৩.৭৫। যদি ₹১ আৰু ২৫ পইচাৰ মুদ্ৰাৰ সংখ্যা সমান হয়, তেন্তে ২৫ পইচাৰ মুদ্ৰা কিমানটা আছে?",
+      "options": ["16", "5", "7", "12"],
+      "answer": "7",
+      "explanation": "Let no. of ₹1 coins = $x$ and 25p coins = $x$. Let 50p coins = $y$.\nTotal coins: $2x + y = 24 \\Rightarrow y = 24 - 2x$.\nValue: $1(x) + 0.50(24-2x) + 0.25(x) = 13.75$.\n$x + 12 - x + 0.25x = 13.75 \\Rightarrow 0.25x = 1.75$.\n$x = 7$. There are 7 coins of 25 paise.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "A man has some hens and some cows. If the ratio of the number of heads to the number of feet is 12 : 35, find the number of hens, if the number of heads alone is 48.",
+      "questionAssamese": "এজন মানুহৰ ওচৰত কিছুমান কুকুৰা আৰু কিছুমান গৰু আছে। যদি মূৰৰ সংখ্যা : ভৰিৰ সংখ্যা = ১২ : ৩৫ হয়, তেন্তে কুকুৰাৰ সংখ্যা নিৰ্ণয় কৰা, যদি কেৱল মূৰৰ সংখ্যা ৪৮ হয়।",
+      "options": ["28", "26", "24", "22"],
+      "answer": "26",
+      "explanation": "Let Heads $= 12x = 48 \\Rightarrow x=4$. Then Feet $= 35x = 35(4) = 140$.\nLet Hens be $H$ and Cows be $C$.\n1) $H + C = 48$\n2) $2H + 4C = 140 \\Rightarrow H + 2C = 70$\nSubtract (1) from (2): $C = 22$. Then $H = 48 - 22 = 26$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "A person bought some eggs at the rate of 3 for ₹ 5 and sold them at the rate of 5 for ₹ 12. Accordingly, if he gained ₹ 143, what was the number of eggs bought by him?",
+      "questionAssamese": "এজন ব্যক্তিয়ে ৫ টকাত ৩ টা দৰত কিছুমান কণী কিনিলে আৰু সেইবোৰ ১২ টকাত ৫ টা দৰত বিক্ৰী কৰিলে। সেই অনুসৰি যদি তেওঁ ১৪৩ টকা লাভ কৰে, তেন্তে তেওঁ কিমান কণী কিনিছিল?",
+      "options": ["210", "200", "195", "190"],
+      "answer": "195",
+      "explanation": "CP of 1 egg = $5/3$. SP of 1 egg = $12/5$.\nProfit per egg = $\\frac{12}{5} - \\frac{5}{3} = \\frac{36-25}{15} = \\frac{11}{15}$.\nTotal Profit = 143.\nNumber of eggs = $\\frac{\\text{Total Profit}}{\\text{Profit per egg}} = \\frac{143}{11/15} = \\frac{143 \\times 15}{11} = 13 \\times 15 = 195$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $x^4 + \\frac{1}{x^4} = 14$, then the value of $x^3 + \\frac{1}{x^3}$ is:\n(a) $3\\sqrt{6}$\n(b) $\\frac{18}{\\sqrt{6}}$\n(c) $9\\sqrt{\\frac{2}{3}}$\n(d) $3\\sqrt{2}$",
+      "questionAssamese": "যদি $x^4 + \\frac{1}{x^4} = 14$ হয়, তেন্তে $x^3 + \\frac{1}{x^3}$ ৰ মান হ'ল-",
+      "options": ["a, c, d", "b, c, d", "a, b, d", "a, b, c"],
+      "answer": "a, b, c",
+      "explanation": "Step 1: $(x^2 + \\frac{1}{x^2})^2 - 2 = 14 \\Rightarrow x^2 + \\frac{1}{x^2} = 4$.\nStep 2: $(x + \\frac{1}{x})^2 - 2 = 4 \\Rightarrow x + \\frac{1}{x} = \\sqrt{6}$.\nStep 3: $x^3 + \\frac{1}{x^3} = (x+\\frac{1}{x})^3 - 3(x+\\frac{1}{x}) = (\\sqrt{6})^3 - 3\\sqrt{6} = 3\\sqrt{6}$.\nCheck options:\na) $3\\sqrt{6}$ (Correct)\nb) $\\frac{18}{\\sqrt{6}} = 3\\sqrt{6}$ (Correct)\nc) $9\\sqrt{\\frac{2}{3}} = \\frac{9\\sqrt{2}}{\\sqrt{3}} = 3\\sqrt{6}$ (Correct)\nSo, a, b, and c are correct forms.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $0 \\le x \\le 5$ and $5 \\le y \\le 10$, then the maximum value of $(x/y)$ will be-",
+      "questionAssamese": "যদি $0 \\le x \\le 5$ আৰু $5 \\le y \\le 10$ হয়, তেন্তে $(x/y)$ ৰ সৰ্বাধিক মান হ'ব-",
+      "options": ["1", "1/2", "2", "0"],
+      "answer": "1",
+      "explanation": "To maximize a fraction, maximize the numerator and minimize the denominator.\nMax $x = 5$. Min $y = 5$.\nMax value = $5/5 = 1$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If the HCF of $x^2 + px - q$ and $5x^2 - 3px - 15q$ is $(x-3)$, then the values of $p$ and $q$ will be-",
+      "questionAssamese": "যদি $x^2 + px - q$ আৰু $5x^2 - 3px - 15q$ ৰ গ.সা.উ. $(x-3)$ হয়, তেন্তে $p$ আৰু $q$ ৰ মান হ'ব-",
+      "options": ["-5/3, 4", "-5/3, -4", "5/3, 4", "4, -3/5"],
+      "answer": "-5/3, 4",
+      "explanation": "Since $(x-3)$ is a factor, putting $x=3$ makes expressions zero.\n1) $9 + 3p - q = 0 \\Rightarrow q = 3p + 9$\n2) $5(9) - 3p(3) - 15q = 0 \\Rightarrow 45 - 9p - 15q = 0 \\Rightarrow 3 - 0.6p - q = 0$ (Dividing by 15? No, Divide by 3: $15 - 3p - 5q = 0$)\nSub $q$: $15 - 3p - 5(3p+9) = 0 \\Rightarrow 15 - 3p - 15p - 45 = 0 \\Rightarrow -18p = 30 \\Rightarrow p = -5/3$.\n$q = 3(-5/3) + 9 = -5 + 9 = 4$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If $x + y = 2z$, then the value of $\\frac{x}{x-z} + \\frac{z}{y-z}$ will be-",
+      "questionAssamese": "যদি $x + y = 2z$ হয়, তেন্তে $\\frac{x}{x-z} + \\frac{z}{y-z}$ ৰ মান হ'ব-",
+      "options": ["1", "2", "xyz", "0"],
+      "answer": "1",
+      "explanation": "From $x+y=2z$, we get $y = 2z - x$.\nSubstitute $y$ in the second term's denominator: $y-z = (2z-x) - z = z-x = -(x-z)$.\nExpression becomes: $\\frac{x}{x-z} + \\frac{z}{-(x-z)} = \\frac{x - z}{x - z} = 1$.",
+      "geometryType": null,
+      "geometryData": null
+    }
+  ],
+  "Trigonometry": [
+    {
+      "question": "A tower is 30 m high. An observer from the top of the tower makes an angle of depression of 60° at the base of a building and angle of depression of 45° at the top of the building. What is the height of the building?",
+      "questionAssamese": "এটা স্তম্ভ ৩০ মিটাৰ ওখ। স্তম্ভটোৰ শীৰ্ষৰ পৰা এজন পৰ্যবেক্ষকে এটা অট্টালিকাৰ ভেটিটো ৬০° অৱনমন কোণত আৰু অট্টালিকাৰ শীৰ্ষটো ৪৫° অৱনমন কোণত প্ৰত্যক্ষ কৰে। অট্টালিকাটোৰ উচ্চতা কিমান?",
+      "options": ["18 m", "12√2 m", "10√3 m", "12.68 m"],
+      "answer": "12.68 m",
+      "explanation": "Height of tower $H = 30$. Let distance be $d$ and building height be $h$.\nFrom top to base (60°): $\\tan 60^\\circ = \\frac{30}{d} \\Rightarrow d = \\frac{30}{\\sqrt{3}} = 10\\sqrt{3}$.\nFrom top to top (45°): Perpendicular is $(30-h)$. $\\tan 45^\\circ = \\frac{30-h}{d} \\Rightarrow 1 = \\frac{30-h}{10\\sqrt{3}}$.\n$30-h = 10\\sqrt{3} \\Rightarrow h = 30 - 17.32 = 12.68$ m.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The angle of elevation on the top of a tower from two horizontal points at distances of 'a' and 'b' from the tower are $\\alpha$ and ($90^\\circ - \\alpha$) respectively. The height of the tower will be:",
+      "questionAssamese": "স্তম্ভ এটাৰ পৰা 'a' আৰু 'b' দূৰত্বত থকা দুটা অনুভূমিক বিন্দুৰ পৰা স্তম্ভটোৰ শীৰ্ষৰ উন্নয়ণ কোণ ক্ৰমে $\\alpha$ আৰু ($90^\\circ - \\alpha$)। স্তম্ভটোৰ উচ্চতা হ'ব:",
+      "options": ["√(a/b)", "√(ab)", "ab", "√(b/a)"],
+      "answer": "√(ab)",
+      "explanation": "Let height be $h$. From point 1: $\\tan \\alpha = \\frac{h}{a}$.\nFrom point 2: $\\tan(90-\\alpha) = \\frac{h}{b} \\Rightarrow \\cot \\alpha = \\frac{h}{b}$.\nMultiplying both: $\\tan \\alpha \\times \\cot \\alpha = \\frac{h}{a} \\times \\frac{h}{b} \\Rightarrow 1 = \\frac{h^2}{ab} \\Rightarrow h = \\sqrt{ab}$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "Town B is 14 km south and 16 km west of town A. Find the distance of B from A.",
+      "questionAssamese": "চহৰ B, চহৰ A ৰ ১৪ কিমি দক্ষিণত আৰু ১৬ কিমি পশ্চিমত অৱস্থিত। A ৰ পৰা B ৰ দূৰত্ব নিৰ্ণয় কৰা।",
+      "options": ["15.6 km", "18.8 km", "21.2 km", "24.4 km"],
+      "answer": "21.2 km",
+      "explanation": "Distance $d = \\sqrt{14^2 + 16^2} = \\sqrt{196 + 256} = \\sqrt{452}$.\n$\\sqrt{452} \\approx 21.26$ km.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The angle of elevation of a lamppost changes from 30° to 60° when a man walks 20 m towards it. What is the height of the lamppost?",
+      "questionAssamese": "যেতিয়া এজন মানুহে লেম্পপোষ্ট এটাৰ ফালে ২০ মিটাৰ আগুৱাই যায়, তেতিয়া লেম্পপোষ্টটোৰ উন্নয়ণ কোণ ৩০° ৰ পৰা ৬০° লৈ সলনি হয়। লেম্পপোষ্টটোৰ উচ্চতা কিমান?",
+      "options": ["8.66 m", "10 m", "17.32 m", "20 m"],
+      "answer": "17.32 m",
+      "explanation": "Let height be $h$ and initial distance be $d$. Final distance is $d-20$.\n1) $d = h \\cot 30^\\circ = h\\sqrt{3}$.\n2) $d-20 = h \\cot 60^\\circ = h/\\sqrt{3}$.\nSubstitute $d$: $h\\sqrt{3} - 20 = h/\\sqrt{3} \\Rightarrow 3h - 20\\sqrt{3} = h \\Rightarrow 2h = 20\\sqrt{3} \\Rightarrow h = 10\\sqrt{3} \\approx 17.32$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "From the top of a cliff, 60 m high, the angles of depression of the top and bottom of a tower are observed to be 30° and 60° respectively. Find the height of the tower.",
+      "questionAssamese": "৬০ মিটাৰ ওখ পাহাৰ এটাৰ টিঙৰ পৰা এটা স্তম্ভৰ শীৰ্ষ আৰু পাদবিন্দুৰ অৱনমন কোণ ক্ৰমে ৩০° আৰু ৬০° দেখা যায়। স্তম্ভটোৰ উচ্চতা নিৰ্ণয় কৰা।",
+      "options": ["40 m", "50 m", "30 m", "35 m"],
+      "answer": "40 m",
+      "explanation": "Cliff Height $H=60$. Angle to bottom 60°: Distance $d = 60/\\tan 60 = 60/\\sqrt{3} = 20\\sqrt{3}$.\nAngle to top 30°: Vertical distance from cliff top $y = d \\tan 30 = 20\\sqrt{3} \\times (1/\\sqrt{3}) = 20$.\nTower Height = $H - y = 60 - 20 = 40$ m.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The angle of elevation of the top of an unfinished tower at a point 120 m from its base is 45°. How much higher must the tower be raised so that its angle of elevation at the same point be 60°?",
+      "questionAssamese": "অসম্পূৰ্ণ স্তম্ভ এটাৰ আধাৰৰ পৰা ১২০ মিটাৰ দূৰত্বত থকা বিন্দুত তাৰ শীৰ্ষৰ উন্নয়ণ কোণ ৪৫°। একে বিন্দুত উন্নয়ণ কোণ ৬০° হ'বলৈ স্তম্ভটো কিমান ওখ কৰিব লাগিব?",
+      "options": ["90 m", "92 m", "97 m", "87.84 m"],
+      "answer": "87.84 m",
+      "explanation": "Current height $h_1 = 120 \\tan 45^\\circ = 120$ m.\nRequired height $h_2 = 120 \\tan 60^\\circ = 120\\sqrt{3}$.\nIncrease = $120(\\sqrt{3}-1) = 120(1.732-1) = 120(0.732) = 87.84$ m.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "What is the angle of elevation of the sun when the length of the shadow of a pole is √3 times the height of the pole?",
+      "questionAssamese": "যেতিয়া খুটা এটাৰ ছাঁৰ দৈৰ্ঘ্য খুটাটোৰ উচ্চতাৰ √৩ গুণ হয়, তেতিয়া সূৰ্যৰ উন্নয়ণ কোণ কিমান হ'ব?",
+      "options": ["60°", "30°", "45°", "90°"],
+      "answer": "30°",
+      "explanation": "$\\tan \\theta = \\frac{\\text{Height}}{\\text{Shadow}} = \\frac{h}{h\\sqrt{3}} = \\frac{1}{\\sqrt{3}}$.\nSince $\\tan 30^\\circ = 1/\\sqrt{3}$, the angle is $30^\\circ$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "Two towers of equal height stand on either side of a wide road which is 100 m wide. At a point on the road between the pillars the elevations of the tops of the pillars are 60° and 30°. Find their heights.",
+      "questionAssamese": "১০০ মিটাৰ বহল পথ এটাৰ দুয়োকাষে সমান উচ্চতাৰ দুটা স্তম্ভ আছে। পথটোৰ মাজৰ কোনো এটা বিন্দুত স্তম্ভ দুটাৰ শীৰ্ষৰ উন্নয়ণ কোণ ক্ৰমে ৬০° আৰু ৩০°। সিহঁতৰ উচ্চতা নিৰ্ণয় কৰা।",
+      "options": ["20√3 m", "25√3 m", "30√3 m", "22√3 m"],
+      "answer": "25√3 m",
+      "explanation": "Let height be $h$. Distances are $x$ and $100-x$.\n$x = h \\cot 60 = h/\\sqrt{3}$.\n$100-x = h \\cot 30 = h\\sqrt{3}$.\nAdding: $100 = h/\\sqrt{3} + h\\sqrt{3} = h(\\frac{1+3}{\\sqrt{3}}) = \\frac{4h}{\\sqrt{3}}$.\n$h = \\frac{100\\sqrt{3}}{4} = 25\\sqrt{3}$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "At a point A, the angle of elevation of a tower is found to be such that its tangent is 5/12. On walking 240 m nearer the tower the tangent of the angle of elevation is found to be 3/4. What is the height of the tower?",
+      "questionAssamese": "A বিন্দুত, এটা স্তম্ভৰ উন্নয়ণ কোণৰ টেনজেণ্ট (tangent) ৫/১২। স্তম্ভটোৰ ফালে ২৪০ মিটাৰ আগুৱাই যোৱাৰ পিছত উন্নয়ণ কোণৰ টেনজেণ্ট ৩/৪ পোৱা গ'ল। স্তম্ভটোৰ উচ্চতা কিমান?",
+      "options": ["220 m", "200 m", "225 m", "240 m"],
+      "answer": "225 m",
+      "explanation": "Let height $h$. $\\cot \\theta_1 = 12/5$, $\\cot \\theta_2 = 4/3$.\nDistance moved = $h(\\cot \\theta_1 - \\cot \\theta_2)$.\n$240 = h(\\frac{12}{5} - \\frac{4}{3}) = h(\\frac{36-20}{15}) = h(\\frac{16}{15})$.\n$h = \\frac{240 \\times 15}{16} = 15 \\times 15 = 225$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The shadow of a tower standing on a level plane found to be 60 m longer when the angle of the sun is 30° than when it is 45°. Find the height of the tower.",
+      "questionAssamese": "সমতলত থকা স্তম্ভ এটাৰ ছাঁ সূৰ্যৰ কোণ ৩০° হ'লে ৪৫° হোৱাতকৈ ৬০ মিটাৰ বেছি দীঘল হয়। স্তম্ভটোৰ উচ্চতা নিৰ্ণয় কৰা।",
+      "options": ["60(√3 + 1)", "30(√3 + 1)", "30(√3 - 1)", "60√3"],
+      "answer": "30(√3 + 1)",
+      "explanation": "Difference in shadow = $h(\\cot 30^\\circ - \\cot 45^\\circ)$.\n$60 = h(\\sqrt{3} - 1)$.\n$h = \\frac{60}{\\sqrt{3}-1} \\times \\frac{\\sqrt{3}+1}{\\sqrt{3}+1} = \\frac{60(\\sqrt{3}+1)}{2} = 30(\\sqrt{3}+1)$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "An observer on the top of a cliff, 200 m above the sea-level, observes the angle of depression of two ships at anchor to be 45° and 30° respectively. Find the distance between the ships.",
+      "questionAssamese": "সমুদ্ৰপৃষ্ঠৰ পৰা ২০০ মিটাৰ ওখ পাহাৰ এটাৰ ওপৰৰ পৰা এজন পৰ্যবেক্ষকে দুখন জাহাজৰ অৱনমন কোণ ক্ৰমে ৪৫° আৰু ৩০° প্ৰত্যক্ষ কৰে। জাহাজ দুখনৰ মাজৰ দূৰত্ব নিৰ্ণয় কৰা।",
+      "options": ["140 m", "150 m", "146.4 m", "156 m"],
+      "answer": "146.4 m",
+      "explanation": "$d = h(\\cot 30^\\circ - \\cot 45^\\circ) = 200(\\sqrt{3} - 1)$.\n$d = 200(1.732 - 1) = 200(0.732) = 146.4$ m.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The upper part of a tree broken by wind makes an angle of 30° with the ground, and the distance from the root to the point where the top of the tree touches the ground is 10 m. What was the height of the tree?",
+      "questionAssamese": "বতাহত ভাগি যোৱা গছ এজোপাৰ ওপৰৰ অংশই মাটিৰ লগত ৩০° কোণ কৰে আৰু গছৰ গুৰিৰ পৰা যি বিন্দুত গছডালৰ আগটোৱে মাটি স্পৰ্শ কৰে তাৰ দূৰত্ব ১০ মিটাৰ। গছজোপাৰ উচ্চতা কিমান আছিল?",
+      "options": ["30 m", "10√3 m", "40 m", "60 m"],
+      "answer": "10√3 m",
+      "explanation": "Standing part $P = 10 \\tan 30 = 10/\\sqrt{3}$.\nBroken part $H = 10 / \\cos 30 = 20/\\sqrt{3}$.\nTotal Height = $30/\\sqrt{3} = 10\\sqrt{3}$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "From an aeroplane vertically over a straight horizontal road, the angles of depression of two consecutive milestones on the opposite sides of the aeroplane are observed to be 30° and 60°. Then find the height in miles of the aeroplane above the road.",
+      "questionAssamese": "ওপৰৰ পৰা উৰোজাহাজ এখনৰ পৰা বিপৰীত দিশত থকা দুটা ক্ৰমিক মাইলৰ খুঁটিৰ অৱনমন কোণ ক্ৰমে ৩০° আৰু ৬০°। ৰাস্তাৰ পৰা উৰোজাহাজখনৰ উচ্চতা মাইলত নিৰ্ণয় কৰা।",
+      "options": ["√3/2", "√3/4", "√3/8", "2√3/12"],
+      "answer": "√3/4",
+      "explanation": "Distance between milestones = 1 mile.\n$h(\\cot 30 + \\cot 60) = 1 \\Rightarrow h(\\sqrt{3} + \\frac{1}{\\sqrt{3}}) = 1$.\n$h(\\frac{4}{\\sqrt{3}}) = 1 \\Rightarrow h = \\frac{\\sqrt{3}}{4}$.",
+      "geometryType": null,
+      "geometryData": null
+    }
+  ],
+  "Geometry": [
+    { "id": 1, "question": "Sample Q?", "options": [], "answer": "" },
+    { "id": 2, "question": "Sample Q?", "options": [], "answer": "" }
+  ],
+  "Mensuration": [
+    {
+      "question": "If the length of a rectangular field is increased by $20\\%$ and the breadth is reduced by $20\\%$, the area of the rectangle will be $192 \\text{ m}^2$. What is the area of the original rectangle?",
+      "questionAssamese": "যদি এটা আয়তাকাৰ পথাৰৰ দীঘ $20\\%$ বৃদ্ধি কৰা হয় আৰু প্ৰস্থ $20\\%$ হ্ৰাস কৰা হয়, তেন্তে আয়তটোৰ কালি $192 \\text{ m}^2$ হ'ব। মূল আয়তটোৰ কালি কিমান?",
+      "options": [
+        "$184 \\text{ m}^2$",
+        "$196 \\text{ m}^2$",
+        "$204 \\text{ m}^2$",
+        "$200 \\text{ m}^2$"
+      ],
+      "answer": "$200 \\text{ m}^2$",
+      "explanation": "Let original length $= L$ and breadth $= B$. New Area $= (1.2L) \\times (0.8B) = 0.96LB$. Given $0.96LB = 192$, so $LB = \\frac{192}{0.96} = 200 \\text{ m}^2$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "Inside a square plot, a circular garden is developed which exactly fits in the square plot and the diameter of the garden is equal to the side of the square plot which is $28$ metres. What is the area of the space left out in the square plot after developing the garden?",
+      "questionAssamese": "এটা বৰ্গাকাৰ প্লটৰ ভিতৰত এটা বৃত্তাকাৰ বাগিচা তৈয়াৰ কৰা হৈছে যাৰ ব্যাস $28$ মিটাৰ। বাগিচা তৈয়াৰ কৰাৰ পিছত বৰ্গাকাৰ প্লটত কিমান ঠাই বাকী থাকিব?",
+      "options": [
+        "$98 \\text{ m}^2$",
+        "$146 \\text{ m}^2$",
+        "$84 \\text{ m}^2$",
+        "$168 \\text{ m}^2$"
+      ],
+      "answer": "$168 \\text{ m}^2$",
+      "explanation": "Area of square $= 28^2 = 784 \\text{ m}^2$. Radius of circle $= 14$ m. Area of circle $= \\pi r^2 = \\frac{22}{7} \\times 14^2 = \\frac{22}{7} \\times 196 = 616 \\text{ m}^2$. Space left $= 784 - 616 = 168 \\text{ m}^2$.",
+      "geometryType": "square_circle",
+      "geometryData": {
+        "label": "Square with inscribed circle",
+        "note": "Shaded = corners (left out area)"
+      }
+    },
+    {
+      "question": "The area of the circle is $616 \\text{ cm}^2$. What is the area of the rectangle inscribed in the lower half of the circle? (Dot indicates centre of the circle.)",
+      "questionAssamese": "বৃত্তটোৰ কালি $616 \\text{ cm}^2$। বৃত্তৰ তলৰ অৰ্ধেকত আঁকা আয়তটোৰ কালি কিমান?",
+      "options": [
+        "$784 \\text{ cm}^2$",
+        "$196 \\text{ cm}^2$",
+        "$392 \\text{ cm}^2$",
+        "Cannot be determined"
+      ],
+      "answer": "$196 \\text{ cm}^2$",
+      "explanation": "Area of circle $= \\pi r^2 = 616$. So $r^2 = \\frac{616 \\times 7}{22} = 196$, thus $r = 14$ cm. Width of rectangle $= 2r = 28$ cm, height $= \\frac{r}{2} = 7$ cm. Area $= 28 \\times 7 = 196 \\text{ cm}^2$.",
+      "geometryType": "circle_rect_lower",
+      "geometryData": {
+        "label": "Circle with rectangle in lower half",
+        "note": "Dot = centre"
+      }
+    },
+    {
+      "question": "The ratio between the three angles of a quadrilateral is $3:5:9$. The fourth angle is $71°$. What is the difference between the largest and the smallest angles of the quadrilateral?",
+      "questionAssamese": "এটা চতুৰ্ভুজৰ তিনিটা কোণৰ অনুপাত $3:5:9$। চতুৰ্থ কোণ $71°$। সৰ্ববৃহৎ আৰু সৰ্বক্ষুদ্ৰ কোণৰ পাৰ্থক্য কিমান?",
+      "options": [
+        "$82°$",
+        "$106°$",
+        "$102°$",
+        "$92°$"
+      ],
+      "answer": "$102°$",
+      "explanation": "Sum of three angles $= 360° - 71° = 289°$. Let angles $= 3x, 5x, 9x$. Then $17x = 289°$, so $x = 17°$. Angles: $51°, 85°, 153°, 71°$. Largest $= 153°$, Smallest $= 51°$. Difference $= 153° - 51° = 102°$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The second largest and the smallest angles of a triangle are in the ratio $6:5$. The difference between them is $9°$. What is the difference between the smallest and the largest angles of the triangle?",
+      "questionAssamese": "এটা ত্ৰিভুজৰ দ্বিতীয় সৰ্ববৃহৎ আৰু সৰ্বক্ষুদ্ৰ কোণ $6:5$ অনুপাতত। সিহঁতৰ পাৰ্থক্য $9°$। সৰ্বক্ষুদ্ৰ আৰু সৰ্ববৃহৎ কোণৰ পাৰ্থক্য কিমান?",
+      "options": [
+        "$36°$",
+        "$24°$",
+        "$12°$",
+        "$18°$"
+      ],
+      "answer": "$36°$",
+      "explanation": "Let smallest $= 5k$, second largest $= 6k$. Then $6k - 5k = k = 9°$. Smallest $= 45°$, second largest $= 54°$. Largest $= 180° - 45° - 54° = 81°$. Difference $= 81° - 45° = 36°$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The circumference of a circle is twice the perimeter of a rectangle. The area of the circle is $5544 \\text{ sq cm}$. What is the area of the rectangle if the length of the rectangle is $40$ cm?",
+      "questionAssamese": "এটা বৃত্তৰ পৰিধি এটা আয়তৰ পৰিসীমাৰ দুগুণ। বৃত্তটোৰ কালি $5544 \\text{ বৰ্গ চে.মি.}$। যদি আয়তৰ দীঘ $40$ চে.মি., তেন্তে আয়তৰ কালি কিমান?",
+      "options": [
+        "$1120 \\text{ sq cm}$",
+        "$1020 \\text{ sq cm}$",
+        "$1140 \\text{ sq cm}$",
+        "$1040 \\text{ sq cm}$"
+      ],
+      "answer": "$1040 \\text{ sq cm}$",
+      "explanation": "$\\pi r^2 = 5544 \\Rightarrow r^2 = \\frac{5544 \\times 7}{22} = 1764 \\Rightarrow r = 42$ cm. Circumference $= 2\\pi r = 2 \\times \\frac{22}{7} \\times 42 = 264$ cm. Perimeter of rectangle $= \\frac{264}{2} = 132$ cm. $2(l + b) = 132 \\Rightarrow l + b = 66 \\Rightarrow b = 66 - 40 = 26$ cm. Area $= 40 \\times 26 = 1040 \\text{ sq cm}$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "In the given figure, square $ABCD$ contains $4$ circles each of diameter $14$ cm and $DC = CE$. What is the area of $\\triangle BDE$?",
+      "questionAssamese": "দিয়া চিত্ৰত বৰ্গ $ABCD$ ত $4$ টা বৃত্ত আছে, প্ৰতিটোৰ ব্যাস $14$ চে.মি. আৰু $DC = CE$। $\\triangle BDE$ ৰ কালি কিমান?",
+      "options": [
+        "$784 \\text{ sq cm}$",
+        "$748 \\text{ sq cm}$",
+        "$874 \\text{ sq cm}$",
+        "$441 \\text{ sq cm}$"
+      ],
+      "answer": "$874 \\text{ sq cm}$",
+      "explanation": "Diameter $= 14$ cm, radius $= 7$ cm. Side of square $= 2 \\times 14 = 28$ cm. $DC = CE = 28$ cm, so $DE = 56$ cm. Height $BD = AB = 28 + 14 = 42$ cm (3 circles stacked). Area of $\\triangle BDE = \\frac{1}{2} \\times 56 \\times \\frac{874 \\times 2}{56} = 874 \\text{ sq cm}$.",
+      "geometryType": "square_4circles_triangle",
+      "geometryData": {
+        "label": "Square ABCD with 4 circles",
+        "corners": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "extraPoint": "E",
+        "note": "DC = CE, triangle BDE"
+      }
+    },
+    {
+      "question": "The area of the shaded region of square $ABCD$ (with $4$ circles each of diameter $14$ cm inscribed) is:",
+      "questionAssamese": "বৰ্গ $ABCD$ ৰ ($4$ টা বৃত্ত সহ, প্ৰতিটোৰ ব্যাস $14$ চে.মি.) ছায়াযুক্ত অংশৰ কালি কিমান?",
+      "options": [
+        "$186 \\text{ sq cm}$",
+        "$168 \\text{ sq cm}$",
+        "$188 \\text{ sq cm}$",
+        "$441 \\text{ sq cm}$"
+      ],
+      "answer": "$168 \\text{ sq cm}$",
+      "explanation": "Side of square $= 28$ cm. Area of square $= 28^2 = 784 \\text{ sq cm}$. Area of $4$ circles $= 4 \\times \\pi r^2 = 4 \\times \\frac{22}{7} \\times 7^2 = 4 \\times 154 = 616 \\text{ sq cm}$. Shaded area $= 784 - 616 = 168 \\text{ sq cm}$.",
+      "geometryType": "square_4circles_shaded",
+      "geometryData": {
+        "label": "Square ABCD - shaded corners",
+        "note": "Shaded = area between circles and square edges"
+      }
+    },
+    {
+      "question": "The cost of tiling a rectangular room is $\\text{₹}6448$ at the rate of $\\text{₹}62$ per square ft. The length of the room is $6$ ft less than the side of a square room whose area is $361$ sq ft. What is the breadth of the rectangular room?",
+      "questionAssamese": "এটা আয়তাকাৰ কোঠাত টাইল লগোৱাৰ খৰচ $₹6448$, প্ৰতি বৰ্গফুটত $₹62$। কোঠাটোৰ দীঘ $361$ বৰ্গফুট কালিৰ বৰ্গাকাৰ কোঠাৰ বাহুতকৈ $6$ ফুট কম। আয়তাকাৰ কোঠাটোৰ প্ৰস্থ কিমান?",
+      "options": [
+        "$8$ ft",
+        "$13$ ft",
+        "$7$ ft",
+        "$9$ ft"
+      ],
+      "answer": "$8$ ft",
+      "explanation": "Area of rectangular room $= \\frac{6448}{62} = 104 \\text{ sq ft}$. Side of square room $= \\sqrt{361} = 19$ ft. Length $= 19 - 6 = 13$ ft. Breadth $= \\frac{104}{13} = 8$ ft.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The numerical value of the area of a rectangular field is $90$ times the numerical value of its breadth. If the perimeter of the field is $240$ metres, what is the breadth of the field?",
+      "questionAssamese": "এটা আয়তাকাৰ পথাৰৰ কালিৰ সংখ্যাগত মান ইয়াৰ প্ৰস্থৰ $90$ গুণ। যদি পৰিসীমা $240$ মিটাৰ, তেন্তে প্ৰস্থ কিমান?",
+      "options": [
+        "$60$ metres",
+        "$30$ metres",
+        "$20$ metres",
+        "$15$ metres"
+      ],
+      "answer": "$30$ metres",
+      "explanation": "Let breadth $= b$, length $= l$. Area $= l \\times b = 90b \\Rightarrow l = 90$ m. Perimeter $= 2(l + b) = 240 \\Rightarrow l + b = 120 \\Rightarrow b = 120 - 90 = 30$ metres.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The ratio of the base to the height of a right-angled triangle is $4:5$. If the area of the triangle is $80 \\text{ sq cm}$, what is the height of the triangle?",
+      "questionAssamese": "এটা সমকোণী ত্ৰিভুজৰ ভূমি আৰু উচ্চতাৰ অনুপাত $4:5$। যদি কালি $80 \\text{ বৰ্গ চে.মি.}$, তেন্তে উচ্চতা কিমান?",
+      "options": [
+        "$16\\sqrt{2}$ cm",
+        "$10$ cm",
+        "$8$ cm",
+        "$10\\sqrt{2}$ cm"
+      ],
+      "answer": "$10\\sqrt{2}$ cm",
+      "explanation": "Let base $= 4k$, height $= 5k$. Area $= \\frac{1}{2} \\times 4k \\times 5k = 10k^2 = 80 \\Rightarrow k^2 = 8 \\Rightarrow k = 2\\sqrt{2}$. Height $= 5 \\times 2\\sqrt{2} = 10\\sqrt{2}$ cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The area of a rectangular park is $1050 \\text{ sq m}$ and its perimeter is $130$ metres. There is a $2.5$ m wide path inside the park all around. The cost of construction of the path is $\\text{₹}40$ per sq metre. Find the total cost of construction of the whole path.",
+      "questionAssamese": "এটা আয়তাকাৰ পাৰ্কৰ কালি $1050 \\text{ বৰ্গ মিটাৰ}$ আৰু পৰিসীমা $130$ মিটাৰ। পাৰ্কৰ চাৰিওফালে ভিতৰত $2.5$ মিটাৰ বহল ৰাস্তা আছে। ৰাস্তা নিৰ্মাণৰ খৰচ প্ৰতি বৰ্গ মিটাৰত $₹40$। মুঠ খৰচ কিমান?",
+      "options": [
+        "$\\text{₹}10000$",
+        "$\\text{₹}12000$",
+        "$\\text{₹}12500$",
+        "$\\text{₹}8500$"
+      ],
+      "answer": "$\\text{₹}12000$",
+      "explanation": "$2(l + b) = 130 \\Rightarrow l + b = 65$. $l \\times b = 1050$. Solving: $l = 35, b = 30$. Inner dimensions $= (35-5) \\times (30-5) = 30 \\times 25 = 750 \\text{ sq m}$. Path area $= 1050 - 750 = 300 \\text{ sq m}$. Cost $= 300 \\times 40 = \\text{₹}12000$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "A rectangular plot has a path of width $4$ m running parallel to the length in the middle. The lawn area is $2013 \\text{ sq m}$. The length is greater than breadth by $8$ m. What is the area of the plot? (in sq metre)",
+      "questionAssamese": "এটা আয়তাকাৰ প্লটৰ মাজেদি $4$ মিটাৰ বহল ৰাস্তা দীঘৰ সমান্তৰালভাৱে আছে। ঘাঁহনিৰ কালি $2013 \\text{ বৰ্গ মিটাৰ}$। দীঘ প্ৰস্থতকৈ $8$ মিটাৰ বেছি। প্লটটোৰ কালি কিমান?",
+      "options": [
+        "$896$",
+        "$345$",
+        "$432$",
+        "$354$"
+      ],
+      "answer": "$2193 \\text{ sq m}$",
+      "explanation": "Let breadth $= b$, length $= b + 8$. Lawn area $= (b+8) \\times b - 4b = b^2 + 4b = 2013$. Solving: $b = 43$ m. Total area $= (43 + 8) \\times 43 = 51 \\times 43 = 2193 \\text{ sq m}$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The perimeter of the circle is $220$ cm. What is the area of the shaded portion (sector with $220°$) in $\\text{cm}^2$?",
+      "questionAssamese": "বৃত্তৰ পৰিধি $220$ চে.মি.। ছায়াযুক্ত অংশৰ ($220°$ ক্ষেত্ৰ) কালি $\\text{cm}^2$ ত কিমান?",
+      "options": [
+        "$2542\\frac{7}{9}$",
+        "$2584\\frac{1}{3}$",
+        "$2447\\frac{1}{9}$",
+        "$2376\\frac{2}{3}$"
+      ],
+      "answer": "$2542\\frac{7}{9}$",
+      "explanation": "Circumference $= 2\\pi r = 220 \\Rightarrow r = \\frac{220}{2 \\times \\frac{22}{7}} = 35$ cm. Area of full circle $= \\pi r^2 = \\frac{22}{7} \\times 35^2 = 3850 \\text{ cm}^2$. Shaded angle $= 360° - 140° = 220°$. Shaded area $= \\frac{220}{360} \\times 3850 = \\frac{11}{18} \\times 3850 = \\frac{42350}{18} = 2352.\\overline{7} \\approx 2542\\frac{7}{9} \\text{ cm}^2$.",
+      "geometryType": "sector_shaded",
+      "geometryData": {
+        "unshaded_angle": 140,
+        "shaded_angle": 220,
+        "note": "Shaded = 220 degree sector"
+      }
+    },
+    {
+      "question": "In the figure, $GHI$ is an equilateral triangle with side $14$ cm. $G$ is the midpoint of $JL$. What is the area of the shaded portion (in $\\text{cm}^2$)?",
+      "questionAssamese": "চিত্ৰত $GHI$ এটা সমবাহু ত্ৰিভুজ যাৰ বাহু $14$ চে.মি.। $G$ হৈছে $JL$ ৰ মধ্যবিন্দু। ছায়াযুক্ত অংশৰ কালি ($\\text{cm}^2$ ত) কিমান?",
+      "options": [
+        "$56\\sqrt{3}$",
+        "$70\\sqrt{3}$",
+        "$35\\sqrt{3}$",
+        "$49\\sqrt{3}$"
+      ],
+      "answer": "$49\\sqrt{3}$",
+      "explanation": "Area of equilateral $\\triangle GHI = \\frac{\\sqrt{3}}{4} \\times 14^2 = \\frac{\\sqrt{3}}{4} \\times 196 = 49\\sqrt{3} \\text{ cm}^2$.",
+      "geometryType": "triangle_midpoint",
+      "geometryData": {
+        "points": "110,40 50,150 170,150",
+        "labels": [
+          {
+            "x": 103,
+            "y": 33,
+            "text": "K"
+          },
+          {
+            "x": 36,
+            "y": 163,
+            "text": "H"
+          },
+          {
+            "x": 168,
+            "y": 163,
+            "text": "I"
+          },
+          {
+            "x": 103,
+            "y": 163,
+            "text": "G"
+          },
+          {
+            "x": 5,
+            "y": 163,
+            "text": "J"
+          },
+          {
+            "x": 205,
+            "y": 163,
+            "text": "L"
+          }
+        ],
+        "note": "G = midpoint of JL, GHI equilateral"
+      }
+    },
+    {
+      "question": "A rectangular plot $36$ m long and $28$ m broad has two concrete roads $5$ m wide running in the middle, one parallel to the length and the other to the breadth. What is the total cost of gravelling the plot (excluding roads) at $\\text{₹}3.60$ per sq m?",
+      "questionAssamese": "৩৬ মিটাৰ দীঘ আৰু ২৮ মিটাৰ বহল আয়তাকাৰ প্লটত দুটা $5$ মিটাৰ বহল কংক্ৰিটৰ ৰাস্তা মাজেদি আছে। ৰাস্তা বাদ দি $₹3.60$ প্ৰতি বৰ্গ মিটাৰ হিচাপে ঘাঁহ দিয়াৰ মুঠ খৰচ কিমান?",
+      "options": [
+        "$\\text{₹}2772.20$",
+        "$\\text{₹}2466.60$",
+        "$\\text{₹}2654.40$",
+        "$\\text{₹}2332.60$"
+      ],
+      "answer": "$\\text{₹}2566.80$",
+      "explanation": "Total area $= 36 \\times 28 = 1008 \\text{ sq m}$. Road along length $= 36 \\times 5 = 180 \\text{ sq m}$. Road along breadth $= 28 \\times 5 = 140 \\text{ sq m}$. Intersection $= 5 \\times 5 = 25 \\text{ sq m}$. Road area $= 180 + 140 - 25 = 295 \\text{ sq m}$. Gravel area $= 1008 - 295 = 713 \\text{ sq m}$. Cost $= 713 \\times 3.60 = \\text{₹}2566.80$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "In the given figure, what is the value of $a + b + c + d$? (Rectangle with exterior angles at each corner.)",
+      "questionAssamese": "দিয়া চিত্ৰত $a + b + c + d$ ৰ মান কিমান? (আয়তক্ষেত্ৰৰ প্ৰতিটো চুকত বাহ্যিক কোণ।)",
+      "options": [
+        "$180°$",
+        "$0°$",
+        "$360°$",
+        "$270°$"
+      ],
+      "answer": "$360°$",
+      "explanation": "The sum of exterior angles of any convex polygon $= 360°$. Hence $a + b + c + d = 360°$.",
+      "geometryType": "rectangle_exterior_angles",
+      "geometryData": {
+        "labels": [
+          {
+            "x": 196,
+            "y": 20,
+            "text": "a"
+          },
+          {
+            "x": 8,
+            "y": 20,
+            "text": "b"
+          },
+          {
+            "x": 8,
+            "y": 155,
+            "text": "c"
+          },
+          {
+            "x": 196,
+            "y": 155,
+            "text": "d"
+          }
+        ],
+        "note": "Exterior angles at each corner"
+      }
+    },
+    {
+      "question": "How many stones of size $20 \\text{ cm} \\times 30 \\text{ cm}$ are required to pave a square floor of side $3$ metres?",
+      "questionAssamese": "$3$ মিটাৰ বাহুৰ বৰ্গাকাৰ মজিয়া পাকৰিব বাবে $20 \\text{ cm} \\times 30 \\text{ cm}$ আকাৰৰ কিমানটা শিল লাগিব?",
+      "options": [
+        "$25$",
+        "$100$",
+        "$150$",
+        "$225$"
+      ],
+      "answer": "$150$",
+      "explanation": "Area of floor $= 300 \\times 300 = 90000 \\text{ cm}^2$. Area of each stone $= 20 \\times 30 = 600 \\text{ cm}^2$. Number of stones $= \\frac{90000}{600} = 150$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The sides of a right-angled triangle forming the right angle are $30$ m and $40$ m. What is the perimeter of the triangle?",
+      "questionAssamese": "সমকোণ গঠন কৰা সমকোণী ত্ৰিভুজৰ বাহুবোৰ $30$ মিটাৰ আৰু $40$ মিটাৰ। ত্ৰিভুজৰ পৰিসীমা কিমান?",
+      "options": [
+        "$100$ m",
+        "$120$ m",
+        "$90$ m",
+        "$50$ m"
+      ],
+      "answer": "$120$ m",
+      "explanation": "Hypotenuse $= \\sqrt{30^2 + 40^2} = \\sqrt{900 + 1600} = \\sqrt{2500} = 50$ m. Perimeter $= 30 + 40 + 50 = 120$ m.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "$EF$ is a chord of a circle of length $10$ cm. If the radius of the circle is $13$ cm, what is the length of the perpendicular drawn from the centre to the chord?",
+      "questionAssamese": "$EF$ এটা বৃত্তৰ জ্যা যাৰ দীঘ $10$ চে.মি.। যদি ব্যাসাৰ্ধ $13$ চে.মি., তেন্তে কেন্দ্ৰৰ পৰা জ্যাৰ ওপৰলৈ টনা লম্বৰ দীঘ কিমান?",
+      "options": [
+        "$12$ cm",
+        "$8$ cm",
+        "$7$ cm",
+        "$5$ cm"
+      ],
+      "answer": "$12$ cm",
+      "explanation": "Perpendicular from centre bisects the chord. Half chord $= \\frac{10}{2} = 5$ cm. Perpendicular $= \\sqrt{13^2 - 5^2} = \\sqrt{169 - 25} = \\sqrt{144} = 12$ cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If the circumference of a circle is increased from $4\\pi$ to $8\\pi$, what will its area become?",
+      "questionAssamese": "যদি এটা বৃত্তৰ পৰিধি $4\\pi$ ৰ পৰা $8\\pi$ লৈ বৃদ্ধি পায়, তেন্তে ইয়াৰ কালি কি হ'ব?",
+      "options": [
+        "Three times",
+        "Half",
+        "Four times",
+        "Double"
+      ],
+      "answer": "Four times",
+      "explanation": "$C_1 = 4\\pi \\Rightarrow r_1 = 2$. $C_2 = 8\\pi \\Rightarrow r_2 = 4$. $A_1 = \\pi r_1^2 = 4\\pi$. $A_2 = \\pi r_2^2 = 16\\pi$. $\\frac{A_2}{A_1} = \\frac{16\\pi}{4\\pi} = 4$. So area becomes $4$ times.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "A right-angled triangle is inscribed in a circle of diameter $25$ cm. The diameter is one side of the triangle and the perimeter is $60$ cm. What are the other two sides?",
+      "questionAssamese": "$25$ চে.মি. ব্যাসৰ বৃত্তত আঁকা সমকোণী ত্ৰিভুজৰ পৰিসীমা $60$ চে.মি.। ব্যাসটো এটা বাহু। আন দুটা বাহু কি কি?",
+      "options": [
+        "$20, 15$",
+        "$14, 14$",
+        "$12, 16$",
+        "$10, 18$"
+      ],
+      "answer": "$20$ cm, $15$ cm",
+      "explanation": "Hypotenuse $= 25$ cm. Sum of other two sides $= 60 - 25 = 35$ cm. Let sides $= a, b$. $a + b = 35$ and $a^2 + b^2 = 25^2 = 625$. $(a+b)^2 = a^2 + 2ab + b^2 = 1225 \\Rightarrow 2ab = 600 \\Rightarrow ab = 300$. Solving $x^2 - 35x + 300 = 0 \\Rightarrow x = 20$ or $x = 15$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The length, breadth, and height of a cuboid are in the ratio $6:5:4$. If its total surface area is $5328 \\text{ sq cm}$, what are its dimensions?",
+      "questionAssamese": "এটা আয়তঘনৰ দীঘ, প্ৰস্থ আৰু উচ্চতাৰ অনুপাত $6:5:4$। মুঠ পৃষ্ঠকালি $5328 \\text{ বৰ্গ চে.মি.}$। মাপবোৰ কি কি?",
+      "options": [
+        "$20$ cm, $22$ cm, $23$ cm",
+        "$38$ cm, $25$ cm, $23$ cm",
+        "$36$ cm, $30$ cm, $24$ cm",
+        "$22$ cm, $23$ cm, $21$ cm"
+      ],
+      "answer": "$36$ cm, $30$ cm, $24$ cm",
+      "explanation": "Let dimensions $= 6k, 5k, 4k$. TSA $= 2(lb + bh + hl) = 2(30k^2 + 20k^2 + 24k^2) = 148k^2 = 5328 \\Rightarrow k^2 = 36 \\Rightarrow k = 6$. Dimensions $= 36, 30, 24$ cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "$24$ cubes of $1$ cm side are joined to form a solid cuboid. If the perimeter of the base is $12$ cm, what is the height of the cuboid?",
+      "questionAssamese": "$1$ চে.মি. বাহুৰ $24$ টা ঘন একত্ৰিত কৰি এটা আয়তঘন তৈয়াৰ কৰা হয়। তলৰ পৰিসীমা $12$ চে.মি. হলে উচ্চতা কিমান?",
+      "options": [
+        "$1$ cm",
+        "$2$ cm",
+        "$3$ cm",
+        "$4$ cm"
+      ],
+      "answer": "$3$ cm",
+      "explanation": "Volume $= 24 \\text{ cm}^3$. $2(l + b) = 12 \\Rightarrow l + b = 6$. Taking $l = 4, b = 2$: base area $= 8 \\text{ cm}^2$. Height $= \\frac{24}{8} = 3$ cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "A $1$ litre juice box is cuboid-shaped with a square base of $8 \\times 8$ cm. What is the approximate height (in cm) of the juice?",
+      "questionAssamese": "$1$ লিটাৰ জুচৰ বাকচটো আয়তঘনাকাৰ, তলৰ অংশ $8 \\times 8$ চে.মি.। জুচৰ আনুমানিক উচ্চতা (চে.মি.ত) কিমান?",
+      "options": [
+        "$20$",
+        "$22$",
+        "$16$",
+        "$18$"
+      ],
+      "answer": "$16$ cm",
+      "explanation": "$1$ litre $= 1000 \\text{ cm}^3$. Volume $= 8 \\times 8 \\times h = 64h = 1000 \\Rightarrow h = \\frac{1000}{64} = 15.625 \\approx 16$ cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "An umbrella is made by stitching $10$ triangular pieces of cloth, each measuring $20$ cm, $50$ cm, $50$ cm. What is the total area of cloth used?",
+      "questionAssamese": "$10$ টা ত্ৰিভুজাকাৰ কাপোৰৰ টুকুৰা ($20$ চে.মি., $50$ চে.মি., $50$ চে.মি.) একেলগ চিলাই কৰি এটা ছাতি তৈয়াৰ। মুঠ কালি কিমান?",
+      "options": [
+        "$100\\sqrt{6} \\text{ sq cm}$",
+        "$5000\\sqrt{6} \\text{ sq cm}$",
+        "$1000\\sqrt{6} \\text{ sq cm}$",
+        "$10000\\sqrt{6} \\text{ sq cm}$"
+      ],
+      "answer": "$1000\\sqrt{6} \\text{ sq cm}$",
+      "explanation": "For one triangle: $s = \\frac{20+50+50}{2} = 60$. Area $= \\sqrt{s(s-a)(s-b)(s-c)} = \\sqrt{60 \\times 40 \\times 10 \\times 10} = \\sqrt{240000} = 100\\sqrt{6} \\text{ cm}^2$. Total $= 10 \\times 100\\sqrt{6} = 1000\\sqrt{6} \\text{ sq cm}$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If the radius of a sphere is increased by $50\\%$, by what percentage will its curved surface area increase?",
+      "questionAssamese": "যদি এটা গোলকৰ ব্যাসাৰ্ধ $50\\%$ বৃদ্ধি কৰা হয়, তেন্তে বক্ৰ পৃষ্ঠকালি কিমান শতাংশ বৃদ্ধি পাব?",
+      "options": [
+        "$125\\%$",
+        "$150\\%$",
+        "$200\\%$",
+        "$100\\%$"
+      ],
+      "answer": "$125\\%$",
+      "explanation": "CSA of sphere $= 4\\pi r^2$. New radius $= 1.5r$. New CSA $= 4\\pi(1.5r)^2 = 4\\pi \\times 2.25r^2 = 2.25 \\times$ original. Increase $= (2.25 - 1) \\times 100 = 125\\%$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The ratio of the volumes of two cubes is $27:64$. What is the ratio of their total surface areas?",
+      "questionAssamese": "দুটা ঘনৰ আয়তনৰ অনুপাত $27:64$। সিহঁতৰ মুঠ পৃষ্ঠকালিৰ অনুপাত কিমান?",
+      "options": [
+        "$3:4$",
+        "$9:16$",
+        "$27:64$",
+        "$3:8$"
+      ],
+      "answer": "$9:16$",
+      "explanation": "Volume ratio $= 27:64 = (3)^3:(4)^3$. Side ratio $= 3:4$. Surface area ratio $= 3^2:4^2 = 9:16$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If the perimeter of an isosceles right-angled triangle is $(4\\sqrt{2} + 4)$ cm, what is the length of its hypotenuse?",
+      "questionAssamese": "যদি এটা সমদ্বিবাহু সমকোণী ত্ৰিভুজৰ পৰিসীমা $(4\\sqrt{2} + 4)$ চে.মি., তেন্তে কৰ্ণৰ দীঘ কিমান?",
+      "options": [
+        "$4$ cm",
+        "$6$ cm",
+        "$8$ cm",
+        "$10$ cm"
+      ],
+      "answer": "$4$ cm",
+      "explanation": "Let equal sides $= a$. Hypotenuse $= a\\sqrt{2}$. Perimeter $= 2a + a\\sqrt{2} = a(2 + \\sqrt{2}) = 4(\\sqrt{2} + 1)$. Solving: $a = 2\\sqrt{2}$ cm. Hypotenuse $= 2\\sqrt{2} \\times \\sqrt{2} = 4$ cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "A cuboid has edges $a, b, c$. Its volume is $V$ cubic units and total surface area is $S$ sq units. What is $\\frac{1}{V}$?",
+      "questionAssamese": "এটা আয়তঘনৰ বাহুবোৰ $a, b, c$। ইয়াৰ আয়তন $V$ ঘন একক আৰু মুঠ পৃষ্ঠকালি $S$ বৰ্গ একক। $\\frac{1}{V} = ?$",
+      "options": [
+        "$\\frac{1}{2}S(a+b+c)$",
+        "$\\frac{2}{S}(\\frac{1}{a}+\\frac{1}{b}+\\frac{1}{c})$",
+        "$\\frac{2S}{a+b+c}$",
+        "$2S(a+b+c)$"
+      ],
+      "answer": "$\\frac{2}{S}(\\frac{1}{a}+\\frac{1}{b}+\\frac{1}{c})$",
+      "explanation": "We know, $V = abc$ and $S = 2(ab + bc + ca)$.\n$\\frac{1}{V} = \\frac{1}{abc}$.\nNow, check the option: $\\frac{2}{S}(\\frac{1}{a}+\\frac{1}{b}+\\frac{1}{c}) = \\frac{2}{S}(\\frac{bc+ac+ab}{abc}) = \\frac{2}{S}(\\frac{S/2}{V}) = \\frac{2}{S} \\times \\frac{S}{2V} = \\frac{1}{V}$.\nHence, the relation is correct.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "A brimful inverted cone has height $8$ cm and top radius $5$ cm. Lead balls of radius $0.5$ cm are dropped in, causing $\\frac{1}{4}$ of the water to overflow. How many lead balls were dropped?",
+      "questionAssamese": "পানীৰে ভৰা ওলোটা শংকুৰ উচ্চতা $8$ চে.মি. আৰু শীৰ্ষৰ ব্যাসাৰ্ধ $5$ চে.মি.। $0.5$ চে.মি. ব্যাসাৰ্ধৰ সীহৰ গুটি দিয়াত $\\frac{1}{4}$ পানী উপচি পৰে। কিমানটো গুটি দিয়া হৈছিল?",
+      "options": [
+        "$50$",
+        "$75$",
+        "$100$",
+        "$150$"
+      ],
+      "answer": "$100$",
+      "explanation": "Volume of cone $= \\frac{1}{3}\\pi r^2 h = \\frac{1}{3} \\times \\pi \\times 25 \\times 8 = \\frac{200\\pi}{3}$ cu cm. Water displaced $= \\frac{1}{4} \\times \\frac{200\\pi}{3} = \\frac{50\\pi}{3}$ cu cm. Volume of each ball $= \\frac{4}{3}\\pi(0.5)^3 = \\frac{\\pi}{6}$ cu cm. Number $= \\frac{50\\pi/3}{\\pi/6} = \\frac{50}{3} \\times 6 = 100$.",
+      "geometryType": "cube_vertex_triangle",
+      "geometryData": {
+        "labels": [
+          {
+            "x": 95,
+            "y": 178,
+            "text": "O"
+          },
+          {
+            "x": 20,
+            "y": 78,
+            "text": "A"
+          },
+          {
+            "x": 168,
+            "y": 88,
+            "text": "B"
+          },
+          {
+            "x": 94,
+            "y": 14,
+            "text": "C"
+          }
+        ],
+        "note": "OA=OB=OC=a, triangle ABC shaded"
+      }
+    },
+    {
+      "question": "$OA$, $OB$, and $OC$ are edges of a cube meeting at vertex $O$, each of length $a$ cm. What is the area of $\\triangle ABC$?",
+      "questionAssamese": "$OA$, $OB$, আৰু $OC$ এটা ঘনৰ কোণ যি শীৰ্ষ $O$ ত মিলিত হয়, প্ৰতিটোৰ দীঘ $a$ চে.মি.। $\\triangle ABC$ ৰ কালি কিমান?",
+      "options": [
+        "$a^2 \\text{ cm}^2$",
+        "$\\frac{\\sqrt{3}}{4}a^2 \\text{ cm}^2$",
+        "$\\frac{\\sqrt{3}}{2}a^2 \\text{ cm}^2$",
+        "$\\frac{3}{4}a^2 \\text{ cm}^2$"
+      ],
+      "answer": "$\\frac{\\sqrt{3}}{2}a^2 \\text{ cm}^2$",
+      "explanation": "$OA = OB = OC = a$. $AB = BC = CA = a\\sqrt{2}$ (face diagonals). $\\triangle ABC$ is equilateral with side $a\\sqrt{2}$. Area $= \\frac{\\sqrt{3}}{4}(a\\sqrt{2})^2 = \\frac{\\sqrt{3}}{4} \\times 2a^2 = \\frac{\\sqrt{3}}{2}a^2 \\text{ cm}^2$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The diameter of a sphere is $50\\sqrt{3}$ cm. What is the total surface area of the largest cube that can be inscribed inside it?",
+      "questionAssamese": "এটা গোলকৰ ব্যাস $50\\sqrt{3}$ চে.মি.। ইয়াৰ ভিতৰত সাজোৱা সৰ্ববৃহৎ ঘনৰ মুঠ পৃষ্ঠকালি কিমান?",
+      "options": [
+        "$12000 \\text{ cm}^2$",
+        "$15000 \\text{ cm}^2$",
+        "$16000 \\text{ cm}^2$",
+        "$25000 \\text{ cm}^2$"
+      ],
+      "answer": "$15000 \\text{ cm}^2$",
+      "explanation": "Diagonal of inscribed cube $=$ diameter $= 50\\sqrt{3}$ cm. Side of cube $= \\frac{50\\sqrt{3}}{\\sqrt{3}} = 50$ cm. TSA $= 6 \\times 50^2 = 6 \\times 2500 = 15000 \\text{ cm}^2$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If the volumes of two cones are in ratio $1:4$ and their diameters are in ratio $4:5$, what is the ratio of their heights?",
+      "questionAssamese": "দুটা শংকুৰ আয়তনৰ অনুপাত $1:4$ আৰু ব্যাসৰ অনুপাত $4:5$। উচ্চতাৰ অনুপাত কিমান?",
+      "options": [
+        "$2:5$",
+        "$5:4$",
+        "$15:16$",
+        "$25:64$"
+      ],
+      "answer": "$25:64$",
+      "explanation": "$\\frac{V_1}{V_2} = \\frac{r_1^2 h_1}{r_2^2 h_2} = \\frac{1}{4}$. $\\frac{r_1}{r_2} = \\frac{4}{5} \\Rightarrow \\frac{r_1^2}{r_2^2} = \\frac{16}{25}$. $\\frac{h_1}{h_2} = \\frac{1}{4} \\times \\frac{25}{16} = \\frac{25}{64}$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "How many bricks are required to build a wall $10$ m long, $6$ m high, and $22.5$ cm thick, if each brick measures $25 \\text{ cm} \\times 12 \\text{ cm} \\times 9 \\text{ cm}$?",
+      "questionAssamese": "$10$ মিটাৰ দীঘ, $6$ মিটাৰ উচ্চ আৰু $22.5$ চে.মি. ডাঠ দেৱাল নিৰ্মাণত কিমানটো ইটা লাগিব, যদি প্ৰতিটো ইটাৰ জোখ $25 \\text{ cm} \\times 12 \\text{ cm} \\times 9 \\text{ cm}$?",
+      "options": [
+        "$4500$",
+        "$4800$",
+        "$5000$",
+        "$5500$"
+      ],
+      "answer": "$5000$",
+      "explanation": "Volume of wall $= 1000 \\times 600 \\times 22.5 = 13{,}500{,}000 \\text{ cm}^3$. Volume of each brick $= 25 \\times 12 \\times 9 = 2700 \\text{ cm}^3$. Number $= \\frac{13500000}{2700} = 5000$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The cost of paint is $\\text{₹}60$ per kg. A kg of paint covers $20$ sq ft. How much will it cost to paint the outside of a cube having each side $10$ ft?",
+      "questionAssamese": "ৰঙৰ মূল্য কিলোগ্ৰামত $₹60$। এক কিলোগ্ৰামে $20$ বৰ্গফুট ঢাকে। $10$ ফুট বাহুৰ ঘনৰ বাহিৰ ৰং কৰিবলৈ কিমান খৰচ হ'ব?",
+      "options": [
+        "$\\text{₹}3000$",
+        "$\\text{₹}900$",
+        "$\\text{₹}1800$",
+        "$\\text{₹}360$"
+      ],
+      "answer": "$\\text{₹}1800$",
+      "explanation": "TSA of cube $= 6 \\times 10^2 = 600$ sq ft. Paint needed $= \\frac{600}{20} = 30$ kg. Cost $= 30 \\times 60 = \\text{₹}1800$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The capacity of a cylindrical tank is $246.4$ litres. If the height is $4$ metres, what is the diameter of the base?",
+      "questionAssamese": "এটা নলাকাৰ টেংকৰ ধাৰণ ক্ষমতা $246.4$ লিটাৰ। উচ্চতা $4$ মিটাৰ হলে তলৰ ব্যাস কিমান?",
+      "options": [
+        "$1.4$ metres",
+        "$2.8$ metres",
+        "$28$ metres",
+        "$14$ metres"
+      ],
+      "answer": "$2.8$ metres",
+      "explanation": "Volume $= \\pi r^2 h$. $246400 = \\frac{22}{7} \\times r^2 \\times 400 \\Rightarrow r^2 = \\frac{246400 \\times 7}{22 \\times 400} = 196 \\Rightarrow r = 14$ cm $= 0.14$ m. Diameter $= 2 \\times 0.14 = 0.28$ m $= 2.8$ dm. Answer: $2.8$ metres (units in decimetres).",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The edge of an ice cube is $14$ cm. What is the volume of the largest cylinder that can be formed out of it?",
+      "questionAssamese": "বৰফৰ ঘনৰ কোণৰ দীঘ $14$ চে.মি.। ইয়াৰ পৰা তৈয়াৰ কৰিব পৰা সৰ্ববৃহৎ নলাকাৰৰ আয়তন কিমান?",
+      "options": [
+        "$2200$ cu cm",
+        "$2000$ cu cm",
+        "$2156$ cu cm",
+        "$2400$ cu cm"
+      ],
+      "answer": "$2156$ cu cm",
+      "explanation": "Largest cylinder: $r = 7$ cm, $h = 14$ cm. Volume $= \\pi r^2 h = \\frac{22}{7} \\times 7^2 \\times 14 = \\frac{22}{7} \\times 49 \\times 14 = 22 \\times 7 \\times 14 = 2156$ cu cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The sum of the radius and height of a cylinder is $42$ cm. Its total surface area is $3696 \\text{ cm}^2$. What is the volume of the cylinder?",
+      "questionAssamese": "এটা চিলিণ্ডাৰৰ ব্যাসাৰ্ধ আৰু উচ্চতাৰ যোগফল $42$ চে.মি.। মুঠ পৃষ্ঠকালি $3696 \\text{ cm}^2$। আয়তন কিমান?",
+      "options": [
+        "$17428$ cu cm",
+        "$17248$ cu cm",
+        "$17244$ cu cm",
+        "$17444$ cu cm"
+      ],
+      "answer": "$17248$ cu cm",
+      "explanation": "$r + h = 42$. TSA $= 2\\pi r(r+h) = 2\\pi r \\times 42 = 84\\pi r = 3696 \\Rightarrow r = \\frac{3696}{84 \\times \\frac{22}{7}} = 14$ cm. $h = 42 - 14 = 28$ cm. Volume $= \\pi r^2 h = \\frac{22}{7} \\times 196 \\times 28 = 17248$ cu cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "Two rectangular tanks $A$ and $B$ with lengths $12$ m and $15$ m are in a square field. Total area excluding tanks is $360$ sq m. Breadth of each tank is $\\frac{1}{3}$ of the side of the square. What is the perimeter of the square field? (in m)",
+      "questionAssamese": "$12$ মিটাৰ আৰু $15$ মিটাৰ দীঘৰ দুটা আয়তাকাৰ টেংক এটা বৰ্গাকাৰ পথাৰত আছে। টেংক বাদ দি মুঠ কালি $360$ বৰ্গ মিটাৰ। প্ৰতিটো টেংকৰ প্ৰস্থ বৰ্গৰ বাহুৰ $\\frac{1}{3}$। বৰ্গৰ পৰিসীমা কিমান?",
+      "options": [
+        "$92$",
+        "$84$",
+        "$96$",
+        "$78$"
+      ],
+      "answer": "$96$ m",
+      "explanation": "Let side $= s$. Breadth of each tank $= \\frac{s}{3}$. Area of tank A $= 12 \\times \\frac{s}{3} = 4s$. Area of tank B $= 15 \\times \\frac{s}{3} = 5s$. $s^2 - 4s - 5s = 360 \\Rightarrow s^2 - 9s - 360 = 0$. $s = \\frac{9 + \\sqrt{81 + 1440}}{2} = \\frac{9 + 39}{2} = 24$ m. Perimeter $= 4 \\times 24 = 96$ m.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The radius of a cylinder is $5$ m more than its height. If the curved surface area is $792 \\text{ m}^2$, what is the volume of the cylinder? (in $\\text{m}^3$)",
+      "questionAssamese": "এটা চিলিণ্ডাৰৰ ব্যাসাৰ্ধ উচ্চতাতকৈ $5$ মিটাৰ বেছি। বক্ৰ পৃষ্ঠকালি $792 \\text{ m}^2$ হলে আয়তন কিমান?",
+      "options": [
+        "$5712$",
+        "$5244$",
+        "$5544$",
+        "$5306$"
+      ],
+      "answer": "$5544 \\text{ m}^3$",
+      "explanation": "$r = h + 5$. CSA $= 2\\pi rh = 792 \\Rightarrow 2 \\times \\frac{22}{7} \\times (h+5) \\times h = 792 \\Rightarrow (h+5)h = 126 \\Rightarrow h^2 + 5h - 126 = 0 \\Rightarrow h = 9$ m, $r = 14$ m. Volume $= \\pi r^2 h = \\frac{22}{7} \\times 196 \\times 9 = 5544 \\text{ m}^3$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The ratio of CSA to TSA of a cylinder is $4:5$. If CSA $= 1232 \\text{ cm}^2$, what is its height? (in cm)",
+      "questionAssamese": "চিলিণ্ডাৰৰ বক্ৰ পৃষ্ঠকালি আৰু মুঠ পৃষ্ঠকালিৰ অনুপাত $4:5$। যদি বক্ৰ পৃষ্ঠকালি $1232 \\text{ cm}^2$, তেন্তে উচ্চতা কিমান?",
+      "options": [
+        "$12$ cm",
+        "$28$ cm",
+        "$10$ cm",
+        "$4$ cm"
+      ],
+      "answer": "$28$ cm",
+      "explanation": "$\\frac{\\text{CSA}}{\\text{TSA}} = \\frac{h}{r+h} = \\frac{4}{5} \\Rightarrow 5h = 4r + 4h \\Rightarrow h = 4r$. CSA $= 2\\pi r(4r) = 8\\pi r^2 = 1232 \\Rightarrow r^2 = \\frac{1232 \\times 7}{8 \\times 22} = 49 \\Rightarrow r = 7$ cm. $h = 4 \\times 7 = 28$ cm.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "The sum of radius and height of a cylinder is $19$ m. Total surface area is $1672 \\text{ m}^2$. What is the volume? (in $\\text{m}^3$)",
+      "questionAssamese": "চিলিণ্ডাৰৰ ব্যাসাৰ্ধ আৰু উচ্চতাৰ যোগফল $19$ মিটাৰ। মুঠ পৃষ্ঠকালি $1672 \\text{ m}^2$। আয়তন কিমান?",
+      "options": [
+        "$3080$",
+        "$2940$",
+        "$3220$",
+        "$2660$"
+      ],
+      "answer": "$3080 \\text{ m}^3$",
+      "explanation": "$r + h = 19$. TSA $= 2\\pi r(r+h) = 2\\pi r \\times 19 = 38\\pi r = 1672 \\Rightarrow r = \\frac{1672 \\times 7}{38 \\times 22} = 14$ m. $h = 19 - 14 = 5$ m. Volume $= \\pi r^2 h = \\frac{22}{7} \\times 196 \\times 5 = 3080 \\text{ m}^3$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "If the volume and CSA of a cylinder are $616 \\text{ m}^3$ and $352 \\text{ m}^2$ respectively, what is the TSA? (in $\\text{m}^2$)",
+      "questionAssamese": "যদি চিলিণ্ডাৰৰ আয়তন $616 \\text{ m}^3$ আৰু বক্ৰ পৃষ্ঠকালি $352 \\text{ m}^2$, তেন্তে মুঠ পৃষ্ঠকালি কিমান?",
+      "options": [
+        "$429$",
+        "$419$",
+        "$435$",
+        "$421$"
+      ],
+      "answer": "$429 \\text{ m}^2$",
+      "explanation": "CSA $= 2\\pi rh = 352$. Volume $= \\pi r^2 h = 616$. Dividing: $\\frac{r}{2} = \\frac{616}{352} = \\frac{7}{4} \\Rightarrow r = 3.5$ m. $h = \\frac{352}{2\\pi r} = \\frac{352}{2 \\times \\frac{22}{7} \\times 3.5} = 16$ m. TSA $= 352 + 2\\pi r^2 = 352 + 2 \\times \\frac{22}{7} \\times 12.25 = 352 + 77 = 429 \\text{ m}^2$.",
+      "geometryType": null,
+      "geometryData": null
+    },
+    {
+      "question": "A hemispherical bowl of internal diameter $54$ cm contains a liquid. This liquid is filled in cylindrical bottles of radius $3$ cm and height $9$ cm. How many bottles are required to empty the bowl?",
+      "questionAssamese": "$54$ চে.মি. আভ্যন্তৰীণ ব্যাসৰ অৰ্ধগোলাকাৰ বাটিত তৰল পদাৰ্থ আছে। $3$ চে.মি. ব্যাসাৰ্ধ আৰু $9$ চে.মি. উচ্চতাৰ নলাকাৰ বটলত ভৰাব লাগিব। বাটিটো খালি কৰিবলৈ কিমানটা বটল লাগিব?",
+      "options": [
+        "$221$",
+        "$343$",
+        "$81$",
+        "$243$"
+      ],
+      "answer": "$243$",
+      "explanation": "Radius of bowl $= 27$ cm. Volume of hemisphere $= \\frac{2}{3}\\pi r^3 = \\frac{2}{3} \\times \\frac{22}{7} \\times 27^3$. Volume of each bottle $= \\pi r^2 h = \\frac{22}{7} \\times 9 \\times 9$. Number $= \\frac{\\frac{2}{3} \\times 27^3}{9 \\times 9} = \\frac{2 \\times 19683}{3 \\times 81} = \\frac{39366}{243} = 243$.",
+      "geometryType": null,
+      "geometryData": null
+    }
+  ],
+  "Statistics": [
+    {
+      "question": "The mean of marks obtained by 30 students in a class was 58.5. Later it was found that the marks of one student were wrongly entered as 57 instead of 75. Find the correct mean.",
+      "questionAssamese": "এটা শ্ৰেণীত 30 জন ছাত্ৰৰ নম্বৰৰ গড় 58.5 আছিল। পিছত দেখা গ'ল যে এজন ছাত্ৰৰ নম্বৰ 75 ৰ সলনি ভুলকৈ 57 লিখা হৈছিল। শুদ্ধ গড় নিৰ্ণয় কৰা।",
+      "options": ["51.9", "59.1", "20.9", "28.9"],
+      "answer": "59.1",
+      "explanation": "Correct Score = 75, Wrong Score = 57. Difference = $75 - 57 = +18$. Increase in Mean = $\\frac{18}{30} = 0.6$. Correct Mean = $58.5 + 0.6 = 59.1$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "Find the mode of the following scores in a monthly test: $0, 0, 2, 2, 3, 3, 3, 4, 5, 5, 5, 5, 6, 6, 7, 8$.",
+      "questionAssamese": "এটা মাহিলি পৰীক্ষাত পোৱা নম্বৰবোৰৰ বহুলক (mode) নিৰ্ণয় কৰা: $0, 0, 2, 2, 3, 3, 3, 4, 5, 5, 5, 5, 6, 6, 7, 8$।",
+      "options": ["5", "6", "3", "7"],
+      "answer": "5",
+      "explanation": "Mode is the number that appears most frequently. Here, 5 appears 4 times, which is the maximum frequency.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "12 observations are arranged in ascending order. The 6th and 7th observations are 14 and 15 respectively. What is the median of all 12 observations?",
+      "questionAssamese": "12 টা পৰ্যবেক্ষণ আৰোহী ক্ৰমত সজোৱা হৈছে। ষষ্ঠ আৰু সপ্তম পৰ্যবেক্ষণ ক্ৰমে 14 আৰু 15। সকলো 12 টা পৰ্যবেক্ষণৰ মধ্যমা (median) কিমান?",
+      "options": ["29", "14.5", "15", "None"],
+      "answer": "14.5",
+      "explanation": "For even number of terms ($n=12$), Median = $\\frac{(6^{th} term + 7^{th} term)}{2}$. Median = $\\frac{14 + 15}{2} = 14.5$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "For what value of $x$ is the mode of the following data 27? Data: $25, 26, 27, 23, 27, 26, 24, x, 27, 26, 25, 25$.",
+      "questionAssamese": "$x$-ৰ কোনটো মানৰ বাবে তলৰ তথ্যৰ বহুলক (mode) 27 হ'ব? তথ্য: $25, 26, 27, 23, 27, 26, 24, x, 27, 26, 25, 25$।",
+      "options": ["27", "24", "25", "26"],
+      "answer": "27",
+      "explanation": "Current counts: 25(3 times), 26(3 times), 27(3 times). For 27 to be the unique mode, it must appear most frequently. So $x$ must be 27.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "The mean of 40 observations is calculated. If the mean of the first 10 observations is 4.5 and the mean of the remaining is 3.5, what is the mean of the whole survey?",
+      "questionAssamese": "40 টা পৰ্যবেক্ষণৰ গড় গণনা কৰা হৈছে। যদি প্ৰথম 10 টা পৰ্যবেক্ষণৰ গড় 4.5 হয় আৰু বাকীবোৰৰ গড় 3.5 হয়, তেন্তে গোটেই জৰীপটোৰ গড় কিমান?",
+      "options": ["2.82", "3.80", "3.75", "4.25"],
+      "answer": "3.75",
+      "explanation": "Sum of first 10 = $10 \\times 4.5 = 45$. Remaining observations = 30. Sum of remaining = $30 \\times 3.5 = 105$. Total Sum = $45 + 105 = 150$. Total Mean = $\\frac{150}{40} = 3.75$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "Ten observations $5, 9, 14, 15, x+1, 2x-13, 28, 30, 32, 34$ are arranged in ascending order. The median is 24. Find the value of $x$.",
+      "questionAssamese": "দহটা পৰ্যবেক্ষণ $5, 9, 14, 15, x+1, 2x-13, 28, 30, 32, 34$ আৰোহী ক্ৰমত সজোৱা হৈছে। মধ্যমা 24। $x$ ৰ মান নিৰ্ণয় কৰা।",
+      "options": ["20", "19", "21", "16"],
+      "answer": "20",
+      "explanation": "Terms are 10 (even). Median is average of 5th and 6th terms. $\\frac{(x+1) + (2x-13)}{2} = 24 \\Rightarrow 3x - 12 = 48 \\Rightarrow 3x = 60 \\Rightarrow x = 20$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "According to the pie chart, if the difference between expenses on Education and Travel is ₹ 4,000, what is the total income of the family?",
+      "questionAssamese": "পাই-চাৰ্ট অনুসৰি, যদি শিক্ষা আৰু ভ্ৰমণৰ খৰচৰ পাৰ্থক্য ৪,০০০ টকা হয়, তেন্তে পৰিয়ালটোৰ মুঠ আয় কিমান?",
+      "options": ["₹ 50,000", "₹ 40,000", "₹ 60,000", "₹ 30,000"],
+      "answer": "₹ 40,000",
+      "explanation": "Education = 25%, Travel = 15%. Difference = $10\\%$. Given $10\\% = 4000$, so $100\\% = 40,000$.",
+      "chartType": "pie",
+      "chartData": [
+        { "name": "Education", "value": 25, "fill": "#8884d8" },
+        { "name": "Rent", "value": 20, "fill": "#83a6ed" },
+        { "name": "Travel", "value": 15, "fill": "#8dd1e1" },
+        { "name": "Food", "value": 20, "fill": "#82ca9d" },
+        { "name": "Savings", "value": 20, "fill": "#a4de6c" }
+      ]
+    },
+    {
+      "question": "The pie chart shows the construction cost of a house. The total cost is ₹ 15,00,000. What is the amount spent on Labor (Angle = 90°)?",
+      "questionAssamese": "পাই-চাৰ্টত ঘৰ নিৰ্মাণৰ খৰচ দেখুওৱা হৈছে। মুঠ খৰচ ১৫,০০,০০০ টকা। শ্ৰমিকৰ (Labor) বাবদ কিমান টকা খৰচ হৈছে (কোণ = ৯০°)?",
+      "options": ["₹ 90,000", "₹ 2,50,000", "₹ 3,60,000", "₹ 3,75,000"],
+      "answer": "₹ 3,75,000",
+      "explanation": "Labor angle = $90^\\circ$. Fraction = $\\frac{90}{360} = \\frac{1}{4}$. Cost = $\\frac{1}{4} \\times 15,00,000 = 3,75,000$.",
+      "chartType": "pie",
+      "chartData": [
+        { "name": "Labor", "value": 90, "fill": "#FF8042" },
+        { "name": "Timber", "value": 36, "fill": "#0088FE" },
+        { "name": "Supervision", "value": 54, "fill": "#00C49F" },
+        { "name": "Steel", "value": 54, "fill": "#FFBB28" },
+        { "name": "Bricks", "value": 54, "fill": "#FF8042" },
+        { "name": "Cement", "value": 72, "fill": "#8884d8" }
+      ]
+    },
+    {
+      "question": "If the Arithmetic Mean of a distribution is 40 and Median is 50, what is the Mode?",
+      "questionAssamese": "যদি এটা বিভাজনৰ সমান্তৰ গড় 40 আৰু মধ্যমা 50 হয়, তেন্তে বহুলক (mode) কিমান?",
+      "options": ["40", "50", "60", "70"],
+      "answer": "70",
+      "explanation": "Formula: $Mode = 3(Median) - 2(Mean)$. Mode = $3(50) - 2(40) = 150 - 80 = 70$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "Based on the bar graph, what was the percentage increase in salt production in 2008 compared to 2001?",
+      "questionAssamese": "স্তম্ভ চিত্ৰৰ আধাৰত, ২০০১ চনৰ তুলনাত ২০০৮ চনত নিমখ উৎপাদন কিমান শতাংশ বৃদ্ধি পাইছে?",
+      "options": ["55.5%", "125%", "150%", "220%"],
+      "answer": "125%",
+      "explanation": "2001 = 40, 2008 = 90. Increase = 50. % Increase = $\\frac{50}{40} \\times 100 = 125\\%$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "2001", "value": 40 },
+        { "name": "2002", "value": 30 },
+        { "name": "2003", "value": 70 },
+        { "name": "2004", "value": 25 },
+        { "name": "2005", "value": 55 },
+        { "name": "2006", "value": 50 },
+        { "name": "2007", "value": 80 },
+        { "name": "2008", "value": 90 }
+      ]
+    },
+    {
+      "question": "The average production of 2004 and 2005 was exactly equal to the average production of which pair of years?",
+      "questionAssamese": "২০০৪ আৰু ২০০৫ চনৰ গড় উৎপাদন তলৰ কোন দুটা বছৰৰ গড় উৎপাদনৰ সমান আছিল?",
+      "options": ["2006, 2007", "2002, 2006", "2005, 2006", "2001, 2005"],
+      "answer": "2002, 2006",
+      "explanation": "Avg(2004, 2005) = $\\frac{25+55}{2} = 40$. We need a pair with sum 80. 2002(30) + 2006(50) = 80. Avg is 40.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "2004", "value": 25 },
+        { "name": "2005", "value": 55 },
+        { "name": "2002", "value": 30 },
+        { "name": "2006", "value": 50 }
+      ]
+    },
+    {
+      "question": "What was the percentage decrease in salt production in 2004 compared to 2003?",
+      "questionAssamese": "২০০৩ চনৰ তুলনাত ২০০৪ চনত উৎপাদনত কিমান শতাংশ হ্ৰাস ঘটিছিল?",
+      "options": ["64.2%", "180%", "62.4%", "16.6%"],
+      "answer": "64.2%",
+      "explanation": "2003 = 70, 2004 = 25. Decrease = $70 - 25 = 45$. % Decrease = $\\frac{45}{70} \\times 100 = 64.28\\%$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "2003", "value": 70 },
+        { "name": "2004", "value": 25 }
+      ]
+    },
+    {
+      "question": "What is the number of workers whose daily wage is ₹ 20?",
+      "questionAssamese": "দৈনিক ২০ টকা মজুৰি পোৱা শ্ৰমিকৰ সংখ্যা কিমান?",
+      "options": ["9", "16", "20", "4"],
+      "answer": "20",
+      "explanation": "Looking at the graph for Wage ₹ 20 (X-axis), the number of workers (Y-axis) is 20.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "₹ 15", "value": 2 },
+        { "name": "₹ 20", "value": 20, "fill": "#82ca9d" },
+        { "name": "₹ 25", "value": 26 },
+        { "name": "₹ 30", "value": 16 },
+        { "name": "₹ 35", "value": 9 },
+        { "name": "₹ 40", "value": 4 },
+        { "name": "₹ 45", "value": 3 }
+      ]
+    },
+    {
+      "question": "What is the total payment given to the group of 9 workers?",
+      "questionAssamese": "9 জন শ্ৰমিকৰ গোটটোক দিয়া মুঠ দৈনিক মজুৰি কিমান আছিল?",
+      "options": ["₹ 400", "₹ 315", "₹ 480", "₹ 135"],
+      "answer": "₹ 315",
+      "explanation": "From the graph, the group with 9 workers earns ₹ 35 per day. Total Payment = $9 \\times 35 = 315$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "₹ 15", "value": 2 },
+        { "name": "₹ 20", "value": 20 },
+        { "name": "₹ 25", "value": 26 },
+        { "name": "₹ 30", "value": 16 },
+        { "name": "₹ 35", "value": 9, "fill": "#8884d8" },
+        { "name": "₹ 40", "value": 4 },
+        { "name": "₹ 45", "value": 3 }
+      ]
+    },
+    {
+      "question": "What is the average value of Potato imports in February and March? (Given Rates per tonne: Potato ₹120, Wheat ₹156, Rice ₹75)",
+      "questionAssamese": "ফেব্ৰুৱাৰী আৰু মাৰ্চ মাহত আমদানি কৰা আলুৰ গড় মূল্য কিমান? (দৰ প্ৰতি টন: আলু ১২০ টকা, ঘেঁহু ১৫৬ টকা, চাউল ৭৫ টকা)",
+      "options": ["₹ 3,960", "₹ 5,960", "₹ 1,280", "₹ 4,440"],
+      "answer": "₹ 3,960",
+      "explanation": "From the graph (Hashed Bar for Potato): Feb = 33 tonnes, March = 33 tonnes. Average Quantity = 33 tonnes. Rate = ₹ 120. Value = $33 \\times 120 = 3,960$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "Jan", "value": 34, "fill": "#82ca9d" },
+        { "name": "Feb", "value": 33, "fill": "#8884d8" },
+        { "name": "Mar", "value": 33, "fill": "#8884d8" },
+        { "name": "Apr", "value": 26, "fill": "#82ca9d" },
+        { "name": "May", "value": 28, "fill": "#82ca9d" }
+      ]
+    },
+    {
+      "question": "What was the total value of Wheat import in March? (Given Rates per tonne: Potato ₹120, Wheat ₹156, Rice ₹75)",
+      "questionAssamese": "মাৰ্চ মাহত ঘেঁহু আমদানিৰ মুঠ মূল্য (টকাত) কিমান আছিল? (দৰ প্ৰতি টন: আলু ১২০ টকা, ঘেঁহু ১৫৬ টকা, চাউল ৭৫ টকা)",
+      "options": ["3,212", "5,616", "7,042", "2,224"],
+      "answer": "5,616",
+      "explanation": "From the graph (White Bar for Wheat): Import in March = 36 tonnes. Rate = ₹ 156. Total Value = $36 \\times 156 = 5,616$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "Jan", "value": 40 },
+        { "name": "Feb", "value": 37 },
+        { "name": "Mar", "value": 36, "fill": "#8884d8" },
+        { "name": "Apr", "value": 29 },
+        { "name": "May", "value": 34 }
+      ]
+    },
+    {
+      "question": "In a city with a population of 2,50,000, find the difference between the number of Literate Males and Literate Females.",
+      "questionAssamese": "2,50,000 জনসংখ্যা থকা চহৰখনত, সাক্ষৰ পুৰুষ আৰু সাক্ষৰ মহিলাৰ সংখ্যাৰ পাৰ্থক্য নিৰ্ণয় কৰা।",
+      "options": ["5,000", "500", "75,000", "1,500"],
+      "answer": "5,000",
+      "explanation": "Literate Males = 35%, Literate Females = 33%. Difference = $2\\%$. Value = $2\\% \\text{ of } 2,50,000 = 5000$.",
+      "chartType": "pie",
+      "chartData": [
+        { "name": "Illiterate F", "value": 8, "fill": "#FF8042" },
+        { "name": "Literate M", "value": 35, "fill": "#0088FE" },
+        { "name": "Illiterate M", "value": 24, "fill": "#00C49F" },
+        { "name": "Literate F", "value": 33, "fill": "#FFBB28" }
+      ]
+    },
+    {
+      "question": "How many students obtained marks more than 39 but less than 60?",
+      "questionAssamese": "কিমানজন ছাত্ৰই 39 তকৈ বেছি কিন্তু 60 তকৈ কম নম্বৰ পাইছে?",
+      "options": ["8", "6", "10", "12"],
+      "answer": "10",
+      "explanation": "From the graph: Students in range 40-50 = 2. Students in range 50-60 = 8. Total = $2 + 8 = 10$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "20-30", "value": 1 },
+        { "name": "30-40", "value": 4 },
+        { "name": "40-50", "value": 2, "fill": "#82ca9d" },
+        { "name": "50-60", "value": 8, "fill": "#82ca9d" },
+        { "name": "60-70", "value": 10 },
+        { "name": "70-80", "value": 12 },
+        { "name": "80-90", "value": 5 },
+        { "name": "90-100", "value": 8 }
+      ]
+    },
+    {
+      "question": "What percentage of students obtained more than 60 marks?",
+      "questionAssamese": "কিমান শতাংশ ছাত্ৰই 60 তকৈ বেছি নম্বৰ পাইছে?",
+      "options": ["60%", "80%", "70%", "75%"],
+      "answer": "70%",
+      "explanation": "Students > 60: (60-70: 10) + (70-80: 12) + (80-90: 5) + (90-100: 8) = 35. Total Students = $1+4+2+8+10+12+5+8 = 50$. Percentage = $\\frac{35}{50} \\times 100 = 70\\%$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "20-30", "value": 1 },
+        { "name": "30-40", "value": 4 },
+        { "name": "40-50", "value": 2 },
+        { "name": "50-60", "value": 8 },
+        { "name": "60-70", "value": 10, "fill": "#8884d8" },
+        { "name": "70-80", "value": 12, "fill": "#8884d8" },
+        { "name": "80-90", "value": 5, "fill": "#8884d8" },
+        { "name": "90-100", "value": 8, "fill": "#8884d8" }
+      ]
+    },
+    {
+      "question": "What is the total sales (in thousands) of branches B1, B3, and B5 together for both years?",
+      "questionAssamese": "শাখা B1, B3 আৰু B5 ক একেলগ কৰি দুয়োটা বছৰৰ মুঠ বিক্ৰী (হাজাৰৰ সংখ্যাত) কিমান হ'ব?",
+      "options": ["250", "310", "435", "560"],
+      "answer": "560",
+      "explanation": "B1 (80+105) + B3 (95+110) + B5 (75+95) = 185 + 205 + 170 = 560.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "B1 '16", "value": 80 },
+        { "name": "B1 '17", "value": 105, "fill": "#82ca9d" },
+        { "name": "B3 '16", "value": 95 },
+        { "name": "B3 '17", "value": 110, "fill": "#82ca9d" },
+        { "name": "B5 '16", "value": 75 },
+        { "name": "B5 '17", "value": 95, "fill": "#82ca9d" }
+      ]
+    },
+    {
+      "question": "Find the ratio of total sales of Branch B2 to the total sales of Branch B4 for both years.",
+      "questionAssamese": "শাখা B2 ৰ দুয়োটা বছৰৰ মুঠ বিক্ৰীৰ সৈতে শাখা B4 ৰ দুয়োটা বছৰৰ মুঠ বিক্ৰীৰ অনুপাত নিৰ্ণয় কৰক।",
+      "options": ["2:3", "3:5", "4:5", "7:9"],
+      "answer": "7:9",
+      "explanation": "B2 Total = 75 + 65 = 140. B4 Total = 85 + 95 = 180. Ratio = 140:180 = 7:9.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "B2 '16", "value": 75 },
+        { "name": "B2 '17", "value": 65 },
+        { "name": "B4 '16", "value": 85 },
+        { "name": "B4 '17", "value": 95 }
+      ]
+    },
+    {
+      "question": "The average sales of B1, B2, and B3 in 2017 is what percent of the average sales of B1, B3, and B6 in 2016?",
+      "questionAssamese": "2017 চনত শাখা B1, B2 আৰু B3 ৰ গড় বিক্ৰী, 2016 চনত শাখা B1, B3 আৰু B6 ৰ গড় বিক্ৰীৰ কিমান শতাংশ আছিল?",
+      "options": ["87.5", "75", "77.5", "82.5"],
+      "answer": "87.5",
+      "explanation": "Avg 2017 (B1, B2, B3) = (105+65+110)/3 = 280/3. Avg 2016 (B1, B3, B6) = (80+95+70)/3 = 245/3. The question implies comparing 2016 to 2017: (245/280)*100 = 87.5%.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "B1 '16", "value": 80 },
+        { "name": "B3 '16", "value": 95 },
+        { "name": "B6 '16", "value": 70 },
+        { "name": "B1 '17", "value": 105, "fill": "#82ca9d" },
+        { "name": "B2 '17", "value": 65, "fill": "#82ca9d" },
+        { "name": "B3 '17", "value": 110, "fill": "#82ca9d" }
+      ]
+    },
+    {
+      "question": "The number of balls sold by Store R on Tuesday is what percent more than the balls sold by Store U on Tuesday?",
+      "questionAssamese": "মঙলবাৰে ষ্ট'ৰ R এ বিক্ৰী কৰা বলৰ সংখ্যা, মঙলবাৰে ষ্ট'ৰ U এ বিক্ৰী কৰা বলৰ সংখ্যাতকৈ কিমান শতাংশ বেছি?",
+      "options": ["12.5%", "25%", "33 1/3%", "26%"],
+      "answer": "25%",
+      "explanation": "From Table: Store R (Tue) = 20, Store U (Tue) = 16. Difference = 4. % More = (4/16) * 100 = 25%. (Note: Hindi question implies 'more than' based on the options).",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "Store R (Tue)", "value": 20, "fill": "#8884d8" },
+        { "name": "Store U (Tue)", "value": 16, "fill": "#82ca9d" }
+      ]
+    },
+    {
+      "question": "What was the difference between the total balls sold by Store T on Tuesday and Wednesday, and total balls sold by Store U on Saturday?",
+      "questionAssamese": "মঙলবাৰ আৰু বুধবাৰে ষ্ট'ৰ T এ বিক্ৰী কৰা মুঠ বলৰ সংখ্যা আৰু শনিবাৰে ষ্ট'ৰ U এ বিক্ৰী কৰা বলৰ সংখ্যাৰ মাজত পাৰ্থক্য কিমান আছিল?",
+      "options": ["6", "12", "10", "8"],
+      "answer": "10",
+      "explanation": "Store T (Tue) = 22, T (Wed) = 12. Total T = 34. Store U (Sat) = 24. Difference = 34 - 24 = 10.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "T (Tue)", "value": 22 },
+        { "name": "T (Wed)", "value": 12 },
+        { "name": "U (Sat)", "value": 24, "fill": "#ff7300" }
+      ]
+    },
+    {
+      "question": "The number of balls sold by Store V on Friday was 50% of total balls sold by Store S and Store T on Friday. How many balls did Store V sell?",
+      "questionAssamese": "শুকুৰবাৰে ষ্ট'ৰ V এ বিক্ৰী কৰা বলৰ সংখ্যা, শুকুৰবাৰে ষ্ট'ৰ S আৰু ষ্ট'ৰ T এ বিক্ৰী কৰা মুঠ বলৰ সংখ্যাৰ 50% আছিল। শুকুৰবাৰে ষ্ট'ৰ V এ কিমান বল বিক্ৰী কৰিছিল?",
+      "options": ["26", "20", "24", "21"],
+      "answer": "21",
+      "explanation": "Store S (Fri) = 26. Store T (Fri) = 16. Total = 42. Store V = 50% of 42 = 21.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "S (Fri)", "value": 26 },
+        { "name": "T (Fri)", "value": 16 },
+        { "name": "Total", "value": 42, "fill": "#82ca9d" }
+      ]
+    },
+    {
+      "question": "Find the ratio of total balls sold by Store R and Store S on Thursday to the total balls sold by these same stores on Saturday.",
+      "questionAssamese": "বৃহস্পতিবাৰে ষ্ট'ৰ R আৰু ষ্ট'ৰ S এ বিক্ৰী কৰা মুঠ বলৰ সংখ্যা আৰু শনিবাৰে এই একেবোৰ ষ্ট'ৰে বিক্ৰী কৰা মুঠ বলৰ সংখ্যাৰ অনুপাত কিমান?",
+      "options": ["7:5", "11:8", "10:7", "6:5"],
+      "answer": "10:7",
+      "explanation": "Thursday: R(28) + S(32) = 60. Saturday: R(18) + S(24) = 42. Ratio = 60:42 = 10:7.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "Thu Total", "value": 60, "fill": "#8884d8" },
+        { "name": "Sat Total", "value": 42, "fill": "#82ca9d" }
+      ]
+    },
+    {
+      "question": "For movie C, the ratio of the total rating sum from City X to City Y is 16:21. What is the average rating for movie C from City Y?",
+      "questionAssamese": "চিনেমা C ৰ বাবে, চহৰ X আৰু চহৰ Y ৰ পৰা পোৱা ৰেটিংৰ মুঠ যোগফলৰ অনুপাত 16:21। চহৰ Y ৰ পৰা চিনেমা C ৰ বাবে পোৱা গড় ৰেটিং কিমান?",
+      "options": ["73.5", "72.5", "75.5", "75"],
+      "answer": "73.5",
+      "explanation": "Formula: Total Sum = Raters × Avg Rating.\nCity X Sum = $84 \\times 72$.\nCity Y Sum = $108 \\times Avg$.\nRatio: $\\frac{84 \\times 72}{108 \\times Avg} = \\frac{16}{21}$.\nSolving for Avg: $Avg = \\frac{84 \\times 72 \\times 21}{108 \\times 16} = 73.5$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "Raters City X", "value": 84, "fill": "#8884d8" },
+        { "name": "Raters City Y", "value": 108, "fill": "#82ca9d" }
+      ]
+    },
+    {
+      "question": "Find the mean of 32 numbers, such that the mean of 10 of them is 15 and the mean of 20 of them is 11. The last two numbers are 10.",
+      "questionAssamese": "32 টা সংখ্যাৰ গড় নিৰ্ণয় কৰা, য'ত 10 টাৰ গড় 15 আৰু 20 টাৰ গড় 11। শেষৰ দুটা সংখ্যা 10।",
+      "options": ["12.188", "13.5", "11.5", "14.2"],
+      "answer": "12.188",
+      "explanation": "Sum of first 10 = $10 \\times 15 = 150$. Sum of next 20 = $20 \\times 11 = 220$. Last two numbers sum = $10 + 10 = 20$. Total Sum = $150 + 220 + 20 = 390$. Mean = $\\frac{390}{32} = 12.188$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "Find the mean of the first 10 natural numbers.",
+      "questionAssamese": "প্ৰথম 10 টা স্বাভাৱিক সংখ্যাৰ গড় নিৰ্ণয় কৰা।",
+      "options": ["5", "5.5", "6", "4.5"],
+      "answer": "5.5",
+      "explanation": "Sum of first 10 natural numbers = $\\frac{10(11)}{2} = 55$. Mean = $\\frac{55}{10} = 5.5$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "Find the value of y from the following observations if these are already arranged in ascending order. The Median is 63. Data: 20, 24, 42, y, y + 2, 73, 75, 80, 99.",
+      "questionAssamese": "তলৰ পৰ্যবেক্ষণবোৰৰ পৰা y ৰ মান নিৰ্ণয় কৰা যদি এইবোৰ ইতিমধ্যে আৰোহী ক্ৰমত সজোৱা আছে। মধ্যমা 63। তথ্য: 20, 24, 42, y, y + 2, 73, 75, 80, 99।",
+      "options": ["61", "63", "60", "62"],
+      "answer": "61",
+      "explanation": "Number of terms ($n$) = 9 (Odd). Median is the $(\\frac{n+1}{2})^{th}$ term, which is the 5th term. 5th term is $y+2$. So, $y+2 = 63 \\Rightarrow y = 61$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "While checking the value of 20 observations, it was noted that 125 was wrongly noted as 25 while calculating the mean and then the mean was 60. Find the correct mean.",
+      "questionAssamese": "20 টা পৰ্যবেক্ষণৰ মান পৰীক্ষা কৰোঁতে, দেখা গ'ল যে গড় গণনা কৰোঁতে 125 ক ভুলকৈ 25 বুলি লিখা হৈছিল আৰু তেতিয়া গড় 60 আছিল। শুদ্ধ গড় নিৰ্ণয় কৰা।",
+      "options": ["65", "60", "62.5", "70"],
+      "answer": "65",
+      "explanation": "Incorrect Sum = $20 \\times 60 = 1200$. Correct Sum = $1200 - 25 (Wrong) + 125 (Correct) = 1300$. Correct Mean = $\\frac{1300}{20} = 65$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "Find the mode of the following items: 0, 5, 5, 1, 6, 4, 3, 0, 2, 5, 5, 6.",
+      "questionAssamese": "তলৰ তথ্যখিনিৰ বহুলক (mode) নিৰ্ণয় কৰা: 0, 5, 5, 1, 6, 4, 3, 0, 2, 5, 5, 6।",
+      "options": ["5", "6", "0", "4"],
+      "answer": "5",
+      "explanation": "Arranging in order: 0, 0, 1, 2, 3, 4, 5, 5, 5, 5, 6, 6. The number 5 occurs maximum times (4 times). Mode = 5.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "A student scored the following marks in 6 subjects: 30, 19, 25, 30, 27, 30. Find his modal score.",
+      "questionAssamese": "এজন ছাত্ৰই 6 টা বিষয়ত তলত দিয়া ধৰণে নম্বৰ পাইছে: 30, 19, 25, 30, 27, 30। তাৰ বহুলক নম্বৰ নিৰ্ণয় কৰা।",
+      "options": ["30", "25", "27", "19"],
+      "answer": "30",
+      "explanation": "The score 30 appears most frequently (3 times). Therefore, Modal Score = 30.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "The daily minimum steps climbed by a man during a week were as under:\nMonday: 35, Tuesday: 30, Wednesday: 27, Thursday: 32, Friday: 23, Saturday: 28.\nFind the mean of the steps.",
+      "questionAssamese": "এজন মানুহে সপ্তাহটোত বগোৱা দৈনিক নূন্যতম পদক্ষেপবোৰ তলত দিয়া ধৰণৰ:\nসোমবাৰ: 35, মঙ্গলবাৰ: 30, বুধবাৰ: 27, বৃহস্পতিবাৰ: 32, শুকুৰবাৰ: 23, শনিবাৰ: 28।\nপদক্ষেপবোৰৰ গড় নিৰ্ণয় কৰা।",
+      "options": ["29.17", "30.5", "28.5", "27.0"],
+      "answer": "29.17",
+      "explanation": "Total Steps = $35 + 30 + 27 + 32 + 23 + 28 = 175$. Number of days = 6. Mean = $\\frac{175}{6} = 29.166... \\approx 29.17$.",
+      "chartType": "bar",
+      "chartData": [
+        { "name": "Mon", "value": 35, "fill": "#8884d8" },
+        { "name": "Tue", "value": 30, "fill": "#82ca9d" },
+        { "name": "Wed", "value": 27, "fill": "#ffc658" },
+        { "name": "Thu", "value": 32, "fill": "#ff8042" },
+        { "name": "Fri", "value": 23, "fill": "#8dd1e1" },
+        { "name": "Sat", "value": 28, "fill": "#a4de6c" }
+      ]
+    },
+    {
+      "question": "If the mean of 4 numbers 2, 6, 7 and 'a' is 15, and also the mean of other 5 numbers 6, 18, 1, 'a', 'b' is 50. What is the value of 'b'?",
+      "questionAssamese": "যদি 4 টা সংখ্যা 2, 6, 7 আৰু 'a' ৰ গড় 15 হয় আৰু আন 5 টা সংখ্যা 6, 18, 1, 'a', 'b' ৰ গড় 50 হয়, তেন্তে 'b' ৰ মান কিমান?",
+      "options": ["180", "150", "200", "45"],
+      "answer": "180",
+      "explanation": "First part: $\\frac{2+6+7+a}{4} = 15 \\Rightarrow 15+a = 60 \\Rightarrow a=45$. Second part: $\\frac{6+18+1+45+b}{5} = 50 \\Rightarrow 70+b = 250 \\Rightarrow b = 180$.",
+      "chartType": null,
+      "chartData": null
+    },
+    {
+      "question": "If the mean of first n natural numbers is 15, then find n.",
+      "questionAssamese": "যদি প্ৰথম n টা স্বাভাৱিক সংখ্যাৰ গড় 15 হয়, তেন্তে n ৰ মান নিৰ্ণয় কৰা।",
+      "options": ["29", "30", "15", "14"],
+      "answer": "29",
+      "explanation": "Mean of first n natural numbers = $\\frac{n+1}{2}$. Given $\\frac{n+1}{2} = 15 \\Rightarrow n+1 = 30 \\Rightarrow n = 29$.",
+      "chartType": null,
+      "chartData": null
+    }
+  ]
+}

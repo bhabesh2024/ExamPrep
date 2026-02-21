@@ -1,0 +1,22 @@
+{
+  "Human Physiology": [
+    {
+      "id": 1,
+      "question": "Which is the largest organ in the human body?",
+      "options": ["Liver", "Skin", "Heart", "Brain"],
+      "answer": "Skin"
+    },
+    {
+      "id": 2,
+      "question": "The powerhouse of the cell is...",
+      "options": ["Nucleus", "Ribosome", "Mitochondria", "Endoplasmic Reticulum"],
+      "answer": "Mitochondria"
+    },
+    {
+      "id": 3,
+      "question": "How many bones are in the adult human body?",
+      "options": ["206", "209", "201", "212"],
+      "answer": "206"
+    }
+  ]
+}

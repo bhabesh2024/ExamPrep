@@ -1,0 +1,14 @@
+{
+  "Figure Matrix": [
+    { "q": "Dummy question 1 for Figure Matrix?", "a": "Answer 1" },
+    { "q": "Dummy question 2 for Figure Matrix?", "a": "Answer 2" }
+  ],
+  "Paper Cutting": [
+    { "q": "Dummy question 1 for Paper Cutting?", "a": "Answer 1" },
+    { "q": "Dummy question 2 for Paper Cutting?", "a": "Answer 2" }
+  ],
+  "Grouping of Images": [
+    { "q": "Dummy question 1 for Grouping of Images?", "a": "Answer 1" },
+    { "q": "Dummy question 2 for Grouping of Images?", "a": "Answer 2" }
+  ]
+}

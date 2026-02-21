@@ -1,0 +1,18 @@
+{
+  "Coding Decoding": [
+    { "q": "Dummy question 1 for Coding Decoding?", "a": "Answer 1" },
+    { "q": "Dummy question 2 for Coding Decoding?", "a": "Answer 2" }
+  ],
+  "Analogy": [
+    { "q": "Dummy question 1 for Analogy?", "a": "Answer 1" },
+    { "q": "Dummy question 2 for Analogy?", "a": "Answer 2" }
+  ],
+  "Classification": [
+    { "q": "Dummy question 1 for Classification?", "a": "Answer 1" },
+    { "q": "Dummy question 2 for Classification?", "a": "Answer 2" }
+  ],
+  "Series": [
+    { "q": "Dummy question 1 for Series?", "a": "Answer 1" },
+    { "q": "Dummy question 2 for Series?", "a": "Answer 2" }
+  ]
+}
