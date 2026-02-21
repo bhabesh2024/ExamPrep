@@ -6,29 +6,10 @@ import {
   AlertCircle, Trophy, XCircle, MinusCircle, RotateCcw 
 } from 'lucide-react';
 import { fetchAiResponse } from '../services/aiService';
-import { subjectsData } from '../data/syllabusData';
+import { getQuestions } from '../data/questionsLoader';
 
 import MathText from '../components/common/MathText';
 import GeometryVisualizer from '../components/common/GeometryVisualizer';
-
-const loadQuestionsFromStorage = (subjectId, topicId) => {
-  try {
-    const subjObj = subjectsData.find(s => s.id === subjectId);
-    if (!subjObj) return [];
-    for (const cat of subjObj.categories) {
-      const topic = cat.topics.find(t => t.id === topicId);
-      if (topic) {
-        const key = `examprep__${subjObj.id}__${cat.id}__${topic.id}`;
-        const stored = localStorage.getItem(key);
-        if (stored) return JSON.parse(stored);
-      }
-    }
-    return [];
-  } catch (e) {
-    console.error('Error loading questions:', e);
-    return [];
-  }
-};
 
 export default function ChapterPracticePage() {
   const { subjectId, topicId } = useParams();
@@ -40,7 +21,7 @@ export default function ChapterPracticePage() {
 
   useEffect(() => {
     setIsLoadingQuestions(true);
-    const loaded = loadQuestionsFromStorage(subjectId, topicId);
+    const loaded = getQuestions(subjectId, topicId);
     setAllQuestions(loaded);
     setCurrentQ(0);
     setAnswers({});

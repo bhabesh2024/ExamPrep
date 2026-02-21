@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { subjectsData } from '../data/syllabusData.jsx'; 
+import { getQuestionsByTitle } from '../data/questionsLoader';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { 
   Settings, HelpCircle, CloudUpload, FileText, X, Sparkles, 
-  Trash2, Save, CheckCircle2, PlusCircle, ChevronDown, CheckSquare, Upload
+  Trash2, Save, CheckCircle2, PlusCircle, ChevronDown, CheckSquare, Upload, Download
 } from 'lucide-react';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
@@ -300,26 +301,13 @@ CRITICAL RULES:
     setQuestions([...questions, newQ]);
   };
 
-  // ── Correct localStorage key: subjectId__categoryId__topicId ──
-  const getStorageKey = (mainCat, subCat, chap) => {
-    const subjObj = subjectsData.find(s => s.title === mainCat);
-    const subjId = subjObj ? subjObj.id : mainCat.toLowerCase().replace(/\s+/g, '-');
-    const catObj = subjObj?.categories.find(c => c.title === subCat);
-    const catId = catObj ? catObj.id : subCat.toLowerCase().replace(/\s+/g, '-');
-    const topicObj = catObj?.topics.find(t => t.title === chap);
-    const topicId = topicObj ? topicObj.id : chap.toLowerCase().replace(/\s+/g, '-');
-    return `examprep__${subjId}__${catId}__${topicId}`;
-  };
-
-  // ── Load from localStorage ──
+  // ── Load from JSON data files ──
   const loadExistingQuestions = () => {
     setStatus('Loading existing questions...'); setStatusType('loading');
     try {
-      const key = getStorageKey(mainCategory, subCategory, chapter);
-      const stored = localStorage.getItem(key);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        const questionsWithRefs = parsed.map(q => ({
+      const loaded = getQuestionsByTitle(chapter);
+      if (loaded && loaded.length > 0) {
+        const questionsWithRefs = loaded.map(q => ({
           ...q,
           examReference: q.examReference || 'Expected',
           geometryType: q.geometryType || null,
@@ -330,23 +318,41 @@ CRITICAL RULES:
         setStatus(`✅ Loaded ${questionsWithRefs.length} questions for "${chapter}".`); setStatusType('success');
       } else {
         setQuestions([]);
-        setStatus(`No saved questions found for "${chapter}". Start generating!`); setStatusType('info');
+        setStatus(`No questions found for "${chapter}". Generate or upload some!`); setStatusType('info');
       }
     } catch (e) {
       setStatus('Failed to load: ' + e.message); setStatusType('error');
     }
   };
 
-  // ── Save to localStorage (correct subject/chapter key) ──
+  // ── Download JSON to add to data files ──
+  // User yeh file download karke sahi folder mein paste karega:
+  // src/data/{Subject}/{Category}.json ke andar topicId key mein
   const saveToDatabase = () => {
     try {
-      setStatus('Saving...'); setStatusType('loading');
-      const key = getStorageKey(mainCategory, subCategory, chapter);
-      localStorage.setItem(key, JSON.stringify(questions));
-      setStatus(`✅ ${questions.length} questions saved for "${chapter}" in "${mainCategory} > ${subCategory}"!`);
+      if (questions.length === 0) {
+        setStatus('No questions to save.'); setStatusType('error'); return;
+      }
+      const topicTitle = chapter;
+      const patch = { [topicTitle]: questions };
+      const blob = new Blob([JSON.stringify(patch, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const subjObj = subjectsData.find(s => s.title === mainCategory);
+      const catObj = subjObj?.categories.find(c => c.title === subCategory);
+      const filename = `${mainCategory.replace(/\s+/g,'')}__${subCategory.replace(/\s+/g,'')}__${chapter.replace(/\s+/g,'_')}.json`;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      // 👇 FIX: Yahan se backslash (\) hata diya gaya hai 👇
+      setStatus(`✅ Downloaded! Merge this into: src/data/${mainCategory.includes('GK') || mainCategory.includes('General') ? 'GK' : mainCategory}/${subCategory}.json under the key "${topicTitle}"`);
       setStatusType('success');
     } catch (e) {
-      setStatus('Save failed: ' + e.message); setStatusType('error');
+      setStatus('Download failed: ' + e.message); setStatusType('error');
     }
   };
 
@@ -569,7 +575,7 @@ CRITICAL RULES:
                   <Trash2 className="w-4 h-4" /> Delete Selected
                 </button>
                 <button disabled={questions.length === 0} onClick={saveToDatabase} className="px-5 py-2 rounded-full bg-white text-slate-900 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold transition-colors flex items-center gap-2 cursor-pointer">
-                  <Save className="w-4 h-4" /> Save All
+                  <Download className="w-4 h-4" /> Download JSON
                 </button>
               </div>
             </div>
