@@ -319,17 +319,14 @@ Topic: ${topicId}, Chapter Practice Session
                   <p className="text-xs text-slate-500 uppercase tracking-widest font-semibold">Total</p>
                 </div>
                 <div className="bg-[#00d26a]/10 border border-[#00d26a]/30 rounded-2xl p-4 text-center">
-                  <CheckCircle2 className="w-6 h-6 text-[#00d26a] mx-auto mb-2" />
                   <p className="text-2xl font-bold text-[#00d26a] mb-1">{correctCount}</p>
                   <p className="text-[10px] text-[#00d26a]/70 uppercase tracking-widest font-semibold">Correct</p>
                 </div>
                 <div className="bg-[#f8312f]/10 border border-[#f8312f]/30 rounded-2xl p-4 text-center">
-                  <XCircle className="w-6 h-6 text-[#f8312f] mx-auto mb-2" />
                   <p className="text-2xl font-bold text-[#f8312f] mb-1">{wrongCount}</p>
                   <p className="text-[10px] text-[#f8312f]/70 uppercase tracking-widest font-semibold">Wrong</p>
                 </div>
                 <div className="bg-slate-500/10 border border-slate-500/30 rounded-2xl p-4 text-center">
-                  <MinusCircle className="w-6 h-6 text-slate-400 mx-auto mb-2" />
                   <p className="text-2xl font-bold text-slate-300 mb-1">{skippedCount}</p>
                   <p className="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Skipped</p>
                 </div>
@@ -470,7 +467,7 @@ Topic: ${topicId}, Chapter Practice Session
                 </div>
               </div>
 
-              {/* ✅ AI CHAT WINDOW */}
+              {/* ✅ AI CHAT WINDOW (FIXED: MathText wrapper added) */}
               {isAiChatOpen && (
                 <div className="absolute bottom-[75px] right-4 lg:right-6 w-[90%] md:w-96 max-w-sm bg-[#161920]/95 backdrop-blur-xl border border-[#282e39] rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5),0_0_20px_rgba(168,85,247,0.15)] flex flex-col z-40 h-[480px] overflow-hidden">
                   <div className="p-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border-b border-white/5 flex items-center justify-between shrink-0">
@@ -496,7 +493,10 @@ Topic: ${topicId}, Chapter Practice Session
                           {msg.role === 'user' ? <GraduationCap className="w-3.5 h-3.5 text-white" /> : <Bot className="w-3.5 h-3.5 text-white" />}
                         </div>
                         <div className={`rounded-2xl p-3 text-sm whitespace-pre-wrap ${msg.role === 'user' ? 'bg-[#0d59f2]/20 border border-[#0d59f2]/30 rounded-tr-none text-blue-100' : 'bg-[#282e39] border border-white/5 rounded-tl-none text-slate-200'}`}>
-                          {msg.text}
+                          
+                          {/* ✅ FIX: Yahan {msg.text} ko hata kar <MathText text={msg.text} /> kar diya gaya hai */}
+                          <MathText text={msg.text} />
+                          
                         </div>
                       </div>
                     ))}

@@ -9,7 +9,8 @@ export default function MathText({ text }) {
   const parts = text.split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/g);
 
   return (
-    <span className="font-sans leading-relaxed">
+    // 🔥 FIX: whitespace-pre-wrap add kiya taaki lines (Enter) properly dikhein
+    <span className="font-sans leading-relaxed whitespace-pre-wrap">
       {parts.map((part, index) => {
         if (part.startsWith('$$') && part.endsWith('$$')) {
           // Block Math (Alag line me bada formula)

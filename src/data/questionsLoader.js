@@ -134,30 +134,44 @@ const TITLE_TO_ID = {
 //   3. {q, a}                                         ← Reasoning dummy style
 // ─────────────────────────────────────────────
 const normalize = (questions) => {
-  if (!Array.isArray(questions)) return [];
-  return questions
-    .map(q => {
-      // Format 3: {q, a} — dummy data, skip
-      if (q.q && !q.question) return null;
-      // Must have question + options + answer
-      if (!q.question || !q.options || !q.answer) return null;
-      if (!Array.isArray(q.options) || q.options.length < 2) return null;
-      // Skip sample/dummy questions
-      if (q.question.includes('Sample Q') || q.question.includes('Dummy question')) return null;
-      return {
-        question:         q.question || '',
-        questionHindi:    q.questionHindi || q.questionAssamese || '',
-        options:          q.options,
-        answer:           q.answer,
-        explanation:      q.explanation || '',
-        explanationHindi: q.explanationHindi || q.explanationAssamese || '',
-        examReference:    q.examReference || 'Expected',
-        geometryType:     q.geometryType || null,
-        geometryData:     q.geometryData || null,
-      };
-    })
-    .filter(Boolean);
-};
+    if (!Array.isArray(questions)) return [];
+    return questions
+      .map(q => {
+        if (q.q && !q.question) return null;
+        if (!q.question || !q.options || !q.answer) return null;
+        if (!Array.isArray(q.options) || q.options.length < 2) return null;
+        if (q.question.includes('Sample Q') || q.question.includes('Dummy question')) return null;
+  
+        // 🔥 AUTO-FIX LOGIC FOR OLD JSON FORMAT 🔥
+        let finalGeoType = q.geometryType || null;
+        let finalGeoData = q.geometryData || null;
+  
+        // Agar aapne purane data mein "image" ya "imageUrl" key use ki thi
+        if (!finalGeoType && (q.image || q.imageUrl || q.img)) {
+          finalGeoType = 'image-url';
+          finalGeoData = q.image || q.imageUrl || q.img;
+        }
+        
+        // Agar aapne "chartData" ya koi aur key use ki thi
+        if (!finalGeoType && q.chartData) {
+          finalGeoType = 'recharts-bar'; // ya 'recharts-pie' jo aap use karte the
+          finalGeoData = q.chartData;
+        }
+  
+        return {
+          question:         q.question || '',
+          questionHindi:    q.questionHindi || q.questionAssamese || '',
+          options:          q.options,
+          answer:           q.answer,
+          explanation:      q.explanation || '',
+          explanationHindi: q.explanationHindi || q.explanationAssamese || '',
+          examReference:    q.examReference || 'Expected',
+          geometryType:     finalGeoType,
+          geometryData:     finalGeoData,
+        };
+      })
+      .filter(Boolean);
+  };
 
 // ─────────────────────────────────────────────
 // Build master index: topicId → questions[]
