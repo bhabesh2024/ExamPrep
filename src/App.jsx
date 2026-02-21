@@ -11,12 +11,14 @@ import MockStartScreen from './pages/MockStartScreen';
 import SectionalTestList from './pages/SectionalTestList';
 import QuizPage from './pages/QuizPage';
 import ChapterPracticePage from './pages/ChapterPracticePage';
-import AboutPage from './pages/AboutPage'; // 👈 AboutPage Import kiya
+import AboutPage from './pages/AboutPage';
+
+// 👇 Yahan Admin Panel import karein 👇
+import AdminPanel from './pages/AdminPanel'; 
 
 export default function App() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-slate-100 font-sans selection:bg-[#0d59f2] selection:text-white flex flex-col">
-      
       <div className="flex-grow flex flex-col h-full">
         <Routes>
           {/* Main Layout routes with Navbar */}
@@ -26,13 +28,14 @@ export default function App() {
           <Route path="/practice/subject/:subjectId" element={<><Navbar /><SectionalTestList /></>} />
           <Route path="/subjects" element={<><Navbar /><SubjectsPage /></>} />
           <Route path="/practice/:subjectId" element={<><Navbar /><SubjectDetailPage /></>} />
-          
-          {/* 👇 Naya About Route 👇 */}
           <Route path="/about" element={<><Navbar /><AboutPage /></>} />
           
           {/* Immersive Quiz/Practice Routes without Navbar */}
           <Route path="/practice/run/:type/:testId" element={<QuizPage />} />
           <Route path="/quiz/:subjectId/:topicId" element={<ChapterPracticePage />} />
+
+          {/* 👇 SECRET ADMIN ROUTE (No Navbar) 👇 */}
+          <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>
     </div>
