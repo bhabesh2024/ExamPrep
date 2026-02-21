@@ -138,9 +138,9 @@ export default function AdminPanel() {
     if (!file || !chapter) {
       setStatus('Please select a chapter and upload a file.'); setStatusType('error'); return;
     }
-    const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+    const apiKey = import.meta.env.VITE_AI_API_KEY;
     if (!apiKey) {
-      setStatus('VITE_GROQ_API_KEY not found in .env file!'); setStatusType('error'); return;
+      setStatus('VITE_AI_API_KEY not found in .env file!'); setStatusType('error'); return;
     }
     
     setIsLoading(true); setStatusType('loading');
@@ -200,7 +200,7 @@ CRITICAL RULES:
 
   const modifyQuestionWithAI = async (index) => {
     if (!editPromptText.trim()) return;
-    const apiKey = import.meta.env.VITE_GROQ_API_KEY;
+    const apiKey = import.meta.env.VITE_AI_API_KEY;
     if (!apiKey) return;
     
     setIsEditingLoading(true);
@@ -300,44 +300,53 @@ CRITICAL RULES:
     setQuestions([...questions, newQ]);
   };
 
-  // ── Database ──
-  const loadExistingQuestions = async () => {
-    const filePath = `${mainCategory}/${subCategory}.json`;
+  // ── Correct localStorage key: subjectId__categoryId__topicId ──
+  const getStorageKey = (mainCat, subCat, chap) => {
+    const subjObj = subjectsData.find(s => s.title === mainCat);
+    const subjId = subjObj ? subjObj.id : mainCat.toLowerCase().replace(/\s+/g, '-');
+    const catObj = subjObj?.categories.find(c => c.title === subCat);
+    const catId = catObj ? catObj.id : subCat.toLowerCase().replace(/\s+/g, '-');
+    const topicObj = catObj?.topics.find(t => t.title === chap);
+    const topicId = topicObj ? topicObj.id : chap.toLowerCase().replace(/\s+/g, '-');
+    return `examprep__${subjId}__${catId}__${topicId}`;
+  };
+
+  // ── Load from localStorage ──
+  const loadExistingQuestions = () => {
     setStatus('Loading existing questions...'); setStatusType('loading');
     try {
-      const res = await fetch(`/api/get-questions?filePath=${encodeURIComponent(filePath)}&chapter=${encodeURIComponent(chapter)}`);
-      const data = await res.json();
-      if (data.success) {
-        const questionsWithRefs = data.questions.map(q => ({ 
-          ...q, 
+      const key = getStorageKey(mainCategory, subCategory, chapter);
+      const stored = localStorage.getItem(key);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const questionsWithRefs = parsed.map(q => ({
+          ...q,
           examReference: q.examReference || 'Expected',
           geometryType: q.geometryType || null,
           geometryData: q.geometryData || null
         }));
         setQuestions(questionsWithRefs);
         setSelectedForDelete([]);
-        setStatus(`Loaded ${questionsWithRefs.length} existing questions.`); setStatusType('success');
+        setStatus(`✅ Loaded ${questionsWithRefs.length} questions for "${chapter}".`); setStatusType('success');
+      } else {
+        setQuestions([]);
+        setStatus(`No saved questions found for "${chapter}". Start generating!`); setStatusType('info');
       }
     } catch (e) {
-      setStatus('Failed to load questions.'); setStatusType('error');
+      setStatus('Failed to load: ' + e.message); setStatusType('error');
     }
   };
 
-  const saveToDatabase = async () => {
-    const filePath = `${mainCategory}/${subCategory}.json`;
+  // ── Save to localStorage (correct subject/chapter key) ──
+  const saveToDatabase = () => {
     try {
-      setStatus('Saving to database...'); setStatusType('loading');
-      const response = await fetch('/api/save-questions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filePath, chapter, newQuestions: questions })
-      });
-      const result = await response.json();
-      if (result.success) {
-        setStatus(`Successfully saved ${questions.length} questions!`); setStatusType('success');
-      }
-    } catch {
-      setStatus('Failed to save. Check server connection.'); setStatusType('error');
+      setStatus('Saving...'); setStatusType('loading');
+      const key = getStorageKey(mainCategory, subCategory, chapter);
+      localStorage.setItem(key, JSON.stringify(questions));
+      setStatus(`✅ ${questions.length} questions saved for "${chapter}" in "${mainCategory} > ${subCategory}"!`);
+      setStatusType('success');
+    } catch (e) {
+      setStatus('Save failed: ' + e.message); setStatusType('error');
     }
   };
 

@@ -1,17 +1,57 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { GraduationCap, ListOrdered, Bookmark, CheckCircle2, ArrowRight, X, Sparkles, Bot, Send, ArrowLeft, Lightbulb, Languages } from 'lucide-react';
+import { GraduationCap, ListOrdered, Bookmark, CheckCircle2, ArrowRight, X, Sparkles, Bot, Send, ArrowLeft, Lightbulb, Languages, AlertCircle } from 'lucide-react';
 import { fetchAiResponse } from '../services/aiService';
+import { subjectsData } from '../data/syllabusData';
 
 // 👇 Naye Components Import Kiye 👇
 import MathText from '../components/common/MathText';
 import GeometryVisualizer from '../components/common/GeometryVisualizer';
 
+// localStorage se questions load karne ka function (AdminPanel se same logic)
+const loadQuestionsFromStorage = (subjectId, topicId) => {
+  try {
+    // Subject dhundho
+    const subjObj = subjectsData.find(s => s.id === subjectId);
+    if (!subjObj) return [];
+    // Topic jis category mein hai wo dhundho
+    for (const cat of subjObj.categories) {
+      const topic = cat.topics.find(t => t.id === topicId);
+      if (topic) {
+        const key = `examprep__${subjObj.id}__${cat.id}__${topic.id}`;
+        const stored = localStorage.getItem(key);
+        if (stored) return JSON.parse(stored);
+      }
+    }
+    return [];
+  } catch (e) {
+    console.error('Error loading questions:', e);
+    return [];
+  }
+};
+
 export default function ChapterPracticePage() {
   const { subjectId, topicId } = useParams();
   const navigate = useNavigate();
 
-  const totalQuestions = 30; 
+  // ✅ localStorage se real questions load karo
+  const [allQuestions, setAllQuestions] = useState([]);
+  const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
+
+  useEffect(() => {
+    setIsLoadingQuestions(true);
+    const loaded = loadQuestionsFromStorage(subjectId, topicId);
+    setAllQuestions(loaded);
+    setCurrentQ(0);
+    setAnswers({});
+    setReview({});
+    setVisited({ 0: true });
+    setHindiCache({});
+    setShowHindi(false);
+    setIsLoadingQuestions(false);
+  }, [subjectId, topicId]);
+
+  const totalQuestions = allQuestions.length;
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState({});
   const [review, setReview] = useState({});
@@ -28,15 +68,14 @@ export default function ChapterPracticePage() {
   const messagesEndRef = useRef(null);
   const explanationRef = useRef(null);
 
-  // 👇 DUMMY LEARNING DATA 👇
-  const dummyQuestionData = {
-    question: "If $f(x) = x^2 + 2x$, what is the value of the derivative at $x = 1$?",
-    options: ["2", "3", "4", "5"],
-    answer: "4",
-    explanation: "The derivative of $f(x) = x^2 + 2x$ is $f'(x) = 2x + 2$. Substituting $x = 1$, we get $2(1) + 2 = 4$.",
-    geometryType: null,
-    geometryData: null
-  };
+  // Hindi translation state (cache: { [questionIndex]: translatedText })
+  const [hindiCache, setHindiCache] = useState({});
+  const [isTranslating, setIsTranslating] = useState(false);
+  const [showHindi, setShowHindi] = useState(false);
+  const hindiExplanation = hindiCache[currentQ] || null;
+
+  // Current question (real data from localStorage)
+  const currentQuestionData = allQuestions[currentQ] || null;
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -81,6 +120,7 @@ export default function ChapterPracticePage() {
       const nextQ = currentQ + 1;
       setCurrentQ(nextQ);
       setVisited(prev => ({ ...prev, [nextQ]: true }));
+      setShowHindi(false);
       if (isAiChatOpen) {
           setChatHistory(prev => [...prev, { role: 'ai', text: `Moving to Question ${nextQ + 1}. Let me know if you need a hint!` }]);
       }
@@ -91,6 +131,7 @@ export default function ChapterPracticePage() {
     setCurrentQ(index);
     setVisited(prev => ({ ...prev, [index]: true }));
     setIsMobilePaletteOpen(false);
+    setShowHindi(false);
   };
 
   const getPaletteStyle = (index) => {
@@ -99,6 +140,26 @@ export default function ChapterPracticePage() {
     if (review[index]) return "bg-[#eab308]/20 border-[#eab308]/40 text-[#eab308]";
     if (visited[index]) return "bg-[#f8312f]/20 border-[#f8312f]/40 text-[#f8312f]";
     return "bg-[#282e39] text-slate-500 border-transparent";
+  };
+
+  // Hindi translation handler using AI (with per-question cache)
+  const handleViewInHindi = async () => {
+    if (showHindi) {
+      setShowHindi(false);
+      return;
+    }
+    // Already cached for this question? Use it directly
+    if (hindiCache[currentQ]) {
+      setShowHindi(true);
+      return;
+    }
+    if (!currentQuestionData) return;
+    setIsTranslating(true);
+    const prompt = `Translate this explanation to Hindi (Devanagari script only, no English). Keep any math/numbers as-is:\n\n${currentQuestionData.explanation}`;
+    const result = await fetchAiResponse(prompt, 'Translate to Hindi');
+    setHindiCache(prev => ({ ...prev, [currentQ]: result }));
+    setShowHindi(true);
+    setIsTranslating(false);
   };
 
   const letters = ['A', 'B', 'C', 'D'];
@@ -150,93 +211,121 @@ export default function ChapterPracticePage() {
           
           <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-10 custom-scrollbar">
             <div className="max-w-3xl mx-auto flex flex-col gap-6">
-              
-              <div className="bg-[#1a1d24] rounded-2xl p-6 border border-[#282e39] shadow-xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-64 h-32 bg-gradient-to-br from-purple-500/10 to-blue-500/5 blur-2xl rounded-bl-full pointer-events-none"></div>
-                
-                <div className="flex flex-wrap items-center justify-between gap-4 mb-6 relative z-10">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#0d59f2]/10 text-[#0d59f2] border border-[#0d59f2]/20 uppercase tracking-wider">
-                    Question {currentQ + 1}
-                  </span>
-                  
-                  <button 
-                    onClick={() => setIsAiChatOpen(!isAiChatOpen)}
-                    className="group relative inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] hover:scale-105 transition-all duration-300 border border-white/20 overflow-hidden cursor-pointer"
-                  >
-                    <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></span>
-                    <Sparkles className="w-4 h-4 relative z-10" />
-                    <span className="relative z-10">Ask AI Tutor</span>
-                  </button>
-                </div>
-                
-                {/* 👇 FIX: Question Math Text 👇 */}
-                <div className="text-base md:text-xl font-medium leading-relaxed text-slate-200 relative z-10">
-                  <MathText text={dummyQuestionData.question} />
-                </div>
-                <GeometryVisualizer type={dummyQuestionData.geometryType} dataStr={dummyQuestionData.geometryData} />
 
-              </div>
-
-              {/* Options */}
-              <div className="grid gap-4">
-                {dummyQuestionData.options.map((opt, idx) => {
-                  const selected = answers[currentQ] === idx;
-                  const isCorrect = isAnswered && opt === dummyQuestionData.answer;
-                  const isWrongSelected = selected && !isCorrect;
-
-                  return (
-                    <button 
-                      key={idx}
-                      onClick={() => !isAnswered && handleSelect(idx)}
-                      disabled={isAnswered}
-                      className={`relative flex items-center p-3.5 md:p-4 rounded-xl border-2 transition-all duration-300 text-left group overflow-hidden ${!isAnswered ? 'cursor-pointer hover:border-[#3b4354] hover:bg-[#1f2229]' : 'cursor-default'}
-                        ${isCorrect ? 'border-[#00d26a] bg-[#00d26a]/10' : ''}
-                        ${isWrongSelected ? 'border-[#f8312f] bg-[#f8312f]/10' : ''}
-                        ${!isCorrect && !isWrongSelected ? 'border-[#282e39] bg-[#1a1d24]' : ''}
-                      `}
-                    >
-                      {/* Check/Cross Icon */}
-                      {isCorrect && <CheckCircle2 className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#00d26a] fill-current" />}
-                      {isWrongSelected && <X className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#f8312f]" />}
-                      
-                      <div className={`flex items-center justify-center h-8 w-8 rounded-full font-bold text-sm shrink-0 transition-colors duration-300 relative z-10
-                        ${isCorrect ? 'bg-[#00d26a] text-white' : ''}
-                        ${isWrongSelected ? 'bg-[#f8312f] text-white' : ''}
-                        ${!isCorrect && !isWrongSelected ? 'bg-[#282e39] text-gray-400' : ''}
-                      `}>
-                        {letters[idx]}
-                      </div>
-                      <div className={`ml-4 md:ml-5 text-base md:text-lg font-medium transition-colors duration-300 relative z-10 pr-8 
-                        ${isCorrect ? 'text-[#00d26a]' : ''}
-                        ${isWrongSelected ? 'text-[#f8312f]' : ''}
-                        ${!isCorrect && !isWrongSelected ? 'text-slate-300' : ''}
-                      `}>
-                        {/* 👇 FIX: Options me Math Text 👇 */}
-                        <MathText text={opt} />
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* EXPLANATION BOX */}
-              {isAnswered && (
-                <div ref={explanationRef} className="mt-2 bg-[#151921] border border-[#282e39] rounded-2xl p-6 relative overflow-hidden transition-all duration-500 animate-[fadeIn_0.5s_ease-out]">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-[#00d26a]"></div>
-                  <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-                    <h3 className="text-lg font-bold text-[#00d26a] flex items-center gap-2">
-                      <Lightbulb className="w-5 h-5" /> Explanation
-                    </h3>
-                    <button className="px-3 py-1.5 rounded-full bg-[#282e39] hover:bg-[#3b4354] text-xs font-medium text-slate-300 border border-slate-600 transition-colors flex items-center gap-1.5 cursor-pointer">
-                      <Languages className="w-4 h-4" /> View in Hindi
-                    </button>
-                  </div>
-                  <div className="text-slate-300 leading-relaxed text-sm md:text-base">
-                    {/* 👇 FIX: Explanation me Math Text 👇 */}
-                    <MathText text={dummyQuestionData.explanation} />
-                  </div>
+              {/* ✅ Loading State */}
+              {isLoadingQuestions && (
+                <div className="flex items-center justify-center h-64">
+                  <div className="w-8 h-8 border-2 border-[#0d59f2]/30 border-t-[#0d59f2] rounded-full animate-spin"></div>
                 </div>
               )}
+
+              {/* ✅ No Questions Found State */}
+              {!isLoadingQuestions && allQuestions.length === 0 && (
+                <div className="flex flex-col items-center justify-center h-64 gap-4 text-center">
+                  <AlertCircle className="w-12 h-12 text-slate-500" />
+                  <div>
+                    <p className="text-white font-bold text-lg mb-1">No Questions Found</p>
+                    <p className="text-slate-400 text-sm">Admin Panel se is chapter ke liye questions generate karke save karein.</p>
+                  </div>
+                  <button onClick={() => navigate('/admin')} className="px-5 py-2 rounded-full bg-[#0d59f2] text-white text-sm font-bold hover:bg-[#0b4ecf] transition-colors cursor-pointer">
+                    Go to Admin Panel
+                  </button>
+                </div>
+              )}
+
+              {/* ✅ Questions loaded - show question card */}
+              {!isLoadingQuestions && currentQuestionData && (<>
+                <div className="bg-[#1a1d24] rounded-2xl p-6 border border-[#282e39] shadow-xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-32 bg-gradient-to-br from-purple-500/10 to-blue-500/5 blur-2xl rounded-bl-full pointer-events-none"></div>
+                  <div className="flex flex-wrap items-center justify-between gap-4 mb-6 relative z-10">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#0d59f2]/10 text-[#0d59f2] border border-[#0d59f2]/20 uppercase tracking-wider">
+                      Question {currentQ + 1}
+                    </span>
+                    <button 
+                      onClick={() => setIsAiChatOpen(!isAiChatOpen)}
+                      className="group relative inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] hover:scale-105 transition-all duration-300 border border-white/20 overflow-hidden cursor-pointer"
+                    >
+                      <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></span>
+                      <Sparkles className="w-4 h-4 relative z-10" />
+                      <span className="relative z-10">Ask AI Tutor</span>
+                    </button>
+                  </div>
+                  <div className="text-base md:text-xl font-medium leading-relaxed text-slate-200 relative z-10">
+                    <MathText text={currentQuestionData.question} />
+                  </div>
+                  <GeometryVisualizer type={currentQuestionData.geometryType} dataStr={currentQuestionData.geometryData} />
+                </div>
+
+                {/* Options */}
+                <div className="grid gap-4">
+                  {currentQuestionData.options.map((opt, idx) => {
+                    const selected = answers[currentQ] === idx;
+                    const isCorrect = isAnswered && opt === currentQuestionData.answer;
+                    const isWrongSelected = selected && !isCorrect;
+                    return (
+                      <button 
+                        key={idx}
+                        onClick={() => !isAnswered && handleSelect(idx)}
+                        disabled={isAnswered}
+                        className={`relative flex items-center p-3.5 md:p-4 rounded-xl border-2 transition-all duration-300 text-left group overflow-hidden ${!isAnswered ? 'cursor-pointer hover:border-[#3b4354] hover:bg-[#1f2229]' : 'cursor-default'}
+                          ${isCorrect ? 'border-[#00d26a] bg-[#00d26a]/10' : ''}
+                          ${isWrongSelected ? 'border-[#f8312f] bg-[#f8312f]/10' : ''}
+                          ${!isCorrect && !isWrongSelected ? 'border-[#282e39] bg-[#1a1d24]' : ''}
+                        `}
+                      >
+                        {isCorrect && <CheckCircle2 className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#00d26a] fill-current" />}
+                        {isWrongSelected && <X className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#f8312f]" />}
+                        <div className={`flex items-center justify-center h-8 w-8 rounded-full font-bold text-sm shrink-0 transition-colors duration-300 relative z-10
+                          ${isCorrect ? 'bg-[#00d26a] text-white' : ''}
+                          ${isWrongSelected ? 'bg-[#f8312f] text-white' : ''}
+                          ${!isCorrect && !isWrongSelected ? 'bg-[#282e39] text-gray-400' : ''}
+                        `}>
+                          {letters[idx]}
+                        </div>
+                        <div className={`ml-4 md:ml-5 text-base md:text-lg font-medium transition-colors duration-300 relative z-10 pr-8 
+                          ${isCorrect ? 'text-[#00d26a]' : ''}
+                          ${isWrongSelected ? 'text-[#f8312f]' : ''}
+                          ${!isCorrect && !isWrongSelected ? 'text-slate-300' : ''}
+                        `}>
+                          <MathText text={opt} />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* EXPLANATION BOX */}
+                {isAnswered && (
+                  <div ref={explanationRef} className="mt-2 bg-[#151921] border border-[#282e39] rounded-2xl p-6 relative overflow-hidden transition-all duration-500 animate-[fadeIn_0.5s_ease-out]">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-[#00d26a]"></div>
+                    <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                      <h3 className="text-lg font-bold text-[#00d26a] flex items-center gap-2">
+                        <Lightbulb className="w-5 h-5" /> Explanation
+                      </h3>
+                      <button
+                        onClick={handleViewInHindi}
+                        disabled={isTranslating}
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-60
+                          ${showHindi
+                            ? 'bg-orange-500/20 border-orange-500/40 text-orange-400'
+                            : 'bg-[#282e39] border-slate-600 text-slate-300 hover:bg-[#3b4354]'
+                          }`}
+                      >
+                        {isTranslating
+                          ? <><div className="w-3 h-3 border border-slate-400 border-t-white rounded-full animate-spin" /> Translating...</>
+                          : <><Languages className="w-4 h-4" /> {showHindi ? 'View in English' : 'View in Hindi'}</>
+                        }
+                      </button>
+                    </div>
+                    <div className="text-slate-300 leading-relaxed text-sm md:text-base">
+                      {showHindi
+                        ? <p className="font-display leading-relaxed">{hindiExplanation}</p>
+                        : <MathText text={currentQuestionData.explanation} />
+                      }
+                    </div>
+                  </div>
+                )}
+              </>)}
             </div>
           </div>
 
