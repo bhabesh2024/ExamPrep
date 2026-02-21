@@ -24,10 +24,10 @@ export default function Navbar() {
     const items = [];
     subjectsData.forEach(sub => {
       // Add main subject
-      items.push({ name: sub.title, type: 'Subject', path: `/practice/${sub.title}` });
+      items.push({ name: sub.title, type: 'Subject', path: `/practice/${sub.id}` });
       sub.categories.forEach(cat => {
         // Add categories
-        items.push({ name: cat.title, type: 'Category', path: `/practice/${sub.title}`, parent: sub.title });
+        items.push({ name: cat.title, type: 'Category', path: `/practice/${sub.id}`, parent: sub.title });
         cat.topics.forEach(top => {
           // Add topics
           items.push({ name: top.title, type: 'Topic', path: `/quiz/${sub.title}/${top.title}`, parent: `${sub.title} > ${cat.title}` });
@@ -200,7 +200,7 @@ export default function Navbar() {
                       
                       <div className="relative z-10 grid grid-cols-2 gap-4 text-left">
                         {/* Subject Cards */}
-                        <button onClick={() => { navigate('/practice/General Knowledge'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)] w-full text-left cursor-pointer">
+                        <button onClick={() => { navigate('/practice/gk'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 transition-transform duration-300 shrink-0">
                             <Globe className="w-6 h-6" />
                           </div>
@@ -210,7 +210,7 @@ export default function Navbar() {
                           </div>
                         </button>
                         
-                        <button onClick={() => { navigate('/practice/Mathematics'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)] w-full text-left cursor-pointer">
+                        <button onClick={() => { navigate('/practice/maths'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 transition-transform duration-300 shrink-0">
                             <Calculator className="w-6 h-6" />
                           </div>
@@ -220,7 +220,7 @@ export default function Navbar() {
                           </div>
                         </button>
 
-                        <button onClick={() => { navigate('/practice/Reasoning'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(249,115,22,0.3)] w-full text-left cursor-pointer">
+                        <button onClick={() => { navigate('/practice/reasoning'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(249,115,22,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white shadow-lg shadow-orange-500/20 transition-transform duration-300 shrink-0">
                             <Brain className="w-6 h-6" />
                           </div>
@@ -230,7 +230,7 @@ export default function Navbar() {
                           </div>
                         </button>
 
-                        <button onClick={() => { navigate('/practice/English'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(236,72,153,0.3)] w-full text-left cursor-pointer">
+                        <button onClick={() => { navigate('/practice/english'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(236,72,153,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/20 transition-transform duration-300 shrink-0">
                             <BookOpen className="w-6 h-6" />
                           </div>
@@ -240,7 +240,7 @@ export default function Navbar() {
                           </div>
                         </button>
 
-                        <button onClick={() => { navigate('/practice/Science'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] w-full text-left cursor-pointer">
+                        <button onClick={() => { navigate('/practice/science'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-violet-500/20 transition-transform duration-300 shrink-0">
                             <FlaskConical className="w-6 h-6" />
                           </div>
@@ -250,7 +250,7 @@ export default function Navbar() {
                           </div>
                         </button>
 
-                        <button onClick={() => { navigate('/practice/Computer'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(14,165,233,0.3)] w-full text-left cursor-pointer">
+                        <button onClick={() => { navigate('/practice/computer'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(14,165,233,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-sky-500 to-cyan-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20 transition-transform duration-300 shrink-0">
                             <Terminal className="w-6 h-6" />
                           </div>
