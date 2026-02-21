@@ -3,23 +3,24 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { GraduationCap, ListOrdered, Bookmark, CheckCircle2, ArrowRight, X, Sparkles, Bot, Send, ArrowLeft, Lightbulb, Languages } from 'lucide-react';
 import { fetchAiResponse } from '../services/aiService';
 
+// 👇 Naye Components Import Kiye 👇
+import MathText from '../components/common/MathText';
+import GeometryVisualizer from '../components/common/GeometryVisualizer';
+
 export default function ChapterPracticePage() {
   const { subjectId, topicId } = useParams();
   const navigate = useNavigate();
 
-  // Configuration for Learning Mode
   const totalQuestions = 30; 
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState({});
   const [review, setReview] = useState({});
   const [visited, setVisited] = useState({ 0: true });
 
-  // Mobile Palette & AI Chat States
   const [isMobilePaletteOpen, setIsMobilePaletteOpen] = useState(false);
   const [isAiChatOpen, setIsAiChatOpen] = useState(false);
   const [chatInput, setChatInput] = useState("");
   
-  // AI Chat Messages
   const [chatHistory, setChatHistory] = useState([
     { role: 'ai', text: `Hi! I am your StudentAI Helper. Let's master this chapter together! 🚀` }
   ]);
@@ -27,30 +28,33 @@ export default function ChapterPracticePage() {
   const messagesEndRef = useRef(null);
   const explanationRef = useRef(null);
 
-  // Auto-scroll chat
+  // 👇 DUMMY LEARNING DATA 👇
+  const dummyQuestionData = {
+    question: "If $f(x) = x^2 + 2x$, what is the value of the derivative at $x = 1$?",
+    options: ["2", "3", "4", "5"],
+    answer: "4",
+    explanation: "The derivative of $f(x) = x^2 + 2x$ is $f'(x) = 2x + 2$. Substituting $x = 1$, we get $2(1) + 2 = 4$.",
+    geometryType: null,
+    geometryData: null
+  };
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, isAiChatOpen]);
 
-  // Handle AI Chat Submit
   const handleChatSubmit = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
 
-    // User ka message
     const userMsg = chatInput;
     const newHistory = [...chatHistory, { role: 'user', text: userMsg }];
     setChatHistory(newHistory);
     setChatInput("");
-
-    // Thinking state
     setChatHistory(prev => [...prev, { role: 'ai', text: "Thinking... 🤔" }]);
 
-    // Asli API Call karein (Saath me question ka context)
     const currentContext = `Subject: ${topicId}, Currently looking at Question Number: ${currentQ + 1}`;
     const aiResponseText = await fetchAiResponse(userMsg, currentContext);
 
-    // AI ka asli answer set karein
     setChatHistory(prev => {
       const historyWithoutLoading = prev.slice(0, prev.length - 1);
       return [...historyWithoutLoading, { role: 'ai', text: aiResponseText }];
@@ -59,7 +63,6 @@ export default function ChapterPracticePage() {
 
   const handleSelect = (idx) => {
     setAnswers(prev => ({ ...prev, [currentQ]: idx }));
-    // Halka sa delay dekar explanation tak scroll karne ke liye
     setTimeout(() => {
       explanationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }, 100);
@@ -98,7 +101,6 @@ export default function ChapterPracticePage() {
     return "bg-[#282e39] text-slate-500 border-transparent";
   };
 
-  const dummyOptions = ["Option Statement A", "Option Statement B", "Option Statement C", "Option Statement D"];
   const letters = ['A', 'B', 'C', 'D'];
   const safeTopicId = topicId ? topicId.replace('-', ' ') : 'Topic';
   const isAnswered = answers[currentQ] !== undefined;
@@ -143,11 +145,7 @@ export default function ChapterPracticePage() {
         </div>
       </header>
 
-      {/* MAIN CONTENT WRAPPER */}
       <div className="flex-1 flex overflow-hidden relative">
-        
-        {/* LEFT/CENTER: Question Area */}
-        {/* 👇 FIX 1: Flex-col use kiya taaki bottom bar overlay na kare 👇 */}
         <main className="flex-1 flex flex-col relative overflow-hidden">
           
           <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-10 custom-scrollbar">
@@ -171,32 +169,50 @@ export default function ChapterPracticePage() {
                   </button>
                 </div>
                 
-                <p className="text-base md:text-xl font-medium leading-relaxed text-slate-200 relative z-10">
-                  If <i className="font-serif text-[#0d59f2]">f(x) = x² + 2x</i>, what is the value of the derivative at <i className="font-serif text-[#0d59f2]">x = 1</i>?
-                </p>
+                {/* 👇 FIX: Question Math Text 👇 */}
+                <div className="text-base md:text-xl font-medium leading-relaxed text-slate-200 relative z-10">
+                  <MathText text={dummyQuestionData.question} />
+                </div>
+                <GeometryVisualizer type={dummyQuestionData.geometryType} dataStr={dummyQuestionData.geometryData} />
+
               </div>
 
               {/* Options */}
               <div className="grid gap-4">
-                {dummyOptions.map((opt, idx) => {
+                {dummyQuestionData.options.map((opt, idx) => {
                   const selected = answers[currentQ] === idx;
+                  const isCorrect = isAnswered && opt === dummyQuestionData.answer;
+                  const isWrongSelected = selected && !isCorrect;
+
                   return (
                     <button 
                       key={idx}
-                      onClick={() => handleSelect(idx)}
-                      className={`relative flex items-center p-3.5 md:p-4 rounded-xl border-2 transition-all duration-300 text-left group overflow-hidden cursor-pointer
-                        ${selected 
-                          ? 'border-[#0d59f2] bg-[#0d59f2]/10 shadow-[0_0_15px_-3px_rgba(13,89,242,0.3),inset_0_0_10px_rgba(13,89,242,0.15)] scale-[1.01] z-10' 
-                          : 'border-[#282e39] bg-[#1a1d24] hover:border-[#3b4354] hover:bg-[#1f2229]'
-                        }`}
+                      onClick={() => !isAnswered && handleSelect(idx)}
+                      disabled={isAnswered}
+                      className={`relative flex items-center p-3.5 md:p-4 rounded-xl border-2 transition-all duration-300 text-left group overflow-hidden ${!isAnswered ? 'cursor-pointer hover:border-[#3b4354] hover:bg-[#1f2229]' : 'cursor-default'}
+                        ${isCorrect ? 'border-[#00d26a] bg-[#00d26a]/10' : ''}
+                        ${isWrongSelected ? 'border-[#f8312f] bg-[#f8312f]/10' : ''}
+                        ${!isCorrect && !isWrongSelected ? 'border-[#282e39] bg-[#1a1d24]' : ''}
+                      `}
                     >
-                      {selected && <CheckCircle2 className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#0d59f2] fill-current drop-shadow-[0_0_5px_rgba(13,89,242,0.5)]" />}
+                      {/* Check/Cross Icon */}
+                      {isCorrect && <CheckCircle2 className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#00d26a] fill-current" />}
+                      {isWrongSelected && <X className="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 text-[#f8312f]" />}
+                      
                       <div className={`flex items-center justify-center h-8 w-8 rounded-full font-bold text-sm shrink-0 transition-colors duration-300 relative z-10
-                        ${selected ? 'bg-[#0d59f2] text-white shadow-[0_0_8px_#0d59f2]' : 'bg-[#282e39] text-gray-400 group-hover:bg-[#3b4354]'}`}>
+                        ${isCorrect ? 'bg-[#00d26a] text-white' : ''}
+                        ${isWrongSelected ? 'bg-[#f8312f] text-white' : ''}
+                        ${!isCorrect && !isWrongSelected ? 'bg-[#282e39] text-gray-400' : ''}
+                      `}>
                         {letters[idx]}
                       </div>
-                      <div className={`ml-4 md:ml-5 text-base md:text-lg font-medium transition-colors duration-300 relative z-10 pr-8 ${selected ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
-                        {opt}
+                      <div className={`ml-4 md:ml-5 text-base md:text-lg font-medium transition-colors duration-300 relative z-10 pr-8 
+                        ${isCorrect ? 'text-[#00d26a]' : ''}
+                        ${isWrongSelected ? 'text-[#f8312f]' : ''}
+                        ${!isCorrect && !isWrongSelected ? 'text-slate-300' : ''}
+                      `}>
+                        {/* 👇 FIX: Options me Math Text 👇 */}
+                        <MathText text={opt} />
                       </div>
                     </button>
                   );
@@ -212,22 +228,19 @@ export default function ChapterPracticePage() {
                       <Lightbulb className="w-5 h-5" /> Explanation
                     </h3>
                     <button className="px-3 py-1.5 rounded-full bg-[#282e39] hover:bg-[#3b4354] text-xs font-medium text-slate-300 border border-slate-600 transition-colors flex items-center gap-1.5 cursor-pointer">
-                      <Languages className="w-4 h-4" /> View in Assamese
+                      <Languages className="w-4 h-4" /> View in Hindi
                     </button>
                   </div>
-                  <p className="text-slate-300 leading-relaxed text-sm md:text-base">
-                    The derivative of a function <i className="font-serif text-slate-100">f(x) = x² + 2x</i> is calculated using the power rule. <br/><br/>
-                    Here, <i className="font-serif text-slate-100">f'(x) = 2x + 2</i>. <br/>
-                    Substituting <i className="font-serif text-slate-100">x = 1</i>, we get <i className="font-serif text-slate-100">2(1) + 2 = 4</i>.
-                    <br/><br/>
-                    <span className="text-slate-400 italic">Note: The actual correct answer will be marked in green once the backend is connected.</span>
-                  </p>
+                  <div className="text-slate-300 leading-relaxed text-sm md:text-base">
+                    {/* 👇 FIX: Explanation me Math Text 👇 */}
+                    <MathText text={dummyQuestionData.explanation} />
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          {/* 👇 FIX 2: AI CHAT WINDOW ab <main> ke andar hai. Overlap nahi karega. 👇 */}
+          {/* AI CHAT WINDOW */}
           {isAiChatOpen && (
             <div className="absolute bottom-[75px] right-4 lg:right-6 w-[90%] md:w-96 max-w-sm bg-[#161920]/95 backdrop-blur-xl border border-[#282e39] rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5),0_0_20px_rgba(168,85,247,0.15)] flex flex-col z-40 h-[450px] overflow-hidden">
               <div className="p-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border-b border-white/5 flex items-center justify-between shrink-0">
@@ -274,13 +287,12 @@ export default function ChapterPracticePage() {
             </div>
           )}
 
-          {/* 👇 FIX 1: BOTTOM BAR Ab proper fixed flex block hai 👇 */}
           <div className="bg-[#1a1d24] border-t border-[#282e39] p-3 md:p-4 px-4 md:px-6 flex justify-between items-center z-20 shrink-0 w-full">
             <div className="flex gap-2">
                <button onClick={handleMarkReview} className={`p-2 md:p-2.5 rounded-full border border-[#282e39] cursor-pointer ${review[currentQ] ? 'bg-yellow-500/20 text-yellow-500 border-yellow-500/50' : 'text-slate-400'}`}>
                 <Bookmark className="w-5 h-5" />
               </button>
-              <button onClick={handleClear} className="px-4 py-2 rounded-full border border-slate-600 text-slate-400 text-xs font-bold uppercase cursor-pointer">
+              <button onClick={handleClear} disabled={isAnswered} className="px-4 py-2 rounded-full border border-slate-600 text-slate-400 disabled:opacity-50 text-xs font-bold uppercase cursor-pointer">
                 Clear
               </button>
             </div>
@@ -290,10 +302,8 @@ export default function ChapterPracticePage() {
           </div>
         </main>
 
-        {/* MOBILE PALETTE OVERLAY */}
         {isMobilePaletteOpen && <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden" onClick={() => setIsMobilePaletteOpen(false)}></div>}
 
-        {/* RIGHT: SIDE PALETTE */}
         <aside className={`fixed lg:static top-0 right-0 h-full z-50 w-72 bg-[#161920] border-l border-[#282e39] flex flex-col shrink-0 overflow-hidden transition-transform duration-300 ease-in-out ${isMobilePaletteOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}`}>
           <div className="p-4 border-b border-[#282e39] flex justify-between items-center bg-[#1a1d24] shrink-0">
             <h3 className="text-white font-bold text-xs uppercase tracking-widest">Questions</h3>

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { GraduationCap, Search, ChevronDown, Sun, Moon, Menu, X, Globe, Calculator, Brain, BookOpen, FlaskConical, Terminal, ArrowRight } from 'lucide-react';
+// 👇 Apna syllabusData import karein 👇
+import { subjectsData } from '../../data/syllabusData.jsx';
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -8,8 +10,68 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
 
+  // ── SEARCH BAR STATE ──
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef(null);
+
   // Helper to check active links
   const isActive = (path) => location.pathname === path;
+
+  // ── PREPARE SEARCH DATA ──
+  const searchableItems = useMemo(() => {
+    const items = [];
+    subjectsData.forEach(sub => {
+      // Add main subject
+      items.push({ name: sub.title, type: 'Subject', path: `/practice/${sub.title}` });
+      sub.categories.forEach(cat => {
+        // Add categories
+        items.push({ name: cat.title, type: 'Category', path: `/practice/${sub.title}`, parent: sub.title });
+        cat.topics.forEach(top => {
+          // Add topics
+          items.push({ name: top.title, type: 'Topic', path: `/quiz/${sub.title}/${top.title}`, parent: `${sub.title} > ${cat.title}` });
+        });
+      });
+    });
+    return items;
+  }, []);
+
+  // ── SEARCH HANDLER ──
+  const handleSearch = (e) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    
+    if (query.trim().length > 0) {
+      const results = searchableItems.filter(item => 
+        item.name.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 6); // Limit to 6 results taaki UI kharab na ho
+      
+      setSearchResults(results);
+      setIsSearchOpen(true);
+    } else {
+      setSearchResults([]);
+      setIsSearchOpen(false);
+    }
+  };
+
+  // Click outside to close search dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setIsSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleResultClick = (path) => {
+    navigate(path);
+    setIsSearchOpen(false);
+    setSearchQuery('');
+    setIsMobileMenuOpen(false);
+  };
 
   return (
     <>
@@ -42,6 +104,8 @@ export default function Navbar() {
             opacity: 1;
             visibility: visible;
         }
+        .search-scrollbar::-webkit-scrollbar { width: 4px; }
+        .search-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
       `}</style>
 
       <header className="fixed top-0 w-full z-50 glass-nav border-b border-[#27272a]">
@@ -59,17 +123,47 @@ export default function Navbar() {
               <span className="text-xl font-bold tracking-tight text-white">PrepIQ</span>
             </div>
 
-            {/* DESKTOP SEARCH BAR */}
-            <div className="hidden md:flex flex-1 items-center justify-center px-8 gap-4">
+            {/* ── DESKTOP SEARCH BAR ── */}
+            <div className="hidden md:flex flex-1 items-center justify-center px-8 gap-4" ref={searchRef}>
               <div className="relative w-full max-w-md group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0d59f2] transition-colors">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0d59f2] transition-colors z-10">
                   <Search className="w-5 h-5" />
                 </div>
                 <input 
-                  className="block w-full pl-10 pr-3 py-2.5 border-none rounded-full leading-5 bg-[#161616]/50 text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-[#161616] focus:ring-1 focus:ring-[#0d59f2]/50 sm:text-sm transition-all" 
+                  value={searchQuery}
+                  onChange={handleSearch}
+                  onFocus={() => searchQuery.trim().length > 0 && setIsSearchOpen(true)}
+                  className="block w-full pl-10 pr-3 py-2.5 border border-transparent rounded-full leading-5 bg-[#161616]/80 text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-[#161616] focus:border-[#0d59f2]/50 focus:ring-1 focus:ring-[#0d59f2]/50 sm:text-sm transition-all shadow-inner" 
                   placeholder="Search exams, topics, or questions..." 
                   type="text"
                 />
+                
+                {/* ── SEARCH RESULTS DROPDOWN ── */}
+                {isSearchOpen && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-[#181b21] border border-[#27272a] rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
+                    {searchResults.length > 0 ? (
+                      <ul className="max-h-80 overflow-y-auto search-scrollbar">
+                        {searchResults.map((result, idx) => (
+                          <li 
+                            key={idx} 
+                            onClick={() => handleResultClick(result.path)}
+                            className="px-4 py-3 hover:bg-white/5 cursor-pointer border-b border-[#2a2f3a] last:border-0 transition-colors flex flex-col group/result"
+                          >
+                            <span className="text-sm font-semibold text-slate-200 group-hover/result:text-[#0d59f2] transition-colors">{result.name}</span>
+                            <span className="text-xs text-slate-500 mt-0.5">
+                              {result.type} {result.parent ? `in ${result.parent}` : ''}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="px-4 py-8 flex flex-col items-center justify-center text-slate-500">
+                        <Search className="w-8 h-8 mb-2 opacity-20" />
+                        <span className="text-sm">No results found for "{searchQuery}"</span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               
               {/* Theme Toggle */}
@@ -89,7 +183,6 @@ export default function Navbar() {
               <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300">
                 <button onClick={() => navigate('/')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/') ? 'text-white' : ''}`}>Home</button>
                 <button onClick={() => navigate('/practice')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/practice') ? 'text-white' : ''}`}>Practice</button>
-                {/* 👇 FIX: About page link added here 👇 */}
                 <button onClick={() => navigate('/about')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/about') ? 'text-white' : ''}`}>About</button>
                 
                 {/* ADVANCED SUBJECTS DROPDOWN */}
@@ -107,7 +200,7 @@ export default function Navbar() {
                       
                       <div className="relative z-10 grid grid-cols-2 gap-4 text-left">
                         {/* Subject Cards */}
-                        <button onClick={() => { navigate('/practice/GK'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(139,92,246,0.3)] w-full text-left cursor-pointer">
+                        <button onClick={() => { navigate('/practice/General Knowledge'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 transition-transform duration-300 shrink-0">
                             <Globe className="w-6 h-6" />
                           </div>
@@ -117,7 +210,7 @@ export default function Navbar() {
                           </div>
                         </button>
                         
-                        <button onClick={() => { navigate('/practice/Maths'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)] w-full text-left cursor-pointer">
+                        <button onClick={() => { navigate('/practice/Mathematics'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 hover:shadow-[0_0_15px_-3px_rgba(59,130,246,0.3)] w-full text-left cursor-pointer">
                           <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 transition-transform duration-300 shrink-0">
                             <Calculator className="w-6 h-6" />
                           </div>
@@ -195,19 +288,52 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* MOBILE MENU DRAWER */}
+      {/* ── MOBILE MENU DRAWER ── */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-[#0a0a0a]/95 backdrop-blur-xl lg:hidden pt-24 px-6 flex flex-col">
+          
+          {/* MOBILE SEARCH BAR */}
           <div className="relative w-full mb-6">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
               <Search className="w-5 h-5" />
             </div>
-            <input className="block w-full pl-10 pr-3 py-3 border border-[#27272a] rounded-xl leading-5 bg-[#161616] text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#0d59f2]" placeholder="Search..." type="text"/>
+            <input 
+              value={searchQuery}
+              onChange={handleSearch}
+              className="block w-full pl-10 pr-3 py-3 border border-[#27272a] rounded-xl leading-5 bg-[#161616] text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#0d59f2]" 
+              placeholder="Search subjects or topics..." 
+              type="text"
+            />
+            {/* MOBILE SEARCH RESULTS */}
+            {searchQuery.trim().length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-[#181b21] border border-[#27272a] rounded-xl shadow-2xl overflow-hidden z-50">
+                {searchResults.length > 0 ? (
+                  <ul className="max-h-60 overflow-y-auto search-scrollbar">
+                    {searchResults.map((result, idx) => (
+                      <li 
+                        key={idx} 
+                        onClick={() => handleResultClick(result.path)}
+                        className="px-4 py-3 hover:bg-[#27272a]/50 cursor-pointer border-b border-[#2a2f3a] last:border-0 transition-colors flex flex-col"
+                      >
+                        <span className="text-sm font-semibold text-slate-200">{result.name}</span>
+                        <span className="text-xs text-slate-500 mt-0.5">
+                          {result.type} {result.parent ? `in ${result.parent}` : ''}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <div className="px-4 py-4 text-center text-slate-500 text-sm">
+                    No results found
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+
           <nav className="flex flex-col gap-6 text-xl font-medium text-slate-300">
             <button onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-white cursor-pointer">Home</button>
             <button onClick={() => { navigate('/practice'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-white cursor-pointer">Practice</button>
-            {/* 👇 FIX: About page link added to mobile menu too 👇 */}
             <button onClick={() => { navigate('/about'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-white cursor-pointer">About</button>
             <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-left py-2 border-b border-[#27272a] hover:text-[#0d59f2] cursor-pointer">View All Subjects →</button>
           </nav>
