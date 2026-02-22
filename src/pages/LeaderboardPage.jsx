@@ -144,7 +144,7 @@ export default function LeaderboardPage() {
                 </p>
                 
                 <div className="w-full space-y-4 relative z-10">
-                  <button className="w-full h-12 rounded-xl flex items-center justify-center gap-2 text-white font-bold tracking-wide group bg-gradient-to-b from-[#4f46e5] to-[#2525f4] hover:brightness-110 shadow-[0_0_20px_rgba(37,37,244,0.4)] transition-all">
+                  <button onClick={() => navigate('/pricing')} className="w-full h-12 rounded-xl flex items-center justify-center gap-2 text-white font-bold tracking-wide group bg-gradient-to-b from-[#4f46e5] to-[#2525f4] hover:brightness-110 shadow-[0_0_20px_rgba(37,37,244,0.4)] transition-all">
                     <span>Upgrade to Premium Now</span>
                     <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                   </button>

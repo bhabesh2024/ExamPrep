@@ -17,7 +17,7 @@ import ProfilePage from './pages/ProfilePage';
 // 👇 Yahan Admin Panel import karein 👇
 import AdminPanel from './pages/AdminPanel'; 
 import LeaderboardPage from './pages/LeaderboardPage';
-
+import PricingPage from './pages/PricingPage';
 export default function App() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-slate-100 font-sans selection:bg-[#0d59f2] selection:text-white flex flex-col">
@@ -38,6 +38,7 @@ export default function App() {
           <Route path="/profile" element={<><Navbar /><ProfilePage /></>} />
           <Route path="/leaderboard" element={<><Navbar /><LeaderboardPage /></>} />
           {/* 👇 SECRET ADMIN ROUTE (No Navbar) 👇 */}
+          <Route path="/pricing" element={<><Navbar /><PricingPage /></>} />
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>
       </div>

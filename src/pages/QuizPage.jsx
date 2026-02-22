@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios'; // 👈 NAYA IMPORT DATABASE KE LIYE
-import { GraduationCap, ListOrdered, AlertTriangle, Timer as TimerIcon, Pause, Play, Flag, Bookmark, CheckCircle2, ArrowRight, Trophy, RotateCcw } from 'lucide-react';
+import axios from 'axios';
+import { GraduationCap, ListOrdered, AlertTriangle, Timer as TimerIcon, Pause, Play, Flag, Bookmark, CheckCircle2, ArrowRight, Trophy, Database } from 'lucide-react';
 
 import MathText from '../components/common/MathText';
 import GeometryVisualizer from '../components/common/GeometryVisualizer';
@@ -10,40 +10,62 @@ export default function QuizPage() {
   const { type, testId } = useParams();
   const navigate = useNavigate();
 
+  // 🚀 NAYI STATES: Database se questions load karne ke liye
+  const [questions, setQuestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Initial Time Setup
   const isFullMock = type === 'full';
-  const totalQuestions = isFullMock ? 150 : 50;
   const initialTime = isFullMock ? 180 * 60 : 60 * 60; 
 
   const [currentQ, setCurrentQ] = useState(0);
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const [isPaused, setIsPaused] = useState(false);
+  
+  // Aapke original trackers
   const [answers, setAnswers] = useState({});
   const [review, setReview] = useState({});
   const [visited, setVisited] = useState({ 0: true });
   
-  // 🏆 NAYI STATES RESULT KE LIYE
   const [showResult, setShowResult] = useState(false);
   const [finalScore, setFinalScore] = useState({ correct: 0, wrong: 0, skipped: 0 });
 
-  // 👇 DUMMY QUESTION DATA (Jisme ab answer bhi hai) 👇
-  const dummyQuestionData = {
-    question: "If $a-b=3, b-c=5$ and $c-a=1$, then what is the value of $\\frac{a^3+b^3+c^3-3abc}{a+b+c}$?",
-    options: ["10.5", "15.5", "17.5", "20.5"],
-    answer: "17.5", // 👈 Asali answer add kiya
-    geometryType: null,
-    geometryData: null
-  };
-
+  // 🔗 1. DATABASE SE QUESTIONS FETCH KARNE KA LOGIC
   useEffect(() => {
-    if (isPaused || showResult) return; // Agar result dikh raha hai toh timer rok do
+    const fetchRealQuestions = async () => {
+      try {
+        const res = await axios.get('/api/questions');
+        if (res.data && res.data.length > 0) {
+          // Questions ko randomly shuffle karna taaki har baar naya test lage
+          const shuffled = res.data.sort(() => 0.5 - Math.random());
+          
+          // Agar sectional hai toh max 50, full hai toh 150 questions (Ya DB mein jitne hain utne)
+          const limit = isFullMock ? 150 : 50;
+          setQuestions(shuffled.slice(0, limit));
+        }
+      } catch (err) {
+        console.error("Failed to fetch real questions:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchRealQuestions();
+  }, [type, testId, isFullMock]);
+
+  // Dynamic Total Questions (DB mein jitne aaye uske hisaab se)
+  const totalQuestions = questions.length > 0 ? questions.length : (isFullMock ? 150 : 50);
+
+  // ⏲️ TIMER LOGIC (Sirf tab chalega jab questions load ho jayein)
+  useEffect(() => {
+    if (isPaused || showResult || isLoading || questions.length === 0) return;
 
     if (timeLeft <= 0) {
-      handleFinishTest(); // Time khatam hone par auto-submit
+      handleFinishTest();
       return;
     }
     const timer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
     return () => clearInterval(timer);
-  }, [timeLeft, navigate, isPaused, showResult]);
+  }, [timeLeft, navigate, isPaused, showResult, isLoading, questions.length]);
 
   const formatTime = (seconds) => {
     const h = Math.floor(seconds / 3600);
@@ -60,6 +82,7 @@ export default function QuizPage() {
     setAnswers(newAnswers);
   };
 
+  // Aapka Bookmark/Review feature
   const handleMarkReview = () => setReview(prev => ({ ...prev, [currentQ]: !prev[currentQ] }));
 
   const handleNext = () => {
@@ -75,16 +98,19 @@ export default function QuizPage() {
     setVisited(prev => ({ ...prev, [index]: true }));
   };
 
-  // 🏆 MOCK TEST FINISH AUR SAVE KARNE KA LOGIC
+  // 🏆 ASALI SCORING & DB SAVE LOGIC
   const handleFinishTest = async () => {
-    setIsPaused(true); // Timer stop
+    setIsPaused(true); 
     
-    // 1. Calculate Score
     let correct = 0;
     let wrong = 0;
-    Object.entries(answers).forEach(([qIndex, selectedOptionIdx]) => {
-      // Kyunki abhi Dummy Data hai, toh sabme same check kar rahe hain
-      if (dummyQuestionData.options[selectedOptionIdx] === dummyQuestionData.answer) {
+    
+    // DB wale questions ke original answers se match karenge
+    Object.entries(answers).forEach(([qIndexStr, selectedOptionIdx]) => {
+      const qIndex = parseInt(qIndexStr);
+      const q = questions[qIndex];
+      
+      if (q && q.options[selectedOptionIdx] === q.answer) {
         correct++;
       } else {
         wrong++;
@@ -95,15 +121,14 @@ export default function QuizPage() {
     setFinalScore({ correct, wrong, skipped });
     setShowResult(true);
 
-    // 2. Save Score to Database
     const userStr = localStorage.getItem('user');
     if (userStr) {
       try {
         const userObj = JSON.parse(userStr);
         await axios.post('/api/results', {
           userId: userObj.id,
-          subject: 'Mock Test', // Subject ki jagah Mock Test
-          topic: type === 'full' ? 'Full Mock Exam' : 'Sectional Mock Exam',
+          subject: 'Mock Test',
+          topic: testId || (isFullMock ? 'Full Mock Exam' : 'Sectional Mock Exam'),
           score: correct,
           total: totalQuestions
         });
@@ -114,6 +139,7 @@ export default function QuizPage() {
     }
   };
 
+  // Palette styling ekdum same rakhi hai!
   const getPaletteStyle = (index) => {
     if (currentQ === index) return "bg-[#0d59f2] text-white font-bold shadow-[0_0_15px_#0d59f2] ring-2 ring-white/20 scale-110 z-10 border-transparent";
     if (answers[index] !== undefined) return "bg-[#00d26a]/20 border-[#00d26a]/50 text-[#00d26a] font-bold hover:brightness-110";
@@ -123,6 +149,33 @@ export default function QuizPage() {
   };
 
   const letters = ['A', 'B', 'C', 'D'];
+
+  // ⏳ LOADING SCREEN
+  if (isLoading) {
+    return (
+      <div className="h-screen bg-[#0f1115] flex flex-col items-center justify-center text-white">
+        <div className="w-12 h-12 border-4 border-[#0d59f2]/30 border-t-[#0d59f2] rounded-full animate-spin mb-4"></div>
+        <h2 className="text-xl font-bold">Loading Real Exam Questions...</h2>
+      </div>
+    );
+  }
+
+  // 🚫 EMPTY DB SCREEN (Agar DB mein questions nahi hain)
+  if (questions.length === 0) {
+    return (
+      <div className="h-screen bg-[#0f1115] flex flex-col items-center justify-center text-white p-6">
+        <Database className="w-20 h-20 text-slate-600 mb-6" />
+        <h2 className="text-3xl font-bold mb-2">No Questions Available!</h2>
+        <p className="text-slate-400 mb-8 text-center max-w-md">Database is currently empty. Please add questions from the Admin Panel to start practicing.</p>
+        <button onClick={() => navigate('/admin')} className="px-8 py-3 rounded-full bg-[#0d59f2] hover:bg-blue-600 font-bold transition-colors">
+          Go to Admin Panel
+        </button>
+      </div>
+    );
+  }
+
+  // Current Question ko DB se nikalna
+  const currentQuestionData = questions[currentQ];
 
   return (
     <div className="bg-[#f5f6f8] dark:bg-[#0f1115] text-slate-900 dark:text-slate-100 font-sans h-screen flex flex-col overflow-hidden selection:bg-[#0d59f2]/30 relative">
@@ -167,7 +220,7 @@ export default function QuizPage() {
             </button>
           ) : (
             <>
-              <button onClick={() => setIsPaused(!isPaused)} className={`flex items-center justify-center h-9 px-4 rounded-full text-sm font-semibold transition-colors border ${isPaused ? 'bg-yellow-500/20 text-yellow-500 border-yellow-500/50' : 'bg-[#282e39] hover:bg-[#3b4354] text-white border-transparent'}`}>
+              <button onClick={() => setIsPaused(!isPaused)} className={`flex items-center justify-center h-9 px-4 rounded-full text-sm font-semibold transition-colors border cursor-pointer ${isPaused ? 'bg-yellow-500/20 text-yellow-500 border-yellow-500/50' : 'bg-[#282e39] hover:bg-[#3b4354] text-white border-transparent'}`}>
                 {isPaused ? <><Play className="w-4 h-4 sm:mr-2 fill-current" /> <span className="hidden sm:inline">Resume</span></> : <><Pause className="w-4 h-4 sm:mr-2 fill-current" /> <span className="hidden sm:inline">Pause</span></>}
               </button>
               <button onClick={handleFinishTest} className="flex items-center justify-center h-9 px-4 rounded-full bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 hover:border-red-500 text-sm font-bold transition-all cursor-pointer">
@@ -215,7 +268,7 @@ export default function QuizPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onClick={() => navigate('/practice')} className="px-8 py-3.5 rounded-full bg-[#0d59f2] hover:bg-[#0b4ecf] text-white font-bold transition-all shadow-[0_0_20px_rgba(13,89,242,0.4)] flex items-center justify-center gap-2">
+                <button onClick={() => navigate('/practice')} className="px-8 py-3.5 rounded-full bg-[#0d59f2] hover:bg-[#0b4ecf] text-white font-bold transition-all shadow-[0_0_20px_rgba(13,89,242,0.4)] flex items-center justify-center gap-2 cursor-pointer">
                   <ArrowRight className="w-5 h-5" /> Back to Dashboard
                 </button>
               </div>
@@ -244,7 +297,7 @@ export default function QuizPage() {
               <div className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar">
                 <div className="max-w-4xl mx-auto flex flex-col gap-6 pb-8">
                   
-                  {/* Question Card */}
+                  {/* Real Question Card */}
                   <div className="bg-[#1a1d24] rounded-xl p-6 border border-[#282e39] shadow-lg">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-[#0d59f2] font-semibold text-sm tracking-wider uppercase">Question {currentQ + 1}</span>
@@ -257,15 +310,21 @@ export default function QuizPage() {
                     </div>
                     
                     <div className="text-lg md:text-xl font-medium leading-relaxed text-slate-200">
-                      <MathText text={dummyQuestionData.question} />
+                      <MathText text={currentQuestionData?.question || ''} />
                     </div>
+                    {/* Agar Hindi version bhi DB mein hai toh wo bhi dikhayega! */}
+                    {currentQuestionData?.questionHindi && (
+                      <div className="text-md md:text-lg font-medium leading-relaxed text-slate-400 mt-2 font-display">
+                        <MathText text={currentQuestionData.questionHindi} />
+                      </div>
+                    )}
                     
-                    <GeometryVisualizer type={dummyQuestionData.geometryType} dataStr={dummyQuestionData.geometryData} />
+                    <GeometryVisualizer type={currentQuestionData?.geometryType} dataStr={currentQuestionData?.geometryData} />
                   </div>
 
-                  {/* Options */}
+                  {/* Real Options */}
                   <div className="grid gap-3 md:gap-4">
-                    {dummyQuestionData.options.map((opt, idx) => {
+                    {currentQuestionData?.options?.map((opt, idx) => {
                       const selected = answers[currentQ] === idx;
                       return (
                         <button key={idx} onClick={() => handleSelect(idx)}
@@ -292,7 +351,7 @@ export default function QuizPage() {
                   Clear
                 </button>
                 <button onClick={handleNext} className="px-8 py-2.5 rounded-full bg-[#0d59f2] hover:bg-blue-600 text-white font-bold text-sm transition-all flex items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(13,89,242,0.3)]">
-                  Save & Next <ArrowRight className="w-4 h-4" />
+                  {currentQ === totalQuestions - 1 ? 'Finish' : 'Save & Next'} <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </main>

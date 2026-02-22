@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { GraduationCap, Search, ChevronDown, Sun, Moon, Menu, X, Globe, Calculator, Brain, BookOpen, FlaskConical, Terminal, ArrowRight, LogOut, User } from 'lucide-react';
+import { GraduationCap, Search, ChevronDown, Sun, Moon, Menu, X, Globe, Calculator, Brain, BookOpen, FlaskConical, Terminal, ArrowRight, LogOut, User, Sparkles } from 'lucide-react';
 import { subjectsData } from '../../data/syllabusData.jsx';
 
 export default function Navbar() {
@@ -163,6 +163,9 @@ export default function Navbar() {
                 
                 {/* 👇 LEADERBOARD LINK ADDED HERE 👇 */}
                 <button onClick={() => navigate('/leaderboard')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/leaderboard') ? 'text-white' : ''}`}>Leaderboard</button>
+                <button onClick={() => navigate('/pricing')} className={`hover:text-white transition-colors cursor-pointer flex items-center gap-1 ${isActive('/pricing') ? 'text-white' : ''}`}>
+  Pricing <Sparkles className="w-3 h-3 text-yellow-400" />
+</button>
                 <button onClick={() => navigate('/about')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/about') ? 'text-white' : ''}`}>About</button>
                 {/* ADVANCED SUBJECTS DROPDOWN */}
                 <div className="group dropdown-trigger relative h-20 flex items-center">
@@ -298,7 +301,10 @@ export default function Navbar() {
             
             {/* 👇 MOBILE LEADERBOARD LINK 👇 */}
             <button onClick={() => { navigate('/leaderboard'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">Leaderboard</button>
-            
+            <button onClick={() => { navigate('/pricing'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors flex items-center justify-between">
+  <span>Pricing</span>
+  <Sparkles className="w-4 h-4 text-yellow-400" />
+</button>
             <button onClick={() => { navigate('/about'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">About</button>
             <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 text-[#0d59f2] cursor-pointer transition-colors">View All Subjects →</button>
             
