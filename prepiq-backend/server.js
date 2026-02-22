@@ -171,6 +171,30 @@ app.delete('/api/questions/:id', async (req, res) => {
 });
 
 // ==========================================
+// 🔄 UPDATE QUESTION API (Translation save karne ke liye)
+// ==========================================
+app.patch('/api/questions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { questionHindi, explanationHindi } = req.body;
+    
+    // Jo data aayega sirf usko update karenge
+    const dataToUpdate = {};
+    if (questionHindi) dataToUpdate.questionHindi = questionHindi;
+    if (explanationHindi) dataToUpdate.explanationHindi = explanationHindi;
+
+    const updatedQ = await prisma.question.update({
+      where: { id: parseInt(id) },
+      data: dataToUpdate
+    });
+
+    res.json({ message: "Translation permanently saved to DB!", question: updatedQ });
+  } catch (err) {
+    console.error("Translation Save Error:", err);
+    res.status(500).json({ error: "Failed to save translation in DB." });
+  }
+});
+// ==========================================
 // 📊 RESULTS APIs (Scores Save aur Dekhne ke liye)
 // ==========================================
 
