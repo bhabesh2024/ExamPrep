@@ -12,9 +12,11 @@ import SectionalTestList from './pages/SectionalTestList';
 import QuizPage from './pages/QuizPage';
 import ChapterPracticePage from './pages/ChapterPracticePage';
 import AboutPage from './pages/AboutPage';
-
+import AuthPage from './pages/AuthPage';
+import ProfilePage from './pages/ProfilePage';
 // 👇 Yahan Admin Panel import karein 👇
 import AdminPanel from './pages/AdminPanel'; 
+import LeaderboardPage from './pages/LeaderboardPage';
 
 export default function App() {
   return (
@@ -29,11 +31,12 @@ export default function App() {
           <Route path="/subjects" element={<><Navbar /><SubjectsPage /></>} />
           <Route path="/practice/:subjectId" element={<><Navbar /><SubjectDetailPage /></>} />
           <Route path="/about" element={<><Navbar /><AboutPage /></>} />
-          
+          <Route path="/login" element={<AuthPage />} />
           {/* Immersive Quiz/Practice Routes without Navbar */}
           <Route path="/practice/run/:type/:testId" element={<QuizPage />} />
           <Route path="/quiz/:subjectId/:topicId" element={<ChapterPracticePage />} />
-
+          <Route path="/profile" element={<><Navbar /><ProfilePage /></>} />
+          <Route path="/leaderboard" element={<><Navbar /><LeaderboardPage /></>} />
           {/* 👇 SECRET ADMIN ROUTE (No Navbar) 👇 */}
           <Route path="/admin" element={<AdminPanel />} />
         </Routes>

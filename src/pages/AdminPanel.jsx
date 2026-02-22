@@ -1,12 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { subjectsData } from '../data/syllabusData.jsx'; 
-import { getQuestionsByTitle } from '../data/questionsLoader';
+import { getQuestionsByTitle, getTitleToId } from '../data/questionsLoader';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { 
   Settings, HelpCircle, CloudUpload, FileText, X, Sparkles, 
   Trash2, Save, CheckCircle2, PlusCircle, ChevronDown, CheckSquare, Upload, Download
 } from 'lucide-react';
+import axios from 'axios';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -37,7 +38,6 @@ export default function AdminPanel() {
   const [file, setFile] = useState(null);
   const fileInputRef = useRef(null);
   
-  // Naya ref Bulk Upload ke liye
   const bulkJsonRef = useRef(null);
   
   const [questions, setQuestions] = useState([]);
@@ -85,14 +85,13 @@ export default function AdminPanel() {
       try {
         const data = JSON.parse(event.target.result);
         if (Array.isArray(data)) {
-          // Normalize keys just in case
           const formattedData = data.map(q => ({
             question: q.question || "",
-            questionHindi: q.questionHindi || q.questionAssamese || "", // Fallback
+            questionHindi: q.questionHindi || q.questionAssamese || "",
             options: q.options || ["", "", "", ""],
             answer: q.answer || "",
             explanation: q.explanation || "",
-            explanationHindi: q.explanationHindi || q.explanationAssamese || "", // Fallback
+            explanationHindi: q.explanationHindi || q.explanationAssamese || "",
             examReference: q.examReference || "Imported",
             geometryType: q.geometryType || null,
             geometryData: q.geometryData || null
@@ -109,7 +108,7 @@ export default function AdminPanel() {
       }
     };
     reader.readAsText(uploadedFile);
-    e.target.value = null; // Reset input
+    e.target.value = null;
   };
 
   // ── PDF Extraction ──
@@ -285,7 +284,7 @@ CRITICAL RULES:
     if (window.confirm(`Delete ${selectedForDelete.length} selected questions?`)) {
       setQuestions(prev => prev.filter((_, i) => !selectedForDelete.includes(i)));
       setSelectedForDelete([]);
-      setStatus(`Deleted ${selectedForDelete.length} questions. Note: Not saved to DB yet.`);
+      setStatus(`Deleted ${selectedForDelete.length} questions.`);
       setStatusType('info');
     }
   };
@@ -325,9 +324,7 @@ CRITICAL RULES:
     }
   };
 
-  // ── Download JSON to add to data files ──
-  // User yeh file download karke sahi folder mein paste karega:
-  // src/data/{Subject}/{Category}.json ke andar topicId key mein
+  // ── Download JSON (backup) ──
   const saveToDatabase = () => {
     try {
       if (questions.length === 0) {
@@ -339,20 +336,67 @@ CRITICAL RULES:
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      const subjObj = subjectsData.find(s => s.title === mainCategory);
-      const catObj = subjObj?.categories.find(c => c.title === subCategory);
       const filename = `${mainCategory.replace(/\s+/g,'')}__${subCategory.replace(/\s+/g,'')}__${chapter.replace(/\s+/g,'_')}.json`;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      
-      // 👇 FIX: Yahan se backslash (\) hata diya gaya hai 👇
-      setStatus(`✅ Downloaded! Merge this into: src/data/${mainCategory.includes('GK') || mainCategory.includes('General') ? 'GK' : mainCategory}/${subCategory}.json under the key "${topicTitle}"`);
+      setStatus(`✅ Downloaded! Merge into: src/data/${mainCategory}/${subCategory}.json under key "${topicTitle}"`);
       setStatusType('success');
     } catch (e) {
       setStatus('Download failed: ' + e.message); setStatusType('error');
+    }
+  };
+
+  // ── PUSH TO POSTGRESQL (Direct Backend) ──
+  const pushToPostgreSQL = async () => {
+    if (questions.length === 0) {
+      setStatus('No questions to push.'); setStatusType('error');
+      return;
+    }
+
+    setStatus('Pushing to PostgreSQL database...');
+    setStatusType('loading');
+    setIsLoading(true);
+
+    try {
+      const titleToIdMap = getTitleToId();
+      const topicIdSlug = titleToIdMap[chapter] || chapter.toLowerCase().replace(/\s+/g, '-');
+
+      let successCount = 0;
+      for (const q of questions) {
+        await axios.post('/api/questions', {
+          // 1. Categorization (Saare levels add kar diye)
+          subject: mainCategory,
+          topic: subCategory,
+          subtopic: chapter,
+          chapterId: topicIdSlug,
+          difficulty: difficulty,
+          
+          // 2. Main Question Data
+          question: q.question,
+          questionHindi: q.questionHindi || "",
+          options: q.options,
+          answer: q.answer,
+          explanation: q.explanation || "",
+          explanationHindi: q.explanationHindi || "",
+          examReference: q.examReference || "Expected",
+          
+          // 3. Geometry Data
+          geometryType: q.geometryType || null,
+          geometryData: q.geometryData ? (typeof q.geometryData === 'string' ? q.geometryData : JSON.stringify(q.geometryData)) : null
+        });
+        successCount++;
+      }
+      setStatus(`✅ Success! ${successCount} questions saved to PostgreSQL!`);
+      setStatusType('success');
+    } catch (err) {
+      console.error(err);
+      setStatus(`❌ Failed: Backend chalu hai? Error: ` + (err.response?.data?.error || err.message));
+      setStatusType('error');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -555,6 +599,7 @@ CRITICAL RULES:
           {/* ── QUESTION LIST PANEL (RIGHT) ── */}
           <section className="flex-1 flex flex-col h-full overflow-hidden bg-[#0f1115]/50">
             
+            {/* ── TOP BAR with Buttons ── */}
             <div className="h-16 border-b border-[#2a2f3a] bg-[#0f1115]/95 backdrop-blur-sm sticky top-0 z-20 flex items-center justify-between px-8 shrink-0">
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-2 text-sm text-slate-300 cursor-pointer select-none">
@@ -570,16 +615,46 @@ CRITICAL RULES:
                 <span className="text-sm text-slate-400">{questions.length} Questions Loaded</span>
               </div>
               
+              {/* ── ACTION BUTTONS ── */}
               <div className="flex items-center gap-3">
-                <button onClick={deleteSelected} disabled={selectedForDelete.length === 0} className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors flex items-center gap-2 ${selectedForDelete.length > 0 ? 'border-[#2a2f3a] text-slate-300 hover:text-white hover:bg-[#181b21] cursor-pointer' : 'border-transparent text-slate-600 cursor-not-allowed'}`}>
+                {/* Delete Selected */}
+                <button
+                  onClick={deleteSelected}
+                  disabled={selectedForDelete.length === 0}
+                  className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors flex items-center gap-2 ${
+                    selectedForDelete.length > 0
+                      ? 'border-[#2a2f3a] text-slate-300 hover:text-white hover:bg-[#181b21] cursor-pointer'
+                      : 'border-transparent text-slate-600 cursor-not-allowed'
+                  }`}
+                >
                   <Trash2 className="w-4 h-4" /> Delete Selected
                 </button>
-                <button disabled={questions.length === 0} onClick={saveToDatabase} className="px-5 py-2 rounded-full bg-white text-slate-900 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold transition-colors flex items-center gap-2 cursor-pointer">
+
+                {/* Save to DB (PostgreSQL) */}
+                <button
+                  onClick={pushToPostgreSQL}
+                  disabled={questions.length === 0 || isLoading}
+                  className="px-5 py-2 rounded-full bg-[#0d59f2] text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold transition-colors flex items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(13,89,242,0.4)]"
+                >
+                  {isLoading
+                    ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    : <CloudUpload className="w-4 h-4" />
+                  }
+                  Save to DB
+                </button>
+
+                {/* Download JSON (backup) */}
+                <button
+                  disabled={questions.length === 0}
+                  onClick={saveToDatabase}
+                  className="px-5 py-2 rounded-full bg-white text-slate-900 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-bold transition-colors flex items-center gap-2 cursor-pointer"
+                >
                   <Download className="w-4 h-4" /> Download JSON
                 </button>
               </div>
             </div>
 
+            {/* ── QUESTIONS LIST ── */}
             <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar pb-32">
               
               {questions.length === 0 && !isLoading && (

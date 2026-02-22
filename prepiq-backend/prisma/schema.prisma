@@ -1,0 +1,51 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Question {
+  id               Int     @id @default(autoincrement())
+  subject          String
+  topic            String
+  subtopic         String
+  chapterId        String
+  difficulty       String?
+  question         String
+  questionHindi    String?
+  options          String  // SQLite arrays support nahi karta, isliye isko String rakha hai
+  answer           String
+  explanation      String?
+  explanationHindi String?
+  examReference    String?
+  geometryType     String?
+  geometryData     String?
+}
+
+// ... aapka purana Question model yahan upar rahega ...
+
+// Aapka updated User model
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  isPremium Boolean  @default(false)
+  createdAt DateTime @default(now())
+  results   Result[] // 👈 Nayi line: Ek user ke bohot saare results ho sakte hain
+}
+
+// 🏆 NAYA MODEL: Results save karne ke liye
+model Result {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  subject   String   // Jaise: Maths
+  topic     String   // Jaise: Number System
+  score     Int      // Kitne marks aaye
+  total     Int      // Total kitne marks ka tha
+  createdAt DateTime @default(now())
+}

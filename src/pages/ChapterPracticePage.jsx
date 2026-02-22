@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios'; // 👈 NAYA IMPORT DATABASE CALL KE LIYE
 import { 
   GraduationCap, ListOrdered, Bookmark, CheckCircle2, ArrowRight, 
   X, Sparkles, Bot, Send, ArrowLeft, Lightbulb, Languages, 
-  AlertCircle, Trophy, XCircle, MinusCircle, RotateCcw 
+  AlertCircle, Trophy, RotateCcw 
 } from 'lucide-react';
 import { fetchAiResponse } from '../services/aiService';
 import { getQuestions } from '../data/questionsLoader';
@@ -70,8 +71,6 @@ export default function ChapterPracticePage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, isAiChatOpen]);
 
-  // ✅ FIX: Jab AI Chat open ho, AI ko question ka pura context bhejo
-  // Aur suggested follow-up questions bhi generate karo
   const openAiChatForQuestion = async () => {
     if (isAiChatOpen) {
       setIsAiChatOpen(false);
@@ -81,40 +80,27 @@ export default function ChapterPracticePage() {
     if (!currentQuestionData) return;
 
     const isAlreadyContextSet = chatHistory.some(m => m._qIndex === currentQ);
-    if (isAlreadyContextSet) return; // Already context diya hua hai is question ke liye
+    if (isAlreadyContextSet) return;
 
-    // AI ko question ka pura context bhejo
     const userAnswered = answers[currentQ] !== undefined;
     const selectedOption = userAnswered ? currentQuestionData.options[answers[currentQ]] : null;
     const isCorrect = selectedOption === currentQuestionData.answer;
 
     const contextPrompt = `You are PrepIQ AI Tutor helping a student practice for competitive exams.
-
 CURRENT QUESTION:
 "${currentQuestionData.question}"
-
 OPTIONS:
 ${currentQuestionData.options.map((o, i) => `${['A','B','C','D'][i]}) ${o}`).join('\n')}
-
 CORRECT ANSWER: ${currentQuestionData.answer}
-
-STUDENT STATUS: ${
-  userAnswered
-    ? `Student selected "${selectedOption}" which is ${isCorrect ? '✅ CORRECT' : `❌ WRONG (correct was: ${currentQuestionData.answer})`}`
-    : 'Student has not answered yet'
-}
-
+STUDENT STATUS: ${userAnswered ? `Student selected "${selectedOption}" which is ${isCorrect ? '✅ CORRECT' : `❌ WRONG (correct was: ${currentQuestionData.answer})`}` : 'Student has not answered yet'}
 ${currentQuestionData.explanation ? `EXPLANATION: ${currentQuestionData.explanation}` : ''}
-
 Now greet the student briefly, acknowledge their status, and give them 3 short suggested questions they can ask you about this topic. Format the suggestions as a numbered list like:
 1. [short question]
 2. [short question]  
 3. [short question]
-
 Keep it concise and friendly.`;
 
     setChatHistory(prev => [...prev, { role: 'ai', text: '🤔 Analyzing your question...', _qIndex: currentQ }]);
-
     const aiResponse = await fetchAiResponse(contextPrompt, `Topic: ${topicId}, Question ${currentQ + 1}`);
 
     setChatHistory(prev => {
@@ -123,7 +109,6 @@ Keep it concise and friendly.`;
     });
   };
 
-  // ✅ FIX: Chat submit mein bhi question ka pura context bhejo
   const handleChatSubmit = async (e) => {
     e.preventDefault();
     if (!chatInput.trim()) return;
@@ -133,7 +118,6 @@ Keep it concise and friendly.`;
     setChatInput("");
     setChatHistory(prev => [...prev, { role: 'ai', text: "Thinking... 🤔" }]);
 
-    // Pura question context har message ke saath bhejo
     const questionContext = currentQuestionData ? `
 CONTEXT - Current Question being discussed:
 Question: "${currentQuestionData.question}"
@@ -166,7 +150,8 @@ Topic: ${topicId}, Chapter Practice Session
   
   const handleMarkReview = () => setReview(prev => ({ ...prev, [currentQ]: !prev[currentQ] }));
   
-  const handleNext = () => {
+  // 🏆 YAHAN SCORE SAVE HOGA 🏆
+  const handleNext = async () => {
     if (currentQ < totalQuestions - 1) {
       const nextQ = currentQ + 1;
       setCurrentQ(nextQ);
@@ -174,7 +159,37 @@ Topic: ${topicId}, Chapter Practice Session
       setShowHindi(false);
       setShowQHindi(false);
     } else {
+      // 1. Calculate the final score right now
+      let correct = 0;
+      Object.entries(answers).forEach(([qIndex, selectedOptionIdx]) => {
+        const question = allQuestions[qIndex];
+        if (question && question.options[selectedOptionIdx] === question.answer) {
+          correct++;
+        }
+      });
+
+      // 2. Show Result Screen
       setShowResult(true);
+
+      // 3. Save to Database using Backend API
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const userObj = JSON.parse(userStr);
+          await axios.post('/api/results', {
+            userId: userObj.id,
+            subject: subjectId,
+            topic: topicId,
+            score: correct,
+            total: totalQuestions
+          });
+          console.log("✅ Score saved successfully in database!");
+        } catch (err) {
+          console.error("⚠️ Failed to save score:", err);
+        }
+      } else {
+        console.log("⚠️ Score not saved because user is not logged in.");
+      }
     }
   };
 
@@ -311,7 +326,7 @@ Topic: ${topicId}, Chapter Practice Session
                   <Trophy className="w-10 h-10 text-[#0d59f2]" />
                 </div>
                 <h2 className="text-3xl font-bold text-white mb-2">Practice Completed!</h2>
-                <p className="text-slate-400">Here is a quick summary of your performance.</p>
+                <p className="text-slate-400">Your score has been saved. Here is your performance summary.</p>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
                 <div className="bg-[#161920] border border-[#282e39] rounded-2xl p-4 text-center">
@@ -378,7 +393,6 @@ Topic: ${topicId}, Chapter Practice Session
                           Question {currentQ + 1}
                         </span>
                         <div className="flex items-center gap-2">
-                          {/* Hindi Translate Button */}
                           <button onClick={handleTranslateQuestion} disabled={isTranslatingQ}
                             className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-60
                               ${showQHindi ? 'bg-orange-500/20 border-orange-500/40 text-orange-400' : 'bg-[#282e39] border-slate-600 text-slate-300 hover:bg-[#3b4354]'}`}>
@@ -386,7 +400,6 @@ Topic: ${topicId}, Chapter Practice Session
                               ? <><div className="w-3 h-3 border border-slate-400 border-t-white rounded-full animate-spin" /> ...</>
                               : <><Languages className="w-3 h-3" /> {showQHindi ? 'English' : 'Hindi'}</>}
                           </button>
-                          {/* ✅ AI Tutor Button — opens with full question context */}
                           <button onClick={openAiChatForQuestion}
                             className="group relative inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(168,85,247,0.4)] hover:shadow-[0_0_20px_rgba(59,130,246,0.6)] hover:scale-105 transition-all duration-300 border border-white/20 overflow-hidden cursor-pointer">
                             <span className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out"></span>
@@ -397,7 +410,6 @@ Topic: ${topicId}, Chapter Practice Session
                         </div>
                       </div>
 
-                      {/* Question Text */}
                       <div className="text-base md:text-xl font-medium leading-relaxed text-slate-200 relative z-10">
                         {showQHindi
                           ? <div className="font-display"><MathText text={hindiQuestionText} /></div>
@@ -467,7 +479,7 @@ Topic: ${topicId}, Chapter Practice Session
                 </div>
               </div>
 
-              {/* ✅ AI CHAT WINDOW (FIXED: MathText wrapper added) */}
+              {/* AI CHAT WINDOW */}
               {isAiChatOpen && (
                 <div className="absolute bottom-[75px] right-4 lg:right-6 w-[90%] md:w-96 max-w-sm bg-[#161920]/95 backdrop-blur-xl border border-[#282e39] rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.5),0_0_20px_rgba(168,85,247,0.15)] flex flex-col z-40 h-[480px] overflow-hidden">
                   <div className="p-4 bg-gradient-to-r from-purple-500/20 to-blue-500/20 border-b border-white/5 flex items-center justify-between shrink-0">
@@ -493,10 +505,7 @@ Topic: ${topicId}, Chapter Practice Session
                           {msg.role === 'user' ? <GraduationCap className="w-3.5 h-3.5 text-white" /> : <Bot className="w-3.5 h-3.5 text-white" />}
                         </div>
                         <div className={`rounded-2xl p-3 text-sm whitespace-pre-wrap ${msg.role === 'user' ? 'bg-[#0d59f2]/20 border border-[#0d59f2]/30 rounded-tr-none text-blue-100' : 'bg-[#282e39] border border-white/5 rounded-tl-none text-slate-200'}`}>
-                          
-                          {/* ✅ FIX: Yahan {msg.text} ko hata kar <MathText text={msg.text} /> kar diya gaya hai */}
                           <MathText text={msg.text} />
-                          
                         </div>
                       </div>
                     ))}

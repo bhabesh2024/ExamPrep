@@ -232,5 +232,43 @@ export const getQuestionsByTitle = (topicTitle) => {
  * Get the topic ID for a given title — used by AdminPanel
  */
 export const getTitleToId = () => TITLE_TO_ID;
+// ─────────────────────────────────────────────
+// ✅ NAYE FUNCTIONS: MOCK TESTS KE LIYE RANDOM QUESTIONS
+// ─────────────────────────────────────────────
 
+const MATHS_TOPIC_IDS = [
+  "number-system", "averages", "percentage", "profit-and-loss",
+  "work-and-time", "ratio", "si-and-ci", "algebra", "trigonometry",
+  "geometry", "mensuration", "statistics", "speed-distance-time",
+  "train", "lcm-and-hcf", "fraction-and-decimal", "boat-and-streams",
+  "partnership"
+];
+
+// Array ko randomly shuffle karne ka function
+const shuffleArray = (array) => {
+  let shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+// Sirf Maths ke chapters se random questions nikalne ke liye (Sectional Mock)
+export const getRandomMathsQuestions = (count) => {
+  let pool = [];
+  MATHS_TOPIC_IDS.forEach(id => {
+    if (masterIndex[id]) pool = pool.concat(masterIndex[id]);
+  });
+  return shuffleArray(pool).slice(0, count);
+};
+
+// Sabhi subjects se milakar random questions nikalne ke liye (Full Mock)
+export const getRandomAllQuestions = (count) => {
+  let pool = [];
+  Object.values(masterIndex).forEach(questions => {
+    pool = pool.concat(questions);
+  });
+  return shuffleArray(pool).slice(0, count);
+};
 export default masterIndex;
