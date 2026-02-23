@@ -7,18 +7,46 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    const saved = localStorage.getItem('theme');
+    return saved ? saved === 'dark' : true;
+  });
   
-  // ── AUTH STATE ──
   const [user, setUser] = useState(null);
-
-  // ── SEARCH BAR STATE ──
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
 
-  // Check Auth Status on Load (With Crash Protection)
+  // Apply theme to document
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.style.setProperty('--bg-primary', '#0a0a0a');
+      root.style.setProperty('--bg-secondary', '#161616');
+      root.style.setProperty('--bg-card', '#1a1d24');
+      root.style.setProperty('--text-primary', '#f1f5f9');
+      root.style.setProperty('--text-secondary', '#94a3b8');
+      root.style.setProperty('--border-color', '#27272a');
+      root.classList.remove('light-mode');
+      root.classList.add('dark-mode');
+    } else {
+      root.style.setProperty('--bg-primary', '#f8fafc');
+      root.style.setProperty('--bg-secondary', '#f1f5f9');
+      root.style.setProperty('--bg-card', '#ffffff');
+      root.style.setProperty('--text-primary', '#0f172a');
+      root.style.setProperty('--text-secondary', '#475569');
+      root.style.setProperty('--border-color', '#e2e8f0');
+      root.classList.remove('dark-mode');
+      root.classList.add('light-mode');
+    }
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+    
+    // Apply bg to body
+    document.body.style.backgroundColor = isDarkMode ? '#0a0a0a' : '#f8fafc';
+    document.body.style.color = isDarkMode ? '#f1f5f9' : '#0f172a';
+  }, [isDarkMode]);
+
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('user');
@@ -26,7 +54,6 @@ export default function Navbar() {
         setUser(JSON.parse(storedUser));
       }
     } catch (e) {
-      console.error("Session data issue, clearing...", e);
       localStorage.removeItem('user');
     }
   }, [location.pathname]); 
@@ -41,7 +68,6 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
-  // ── PREPARE SEARCH DATA ──
   const searchableItems = useMemo(() => {
     const items = [];
     subjectsData.forEach(sub => {
@@ -56,11 +82,9 @@ export default function Navbar() {
     return items;
   }, []);
 
-  // ── SEARCH HANDLER ──
   const handleSearch = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    
     if (query.trim().length > 0) {
       const results = searchableItems.filter(item => 
         item.name.toLowerCase().includes(query.toLowerCase())
@@ -90,32 +114,42 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
+  // Theme-aware classes
+  const navBg = isDarkMode ? 'rgba(10, 10, 10, 0.7)' : 'rgba(255, 255, 255, 0.85)';
+  const navBorder = isDarkMode ? 'border-[#27272a]' : 'border-slate-200';
+  const inputBg = isDarkMode ? 'bg-[#161616]/80 text-slate-100 placeholder-slate-500 focus:bg-[#161616] focus:border-[#0d59f2]/50 focus:ring-[#0d59f2]/50' : 'bg-slate-100 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[#0d59f2]/50 focus:ring-[#0d59f2]/50';
+  const dropdownBg = isDarkMode ? 'bg-[#181b21] border-[#27272a]' : 'bg-white border-slate-200';
+  const resultHover = isDarkMode ? 'hover:bg-white/5 border-[#2a2f3a]' : 'hover:bg-slate-50 border-slate-100';
+  const textPrimary = isDarkMode ? 'text-slate-200' : 'text-slate-800';
+  const textSecondary = isDarkMode ? 'text-slate-500' : 'text-slate-500';
+  const mobileMenuBg = isDarkMode ? 'bg-[#0a0a0a]/98' : 'bg-white/98';
+  const mobileLinkHover = isDarkMode ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-100 hover:text-slate-900';
+  const logoText = isDarkMode ? 'text-white' : 'text-slate-900';
+  const navLinks = isDarkMode ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900';
+
   return (
     <>
       <style>{`
-        .glass-nav { background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .glass-nav { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .dropdown-trigger:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-menu { opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .dropdown-item:hover .icon-box { transform: scale(1.1); }
-        .page-dimmer { opacity: 0; visibility: hidden; transition: opacity 0.3s ease; }
-        .dropdown-trigger:hover ~ .page-dimmer { opacity: 1; visibility: visible; }
         .search-scrollbar::-webkit-scrollbar { width: 4px; }
         .search-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
       `}</style>
 
-      <header className="fixed top-0 w-full z-50 glass-nav border-b border-[#27272a]">
+      <header className={`fixed top-0 w-full z-50 glass-nav border-b ${navBorder}`} style={{ background: navBg }}>
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             
-            {/* LOGO SECTION */}
+            {/* LOGO */}
             <div onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity shrink-0">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0d59f2] to-violet-600 flex items-center justify-center text-white shadow-lg shadow-[#0d59f2]/20">
-                <GraduationCap className="w-5 h-5" />
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#0d59f2] to-violet-600 flex items-center justify-center text-white shadow-lg shadow-[#0d59f2]/20">
+                <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white">PrepIQ</span>
+              <span className={`text-lg sm:text-xl font-bold tracking-tight ${logoText}`}>PrepIQ</span>
             </div>
 
-            {/* ── DESKTOP SEARCH & THEME ── */}
+            {/* DESKTOP SEARCH & THEME TOGGLE */}
             <div className="hidden md:flex flex-1 items-center justify-center px-4 lg:px-8 gap-4" ref={searchRef}>
               <div className="relative w-full max-w-md group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0d59f2] transition-colors z-10">
@@ -123,23 +157,23 @@ export default function Navbar() {
                 </div>
                 <input 
                   value={searchQuery} onChange={handleSearch} onFocus={() => searchQuery.trim().length > 0 && setIsSearchOpen(true)}
-                  className="block w-full pl-10 pr-3 py-2.5 border border-transparent rounded-full leading-5 bg-[#161616]/80 text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-[#161616] focus:border-[#0d59f2]/50 focus:ring-1 focus:ring-[#0d59f2]/50 sm:text-sm transition-all shadow-inner" 
+                  className={`block w-full pl-10 pr-3 py-2.5 border border-transparent rounded-full leading-5 sm:text-sm transition-all shadow-inner outline-none ${inputBg}`}
                   placeholder="Search exams, topics..." type="text"
                 />
                 
                 {isSearchOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-[#181b21] border border-[#27272a] rounded-xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
+                  <div className={`absolute top-full left-0 right-0 mt-2 border rounded-xl shadow-2xl overflow-hidden z-50 ${dropdownBg}`}>
                     {searchResults.length > 0 ? (
                       <ul className="max-h-80 overflow-y-auto search-scrollbar">
                         {searchResults.map((result, idx) => (
-                          <li key={idx} onClick={() => handleResultClick(result.path)} className="px-4 py-3 hover:bg-white/5 cursor-pointer border-b border-[#2a2f3a] last:border-0 transition-colors flex flex-col group/result">
-                            <span className="text-sm font-semibold text-slate-200 group-hover/result:text-[#0d59f2] transition-colors">{result.name}</span>
-                            <span className="text-xs text-slate-500 mt-0.5">{result.type} {result.parent ? `in ${result.parent}` : ''}</span>
+                          <li key={idx} onClick={() => handleResultClick(result.path)} className={`px-4 py-3 cursor-pointer border-b last:border-0 transition-colors flex flex-col group/result ${resultHover}`}>
+                            <span className={`text-sm font-semibold group-hover/result:text-[#0d59f2] transition-colors ${textPrimary}`}>{result.name}</span>
+                            <span className={`text-xs mt-0.5 ${textSecondary}`}>{result.type} {result.parent ? `in ${result.parent}` : ''}</span>
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <div className="px-4 py-8 flex flex-col items-center justify-center text-slate-500">
+                      <div className={`px-4 py-8 flex flex-col items-center justify-center ${textSecondary}`}>
                         <Search className="w-8 h-8 mb-2 opacity-20" />
                         <span className="text-sm">No results found</span>
                       </div>
@@ -148,59 +182,59 @@ export default function Navbar() {
                 )}
               </div>
               
-              <div aria-label="Toggle Dark Mode" className="bg-white/5 border border-white/10 backdrop-blur-sm h-10 w-[64px] rounded-full relative cursor-pointer flex items-center shrink-0 hidden lg:flex" role="button" onClick={() => setIsDarkMode(!isDarkMode)}>
+              {/* THEME TOGGLE - Fully Functional */}
+              <button 
+                aria-label="Toggle Theme"
+                className={`h-10 w-[64px] rounded-full relative cursor-pointer flex items-center shrink-0 hidden lg:flex border transition-colors ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-200 border-slate-300'}`}
+                onClick={() => setIsDarkMode(!isDarkMode)}
+              >
                 <div className="absolute inset-0 flex justify-between items-center px-1.5 text-[18px]">
-                  <Sun className="w-4 h-4 text-amber-500/80" />
-                  <Moon className="w-4 h-4 text-indigo-400/80" />
+                  <Sun className={`w-4 h-4 ${isDarkMode ? 'text-amber-500/80' : 'text-amber-500'}`} />
+                  <Moon className={`w-4 h-4 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-400/50'}`} />
                 </div>
                 <div className={`absolute h-7 w-7 rounded-full flex items-center justify-center text-white transition-transform duration-300 ${isDarkMode ? 'translate-x-[28px] bg-gradient-to-br from-indigo-500 to-indigo-800 shadow-[0_0_10px_rgba(79,70,229,0.5)]' : 'translate-x-[2px] bg-gradient-to-br from-amber-400 to-amber-600 shadow-[0_0_10px_rgba(245,158,11,0.5)]'}`}>
                   {isDarkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                 </div>
-              </div>
+              </button>
             </div>
 
-            {/* ── DESKTOP NAVIGATION & AUTH ── */}
+            {/* DESKTOP NAVIGATION & AUTH */}
             <div className="flex items-center shrink-0">
-              <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300 mr-6">
-                <button onClick={() => navigate('/')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/') ? 'text-white' : ''}`}>Home</button>
-                <button onClick={() => navigate('/practice')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/practice') ? 'text-white' : ''}`}>Practice</button>
-                
-                {/* 🔥 Leaderboard yahan se hata diya gaya hai 🔥 */}
-
-                <button onClick={() => navigate('/pricing')} className={`hover:text-white transition-colors cursor-pointer flex items-center gap-1 ${isActive('/pricing') ? 'text-white' : ''}`}>
+              <nav className={`hidden lg:flex items-center gap-5 xl:gap-6 text-sm font-medium mr-6 ${navLinks}`}>
+                <button onClick={() => navigate('/')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>Home</button>
+                <button onClick={() => navigate('/practice')} className={`transition-colors cursor-pointer ${isActive('/practice') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>Practice</button>
+                <button onClick={() => navigate('/pricing')} className={`transition-colors cursor-pointer flex items-center gap-1 ${isActive('/pricing') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>
                   Pricing <Sparkles className="w-3 h-3 text-yellow-400" />
                 </button>
-                <button onClick={() => navigate('/about')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/about') ? 'text-white' : ''}`}>About</button>
-                {/* ADVANCED SUBJECTS DROPDOWN */}
-                <div className="group dropdown-trigger relative h-20 flex items-center">
-                  <button className="flex items-center gap-1 hover:text-white transition-colors focus:outline-none group-hover:text-white cursor-pointer">
+                <button onClick={() => navigate('/about')} className={`transition-colors cursor-pointer ${isActive('/about') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>About</button>
+                
+                {/* SUBJECTS DROPDOWN */}
+                <div className="group dropdown-trigger relative h-16 sm:h-20 flex items-center">
+                  <button className={`flex items-center gap-1 transition-colors focus:outline-none cursor-pointer ${isDarkMode ? 'hover:text-white group-hover:text-white' : 'hover:text-slate-900 group-hover:text-slate-900'}`}>
                     Subjects <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                   </button>
                   
-                  <div className="dropdown-menu absolute top-full right-[-100px] w-[600px] pt-4">
-                    <div className="glass-nav rounded-2xl border border-[#27272a] p-6 shadow-2xl shadow-violet-500/10 relative overflow-hidden bg-[#0a0a0a]">
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-violet-600/10 rounded-full blur-[60px] pointer-events-none"></div>
-                      <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#0d59f2]/10 rounded-full blur-[60px] pointer-events-none"></div>
-                      <div className="relative z-10 grid grid-cols-2 gap-4 text-left">
-                        {/* Dropdown Items */}
-                        <button onClick={() => { navigate('/practice/gk'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 w-full text-left">
-                          <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shrink-0"><Globe className="w-6 h-6" /></div>
-                          <div><h4 className="text-white font-semibold">General Knowledge</h4><p className="text-slate-400 text-xs mt-1">Current affairs & history.</p></div>
+                  <div className="dropdown-menu absolute top-full right-[-100px] w-[580px] xl:w-[600px] pt-4">
+                    <div className={`rounded-2xl border p-5 xl:p-6 shadow-2xl relative overflow-hidden ${isDarkMode ? 'bg-[#0d0d0d] border-[#27272a]' : 'bg-white border-slate-200'}`}>
+                      <div className="relative z-10 grid grid-cols-2 gap-3 xl:gap-4 text-left">
+                        <button onClick={() => { navigate('/practice/gk'); setIsMobileMenuOpen(false); }} className={`flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left border border-transparent ${isDarkMode ? 'hover:bg-white/5 hover:border-white/5' : 'hover:bg-slate-50 hover:border-slate-100'}`}>
+                          <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shrink-0"><Globe className="w-5 h-5 xl:w-6 xl:h-6" /></div>
+                          <div><h4 className={`font-semibold text-sm xl:text-base ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>General Knowledge</h4><p className={`text-xs mt-1 ${textSecondary}`}>Current affairs & history.</p></div>
                         </button>
-                        <button onClick={() => { navigate('/practice/maths'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 w-full text-left">
-                          <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shrink-0"><Calculator className="w-6 h-6" /></div>
-                          <div><h4 className="text-white font-semibold">Mathematics</h4><p className="text-slate-400 text-xs mt-1">Algebra & geometry prep.</p></div>
+                        <button onClick={() => { navigate('/practice/maths'); setIsMobileMenuOpen(false); }} className={`flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left border border-transparent ${isDarkMode ? 'hover:bg-white/5 hover:border-white/5' : 'hover:bg-slate-50 hover:border-slate-100'}`}>
+                          <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shrink-0"><Calculator className="w-5 h-5 xl:w-6 xl:h-6" /></div>
+                          <div><h4 className={`font-semibold text-sm xl:text-base ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Mathematics</h4><p className={`text-xs mt-1 ${textSecondary}`}>Algebra & geometry prep.</p></div>
                         </button>
-                        <button onClick={() => { navigate('/practice/reasoning'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 w-full text-left">
-                          <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white shrink-0"><Brain className="w-6 h-6" /></div>
-                          <div><h4 className="text-white font-semibold">Reasoning</h4><p className="text-slate-400 text-xs mt-1">Logical & critical thinking.</p></div>
+                        <button onClick={() => { navigate('/practice/reasoning'); setIsMobileMenuOpen(false); }} className={`flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left border border-transparent ${isDarkMode ? 'hover:bg-white/5 hover:border-white/5' : 'hover:bg-slate-50 hover:border-slate-100'}`}>
+                          <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white shrink-0"><Brain className="w-5 h-5 xl:w-6 xl:h-6" /></div>
+                          <div><h4 className={`font-semibold text-sm xl:text-base ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Reasoning</h4><p className={`text-xs mt-1 ${textSecondary}`}>Logical & critical thinking.</p></div>
                         </button>
-                        <button onClick={() => { navigate('/practice/english'); setIsMobileMenuOpen(false); }} className="dropdown-item flex items-start gap-4 p-3 rounded-xl hover:bg-white/5 transition-all group/item border border-transparent hover:border-white/5 w-full text-left">
-                          <div className="icon-box w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shrink-0"><BookOpen className="w-6 h-6" /></div>
-                          <div><h4 className="text-white font-semibold">English</h4><p className="text-slate-400 text-xs mt-1">Grammar & vocabulary.</p></div>
+                        <button onClick={() => { navigate('/practice/english'); setIsMobileMenuOpen(false); }} className={`flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left border border-transparent ${isDarkMode ? 'hover:bg-white/5 hover:border-white/5' : 'hover:bg-slate-50 hover:border-slate-100'}`}>
+                          <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shrink-0"><BookOpen className="w-5 h-5 xl:w-6 xl:h-6" /></div>
+                          <div><h4 className={`font-semibold text-sm xl:text-base ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>English</h4><p className={`text-xs mt-1 ${textSecondary}`}>Grammar & vocabulary.</p></div>
                         </button>
                       </div>
-                      <div className="mt-4 pt-4 border-t border-white/5 flex justify-between items-center relative z-10">
+                      <div className={`mt-4 pt-4 border-t flex justify-between items-center relative z-10 ${isDarkMode ? 'border-white/5' : 'border-slate-100'}`}>
                         <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-xs font-medium text-[#0d59f2] hover:text-[#3b82f6] flex items-center gap-1 transition-colors">
                           View all subjects <ArrowRight className="w-3 h-3" />
                         </button>
@@ -210,32 +244,27 @@ export default function Navbar() {
                 </div>
               </nav>
 
-              {/* ── DESKTOP AUTH BUTTONS ── */}
-              <div className="hidden lg:flex items-center pl-6 border-l border-[#27272a]">
+              {/* DESKTOP AUTH BUTTONS */}
+              <div className={`hidden lg:flex items-center pl-5 xl:pl-6 border-l ${isDarkMode ? 'border-[#27272a]' : 'border-slate-200'}`}>
                 {user ? (
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 xl:gap-4">
                     <button 
                       onClick={() => navigate('/profile')} 
-                      className="flex items-center gap-2 bg-[#161616] hover:bg-[#27272a] transition-colors py-1.5 px-3 rounded-full border border-[#27272a] cursor-pointer"
-                      title="View Profile"
+                      className={`flex items-center gap-2 transition-colors py-1.5 px-3 rounded-full border cursor-pointer ${isDarkMode ? 'bg-[#161616] hover:bg-[#27272a] border-[#27272a]' : 'bg-slate-100 hover:bg-slate-200 border-slate-200'}`}
                     >
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-xs font-bold text-white uppercase shadow-sm">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-xs font-bold text-white uppercase">
                         {user.name ? user.name.charAt(0) : 'U'}
                       </div>
-                      <span className="text-sm font-medium text-slate-200">{user.name?.split(' ')[0]}</span>
+                      <span className={`text-sm font-medium ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>{user.name?.split(' ')[0]}</span>
                     </button>
-                    <button 
-                      onClick={handleLogout} 
-                      className="text-slate-400 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-500/10" 
-                      title="Logout"
-                    >
+                    <button onClick={handleLogout} className="text-slate-400 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-500/10" title="Logout">
                       <LogOut className="w-5 h-5" />
                     </button>
                   </div>
                 ) : (
                   <button 
                     onClick={() => navigate('/login')} 
-                    className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:scale-105 active:scale-95 flex items-center gap-2"
+                    className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-4 xl:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:scale-105 active:scale-95 flex items-center gap-2"
                   >
                     <User className="w-4 h-4" />
                     Sign In
@@ -244,41 +273,39 @@ export default function Navbar() {
               </div>
 
               {/* MOBILE MENU ICON */}
-              <button className="lg:hidden ml-4 text-slate-400 hover:text-white transition-colors cursor-pointer" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              <button className={`lg:hidden ml-3 sm:ml-4 transition-colors cursor-pointer ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
             </div>
-            
-            <div className="page-dimmer fixed inset-0 bg-black/60 backdrop-blur-sm z-[-1] pointer-events-none top-20 hidden lg:block"></div>
           </div>
         </div>
       </header>
 
-      {/* ── MOBILE MENU DRAWER ── */}
+      {/* MOBILE MENU DRAWER */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-40 bg-[#0a0a0a]/98 backdrop-blur-2xl lg:hidden pt-24 px-6 flex flex-col h-screen overflow-y-auto">
+        <div className={`fixed inset-0 z-40 backdrop-blur-2xl lg:hidden pt-20 sm:pt-24 px-5 sm:px-6 flex flex-col h-screen overflow-y-auto ${mobileMenuBg}`}>
           
           {user ? (
             <div 
               onClick={() => { navigate('/profile'); setIsMobileMenuOpen(false); }} 
-              className="flex items-center justify-between bg-[#161616] hover:bg-[#27272a] transition-colors p-4 rounded-xl border border-[#27272a] mb-6 cursor-pointer"
+              className={`flex items-center justify-between p-4 rounded-xl border mb-5 sm:mb-6 cursor-pointer transition-colors ${isDarkMode ? 'bg-[#161616] hover:bg-[#27272a] border-[#27272a]' : 'bg-slate-100 hover:bg-slate-200 border-slate-200'}`}
             >
                <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-lg font-bold text-white uppercase">
                     {user.name ? user.name.charAt(0) : 'U'}
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">{user.name}</h3>
+                    <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{user.name}</h3>
                     <p className="text-slate-400 text-xs">View Dashboard & Progress</p>
                   </div>
                </div>
                <ArrowRight className="w-5 h-5 text-slate-500" />
             </div>
           ) : (
-             <div className="mb-6">
+             <div className="mb-5 sm:mb-6">
                 <button 
                   onClick={() => { navigate('/login'); setIsMobileMenuOpen(false); }} 
-                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
                 >
                   <User className="w-5 h-5" />
                   Sign In / Create Account
@@ -286,37 +313,59 @@ export default function Navbar() {
              </div>
           )}
 
-          <div className="relative w-full mb-6">
+          {/* Mobile Search */}
+          <div className="relative w-full mb-5 sm:mb-6">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
               <Search className="w-5 h-5" />
             </div>
             <input 
               value={searchQuery} onChange={handleSearch}
-              className="block w-full pl-10 pr-3 py-3 border border-[#27272a] rounded-xl leading-5 bg-[#161616] text-slate-100 placeholder-slate-500 focus:outline-none focus:border-[#0d59f2]" 
+              className={`block w-full pl-10 pr-3 py-3 border rounded-xl leading-5 outline-none ${isDarkMode ? 'border-[#27272a] bg-[#161616] text-slate-100 placeholder-slate-500 focus:border-[#0d59f2]' : 'border-slate-200 bg-slate-100 text-slate-800 placeholder-slate-400 focus:border-[#0d59f2]'}`}
               placeholder="Search subjects..." type="text"
             />
           </div>
 
-          <nav className="flex flex-col gap-2 text-lg font-medium text-slate-300">
-            <button onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">Home</button>
-            <button onClick={() => { navigate('/practice'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">Practice</button>
-            <button onClick={() => { navigate('/pricing'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors flex items-center justify-between">
+          {/* Mobile Theme Toggle */}
+          <div className={`flex items-center justify-between p-4 rounded-xl border mb-4 ${isDarkMode ? 'bg-[#161616] border-[#27272a]' : 'bg-slate-100 border-slate-200'}`}>
+            <span className={`text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+              {isDarkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
+            </span>
+            <button 
+              onClick={() => setIsDarkMode(!isDarkMode)}
+              className={`h-8 w-14 rounded-full relative transition-colors ${isDarkMode ? 'bg-indigo-600' : 'bg-amber-400'}`}
+            >
+              <div className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow-sm transition-transform duration-300 ${isDarkMode ? 'translate-x-7' : 'translate-x-1'}`}></div>
+            </button>
+          </div>
+
+          <nav className={`flex flex-col gap-1 text-base font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
+            <button onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors ${mobileLinkHover}`}>Home</button>
+            <button onClick={() => { navigate('/practice'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors ${mobileLinkHover}`}>Practice</button>
+            <button onClick={() => { navigate('/pricing'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors flex items-center justify-between ${mobileLinkHover}`}>
               <span>Pricing</span>
               <Sparkles className="w-4 h-4 text-yellow-400" />
             </button>
-            <button onClick={() => { navigate('/about'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">About</button>
-            <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 text-[#0d59f2] cursor-pointer transition-colors">View All Subjects →</button>
+            <button onClick={() => { navigate('/about'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors ${mobileLinkHover}`}>About</button>
+            <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl text-[#0d59f2] transition-colors">View All Subjects →</button>
+            <button onClick={() => { navigate('/contact'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors ${mobileLinkHover}`}>Contact</button>
             
             {user && (
               <button 
                 onClick={handleLogout} 
-                className="text-left py-3 px-4 rounded-xl hover:bg-red-500/10 text-red-400 mt-4 flex items-center gap-2 transition-colors border border-red-500/20 bg-red-500/5"
+                className="text-left py-3 px-4 rounded-xl hover:bg-red-500/10 text-red-400 mt-3 flex items-center gap-2 transition-colors border border-red-500/20 bg-red-500/5"
               >
                 <LogOut className="w-5 h-5" />
                 Sign Out
               </button>
             )}
           </nav>
+
+          {/* Mobile Footer Links */}
+          <div className={`mt-auto pt-6 pb-8 border-t mt-6 flex flex-wrap gap-3 ${isDarkMode ? 'border-[#27272a]' : 'border-slate-200'}`}>
+            <button onClick={() => { navigate('/terms'); setIsMobileMenuOpen(false); }} className="text-xs text-slate-500 hover:text-[#0d59f2]">Terms</button>
+            <button onClick={() => { navigate('/privacy'); setIsMobileMenuOpen(false); }} className="text-xs text-slate-500 hover:text-[#0d59f2]">Privacy</button>
+            <button onClick={() => { navigate('/cookie-policy'); setIsMobileMenuOpen(false); }} className="text-xs text-slate-500 hover:text-[#0d59f2]">Cookie Policy</button>
+          </div>
         </div>
       )}
     </>

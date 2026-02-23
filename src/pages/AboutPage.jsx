@@ -1,6 +1,76 @@
-import React, { useEffect } from 'react';
-import { Target, Brain, Zap, Users, Globe, Award, ChevronRight, ShieldCheck, Sparkles } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Target, Brain, Zap, Users, Globe, Award, ChevronRight, ShieldCheck, Sparkles, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
+
+function FAQSection() {
+  const [openIdx, setOpenIdx] = useState(null);
+
+  const faqs = [
+    {
+      q: "PrepIQ kya hai aur yeh kiske liye hai?",
+      a: "PrepIQ ek AI-powered exam preparation platform hai jo specifically Assam ke government competitive exams jaise ADRE, SSC, aur other state-level exams ke aspirants ke liye bana gaya hai. Yahan aapko full mock tests, chapter-wise practice, aur smart analytics milegi."
+    },
+    {
+      q: "Kya PrepIQ free hai?",
+      a: "Haan! PrepIQ ka Basic plan bilkul free hai jisme aap free mock tests, standard subjects, aur basic progress tracking use kar sakte hain. Premium (Pro) plan mein aapko exclusive content, advanced analytics, aur ad-free experience milti hai."
+    },
+    {
+      q: "ADRE exam ke liye PrepIQ kaise help karega?",
+      a: "PrepIQ pe aapko ADRE ke exact pattern par based 50+ full mock tests milenge — 150 questions, 180 minutes. Saath hi subject-wise sectional tests bhi hain jisse aap weak areas pe focused practice kar sakte ho."
+    },
+    {
+      q: "Kya mobile par use kar sakte hain?",
+      a: "Bilkul! PrepIQ fully mobile-responsive hai. Aap apne phone ya tablet par bhi seamlessly practice kar sakte hain, bilkul ek app jaise experience ke saath."
+    },
+    {
+      q: "Questions Hindi mein available hain?",
+      a: "Haan! Practice mode mein har question ke saath ek 'Hindi' button hota hai. Isse aap ek click mein question ko Hindi mein translate kar sakte hain. Yeh ADRE aur state exam aspirants ke liye specially helpful hai."
+    },
+    {
+      q: "Kya mock tests ke baad detailed analysis milti hai?",
+      a: "Haan. Har mock test ya practice session ke baad aapko ek detailed result screen milti hai jisme aapka score, accuracy, time analysis, aur question-by-question review hota hai. Isse aap apne weak areas clearly identify kar sakte ho."
+    },
+    {
+      q: "Ask Google AI button kya karta hai?",
+      a: "Practice karte time har question par ek 'Ask Google AI' button hota hai. Isse click karne par wo question saari options ke saath Google Gemini AI par automatically load ho jaata hai, jahan aap deeper explanation le sakte ho — bina copy-paste kiye!"
+    },
+    {
+      q: "Kya main apna account delete kar sakta hoon?",
+      a: "Haan, account deletion ke liye aap hamare contact page par request kar sakte hain. Hum 7 working days mein aapka data permanently delete kar denge as per our privacy policy."
+    }
+  ];
+
+  return (
+    <div className="mb-16">
+      <div className="text-center mb-10">
+        <h2 className="text-3xl font-bold text-white mb-3">Frequently Asked Questions</h2>
+        <p className="text-slate-400 text-sm sm:text-base">Aapke common sawalo ke jawab yahan hain.</p>
+      </div>
+      <div className="max-w-3xl mx-auto space-y-3">
+        {faqs.map((faq, idx) => (
+          <div 
+            key={idx} 
+            className="bg-[#1a1d24] border border-[#282e39] rounded-2xl overflow-hidden transition-all duration-300"
+          >
+            <button 
+              onClick={() => setOpenIdx(openIdx === idx ? null : idx)}
+              className="w-full text-left px-5 sm:px-6 py-4 sm:py-5 flex items-center justify-between gap-4 cursor-pointer hover:bg-[#1f2229] transition-colors"
+            >
+              <span className="text-sm sm:text-base font-semibold text-white leading-snug">{faq.q}</span>
+              <ChevronDown className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${openIdx === idx ? 'rotate-180' : ''}`} />
+            </button>
+            {openIdx === idx && (
+              <div className="px-5 sm:px-6 pb-4 sm:pb-5 text-sm sm:text-base text-slate-400 leading-relaxed border-t border-[#282e39] pt-4">
+                {faq.a}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function AboutPage() {
   const navigate = useNavigate();
@@ -158,8 +228,11 @@ export default function AboutPage() {
           </div>
         </div>
 
+        {/* FAQ SECTION */}
+        <FAQSection />
+
         {/* CTA SECTION */}
-        <div className="text-center pb-10">
+        <div className="text-center pb-10 mt-16">
           <h2 className="text-2xl font-bold text-white mb-6">Ready to start your preparation?</h2>
           <button 
             onClick={() => navigate('/subjects')}

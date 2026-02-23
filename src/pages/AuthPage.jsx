@@ -96,8 +96,8 @@ export default function AuthPage() {
 
         <div className="flex items-center gap-4 text-xs text-slate-500">
           <span>© 2026 PrepIQ Inc.</span>
-          <a href="#" className="hover:text-[#258cf4] transition-colors">Privacy</a>
-          <a href="#" className="hover:text-[#258cf4] transition-colors">Terms</a>
+          <a href="/privacy" className="hover:text-[#258cf4] transition-colors">Privacy</a>
+          <a href="/terms" className="hover:text-[#258cf4] transition-colors">Terms</a>
         </div>
       </div>
 
@@ -193,7 +193,7 @@ export default function AuthPage() {
                   />
                 </div>
                 <label htmlFor="terms" className="text-[11px] text-slate-400 leading-tight">
-                  I agree to the <a href="#" className="text-[#258cf4] hover:underline">Terms of Service</a> and <a href="#" className="text-[#258cf4] hover:underline">Privacy Policy</a>.
+                  I agree to the <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#258cf4] hover:underline">Terms of Service</a> and <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#258cf4] hover:underline">Privacy Policy</a>.
                 </label>
               </div>
             )}

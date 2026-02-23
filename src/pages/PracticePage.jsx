@@ -21,7 +21,8 @@ export default function PracticePage() {
 
   const allFullMocks = Array.from({ length: 50 }, (_, i) => ({
     id: `adre-mock-${i + 1}`,
-    title: `ADRE Full Mock Test ${i + 1}`,
+    title: `Full Mock Test ${i + 1}`,
+    examType: 'ADRE, SSC & State Exams',
     questions: 150,
     time: "180 Mins", 
     marks: 150,
@@ -94,9 +95,9 @@ export default function PracticePage() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {displayedMocks.map((mock) => (
-              <div key={mock.id} className="glass-card rounded-2xl p-6 relative group overflow-hidden flex flex-col">
+              <div key={mock.id} className="glass-card rounded-2xl p-4 sm:p-6 relative group overflow-hidden flex flex-col">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[50px] pointer-events-none group-hover:bg-blue-500/20 transition-colors"></div>
                 
                 {mock.isPremium && (
@@ -110,7 +111,8 @@ export default function PracticePage() {
                   </div>
                 )}
 
-                <h3 className="text-lg font-bold text-white mb-4 pr-12 group-hover:text-blue-400 transition-colors">{mock.title}</h3>
+                <h3 className="text-base sm:text-lg font-bold text-white mb-1 pr-12 group-hover:text-blue-400 transition-colors">{mock.title}</h3>
+                <p className="text-xs text-slate-500 mb-4 pr-12">{mock.examType}</p>
                 
                 <div className="flex items-center gap-4 mb-6">
                   <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
@@ -148,7 +150,7 @@ export default function PracticePage() {
             <h2 className="text-2xl font-bold text-white">Sectional Mocks</h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {subjectsData.map((subject) => {
               const Icon = IconMap[subject.iconName] || BookOpen;
               const style = ColorStyles[subject.color] || ColorStyles.blue;

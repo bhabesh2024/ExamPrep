@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Check, X, Zap, Crown, Sparkles, ShieldCheck, BrainCircuit, Loader2 } from 'lucide-react';
+import { Check, X, Zap, Crown, Sparkles, ShieldCheck, Loader2 } from 'lucide-react';
 
 export default function PricingPage() {
   const navigate = useNavigate();
@@ -181,7 +181,7 @@ export default function PricingPage() {
               <div className="flex items-center gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span className="text-slate-300 text-sm">Access to Free Mock Tests</span></div>
               <div className="flex items-center gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span className="text-slate-300 text-sm">Basic Progress Tracking</span></div>
               <div className="flex items-center gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span className="text-slate-300 text-sm">Standard Subjects</span></div>
-              <div className="flex items-center gap-3 opacity-50"><X className="w-5 h-5 text-slate-600 shrink-0" /><span className="text-slate-500 text-sm line-through">PrepIQ AI Tutor</span></div>
+              
               <div className="flex items-center gap-3 opacity-50"><X className="w-5 h-5 text-slate-600 shrink-0" /><span className="text-slate-500 text-sm line-through">Global Leaderboard Ranking</span></div>
               <div className="flex items-center gap-3 opacity-50"><X className="w-5 h-5 text-slate-600 shrink-0" /><span className="text-slate-500 text-sm line-through">Advanced Performance Analytics</span></div>
             </div>
@@ -217,7 +217,7 @@ export default function PricingPage() {
 
             <div className="space-y-4 flex-1">
               <div className="flex items-center gap-3"><Check className="w-5 h-5 text-[#2525f4] shrink-0" /><span className="text-white font-medium text-sm">Everything in Basic</span></div>
-              <div className="flex items-center gap-3"><BrainCircuit className="w-5 h-5 text-purple-400 shrink-0" /><span className="text-slate-200 text-sm">Unlimited <span className="font-bold text-purple-400">PrepIQ AI Tutor</span> Chat</span></div>
+              
               <div className="flex items-center gap-3"><Crown className="w-5 h-5 text-yellow-400 shrink-0" /><span className="text-slate-200 text-sm">Unlock <span className="font-bold text-yellow-400">Global Leaderboard</span></span></div>
               <div className="flex items-center gap-3"><ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" /><span className="text-slate-200 text-sm">Advanced Performance Analytics</span></div>
               <div className="flex items-center gap-3"><Zap className="w-5 h-5 text-amber-400 shrink-0" /><span className="text-slate-200 text-sm">Ad-free smooth experience</span></div>
