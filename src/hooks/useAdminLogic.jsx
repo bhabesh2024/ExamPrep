@@ -7,7 +7,7 @@ import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
 import { subjectsData } from '../data/syllabusData.jsx'; 
 import { getQuestionsByTitle } from '../data/questionsLoader';
 import { AI_STRICT_RULES } from '../config/aiPrompts';
-import { applyStrictMathFilter, cleanMarkdown } from '../services/aiService';
+import { applyStrictMathFilter, cleanMarkdown } from '../utils/textUtils';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 

@@ -45,7 +45,7 @@ export default function HomePage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0d59f2] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0d59f2]"></span>
               </span>
-              New: AI-Powered Performance Analytics v2.0
+              50+ Mock Tests · ADRE · SSC · State Exams
             </div>
 
             {/* Headline */}
@@ -56,7 +56,7 @@ export default function HomePage() {
 
             {/* Subheadline */}
             <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-slate-400 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s', opacity: 0 }}>
-              The intelligent, AI-driven platform for serious students. Experience local-first speed and adaptive learning paths.
+              The smart exam preparation platform for ADRE, SSC & state competitive exams. Practice with real exam patterns, Hindi translations, and instant results.
             </p>
 
             {/* CTA Buttons */}
@@ -120,9 +120,9 @@ export default function HomePage() {
                 <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#27272a] flex items-center justify-center text-[#0d59f2] mb-5 sm:mb-6 group-hover:bg-[#0d59f2] group-hover:text-white transition-colors duration-300">
                   <Brain className="w-6 h-6 sm:w-7 sm:h-7" />
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-3">AI-Powered Analysis</h3>
+                <h3 className="text-lg sm:text-xl font-bold text-white mb-3">Real Exam Simulation</h3>
                 <p className="text-slate-400 leading-relaxed text-sm sm:text-base">
-                  Get personalized study recommendations based on your performance history. Our AI identifies your weak spots instantly.
+                  50+ full-length mock tests modelled on ADRE, SSC & state exam patterns. Timed, scored, and analyzed — just like the real thing.
                 </p>
               </div>
 

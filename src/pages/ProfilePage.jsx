@@ -66,6 +66,18 @@ export default function ProfilePage() {
     return { icon: <FileText className="w-5 h-5" />, color: 'text-indigo-400', bg: 'bg-indigo-500/20' };
   };
 
+  // Review button - result ke type ke hisaab se redirect
+  const handleReview = (result) => {
+    if (result.subject === 'Mock Test') {
+      // Mock test - testId lowercase mein save tha (e.g. "ADRE-MOCK-1" -> "adre-mock-1")
+      const testId = result.topic.toLowerCase().replace(/\s+/g, '-');
+      navigate(`/practice/run/full/${testId}`);
+    } else {
+      // Chapter practice - subject aur topic dono URL mein jaate hain
+      navigate(`/quiz/${result.subject}/${result.topic}`);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
@@ -350,7 +362,10 @@ export default function ProfilePage() {
                             </span>
                           </td>
                           <td className="py-4 px-4 text-right">
-                            <button className="bg-[#202020] hover:bg-[#2525f4] border border-white/10 hover:border-transparent text-white text-xs font-bold py-2.5 px-5 rounded-full transition-all hover:shadow-[0_0_15px_rgba(37,37,244,0.4)]">
+                            <button 
+                              onClick={() => handleReview(result)}
+                              className="bg-[#202020] hover:bg-[#2525f4] border border-white/10 hover:border-transparent text-white text-xs font-bold py-2.5 px-5 rounded-full transition-all hover:shadow-[0_0_15px_rgba(37,37,244,0.4)] cursor-pointer"
+                            >
                               Review
                             </button>
                           </td>

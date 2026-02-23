@@ -12,7 +12,6 @@ import PracticeFooter from '../components/practice/PracticeFooter';
 import QuestionPalette from '../components/practice/QuestionPalette';
 import PracticeResultScreen from '../components/practice/PracticeResultScreen';
 import ExplanationBox from '../components/practice/ExplanationBox';
-import AiChatWindow from '../components/practice/AiChatWindow';
 
 export default function ChapterPracticePage() {
   // Saara Dimaag Hook se aa raha hai! 🧠
@@ -83,7 +82,6 @@ export default function ChapterPracticePage() {
                 </div>
               </div>
 
-              <AiChatWindow {...state} />
               
               {!state.isLoadingQuestions && state.totalQuestions > 0 && (
                 <PracticeFooter {...state} isReviewMarked={state.review[state.currentQ]} />

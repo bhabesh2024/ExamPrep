@@ -24,7 +24,10 @@ import ContactPage from './pages/ContactPage';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-slate-100 font-sans selection:bg-[#0d59f2] selection:text-white flex flex-col">
+    <div 
+      className="min-h-screen font-sans selection:bg-[#0d59f2] selection:text-white flex flex-col transition-colors duration-300"
+      style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}
+    >
       <div className="flex-grow flex flex-col h-full">
         <Routes>
           <Route path="/" element={<><Navbar /><Home /></>} />

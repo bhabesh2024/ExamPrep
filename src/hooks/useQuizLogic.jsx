@@ -148,6 +148,7 @@ export default function useQuizLogic(type, testId) {
     navigate, questions, isLoading, isFullMock, currentQ, setCurrentQ, timeLeft, setTimeLeft,
     isPaused, setIsPaused, answers, review, visited, showResult, finalScore, totalQuestions,
     handleSelect, handleClear, handleMarkReview, handleNext, jumpTo, handleFinishTest,
-    currentQuestionData: questions[currentQ]
+    currentQuestionData: questions[currentQ],
+    testId
   };
 }

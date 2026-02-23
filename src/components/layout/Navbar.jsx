@@ -18,33 +18,10 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
 
-  // Apply theme to document
+  // Apply theme via data-theme attribute - CSS handles everything else
   useEffect(() => {
-    const root = document.documentElement;
-    if (isDarkMode) {
-      root.style.setProperty('--bg-primary', '#0a0a0a');
-      root.style.setProperty('--bg-secondary', '#161616');
-      root.style.setProperty('--bg-card', '#1a1d24');
-      root.style.setProperty('--text-primary', '#f1f5f9');
-      root.style.setProperty('--text-secondary', '#94a3b8');
-      root.style.setProperty('--border-color', '#27272a');
-      root.classList.remove('light-mode');
-      root.classList.add('dark-mode');
-    } else {
-      root.style.setProperty('--bg-primary', '#f8fafc');
-      root.style.setProperty('--bg-secondary', '#f1f5f9');
-      root.style.setProperty('--bg-card', '#ffffff');
-      root.style.setProperty('--text-primary', '#0f172a');
-      root.style.setProperty('--text-secondary', '#475569');
-      root.style.setProperty('--border-color', '#e2e8f0');
-      root.classList.remove('dark-mode');
-      root.classList.add('light-mode');
-    }
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    
-    // Apply bg to body
-    document.body.style.backgroundColor = isDarkMode ? '#0a0a0a' : '#f8fafc';
-    document.body.style.color = isDarkMode ? '#f1f5f9' : '#0f172a';
   }, [isDarkMode]);
 
   useEffect(() => {
@@ -114,18 +91,18 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
-  // Theme-aware classes
-  const navBg = isDarkMode ? 'rgba(10, 10, 10, 0.7)' : 'rgba(255, 255, 255, 0.85)';
+  // Navbar always uses dark styling for glass effect; CSS handles page theming
+  const navBg = isDarkMode ? 'rgba(10, 10, 10, 0.8)' : 'rgba(255, 255, 255, 0.88)';
   const navBorder = isDarkMode ? 'border-[#27272a]' : 'border-slate-200';
-  const inputBg = isDarkMode ? 'bg-[#161616]/80 text-slate-100 placeholder-slate-500 focus:bg-[#161616] focus:border-[#0d59f2]/50 focus:ring-[#0d59f2]/50' : 'bg-slate-100 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[#0d59f2]/50 focus:ring-[#0d59f2]/50';
-  const dropdownBg = isDarkMode ? 'bg-[#181b21] border-[#27272a]' : 'bg-white border-slate-200';
+  const logoText = isDarkMode ? 'text-white' : 'text-slate-900';
+  const navLinks = isDarkMode ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900';
+  const inputBg = isDarkMode ? 'bg-[#161616]/80 text-slate-100 placeholder-slate-500 focus:bg-[#161616] focus:border-[#0d59f2]/50' : 'bg-slate-100 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[#0d59f2]/50';
+  const dropdownBg = isDarkMode ? 'bg-[#181b21] border-[#27272a]' : 'bg-white border-slate-200 shadow-xl';
   const resultHover = isDarkMode ? 'hover:bg-white/5 border-[#2a2f3a]' : 'hover:bg-slate-50 border-slate-100';
   const textPrimary = isDarkMode ? 'text-slate-200' : 'text-slate-800';
   const textSecondary = isDarkMode ? 'text-slate-500' : 'text-slate-500';
   const mobileMenuBg = isDarkMode ? 'bg-[#0a0a0a]/98' : 'bg-white/98';
   const mobileLinkHover = isDarkMode ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-100 hover:text-slate-900';
-  const logoText = isDarkMode ? 'text-white' : 'text-slate-900';
-  const navLinks = isDarkMode ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900';
 
   return (
     <>

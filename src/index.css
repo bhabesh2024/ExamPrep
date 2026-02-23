@@ -1,17 +1,224 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
-
 @import "tailwindcss";
-
-/* Global Font: Inter (Jo aapne design mein use kiya hai) */
-
 
 :root {
   font-family: 'Inter', sans-serif;
 }
 
+/* =============================================
+   DARK THEME (default)
+   ============================================= */
+:root,
+[data-theme="dark"] {
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0f1115;
+  --bg-card: #1a1d24;
+  --bg-card-alt: #161616;
+  --bg-card-deep: #181b21;
+  --bg-input: #161616;
+  --bg-hover: #1f2229;
+  --bg-element: #282e39;
+  --bg-element-alt: #27272a;
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-faint: #64748b;
+  --text-hint: #475569;
+
+  --border-color: #282e39;
+  --border-light: #27272a;
+  --border-faint: rgba(255,255,255,0.05);
+}
+
+/* =============================================
+   LIGHT THEME
+   ============================================= */
+[data-theme="light"] {
+  --bg-primary: #f0f4f8;
+  --bg-secondary: #e8edf2;
+  --bg-card: #ffffff;
+  --bg-card-alt: #f8fafc;
+  --bg-card-deep: #f1f5f9;
+  --bg-input: #f1f5f9;
+  --bg-hover: #e2e8f0;
+  --bg-element: #e2e8f0;
+  --bg-element-alt: #cbd5e1;
+
+  --text-primary: #0f172a;
+  --text-secondary: #1e293b;
+  --text-muted: #475569;
+  --text-faint: #64748b;
+  --text-hint: #94a3b8;
+
+  --border-color: #cbd5e1;
+  --border-light: #e2e8f0;
+  --border-faint: rgba(0,0,0,0.06);
+}
+
+/* =============================================
+   GLOBAL BODY - responds to theme
+   ============================================= */
 body {
-  background-color: #0a0a0a; /* Premium Dark Background */
-  color: #f1f5f9;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   margin: 0;
   padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* =============================================
+   THEME-AWARE UTILITY CLASSES
+   These override Tailwind hardcoded dark colors
+   ============================================= */
+
+/* Page backgrounds */
+[data-theme="light"] .bg-\[\#0a0a0a\],
+[data-theme="light"] .bg-\[\#0f1115\],
+[data-theme="light"] .bg-\[\#0d0d0d\] {
+  background-color: var(--bg-primary) !important;
+}
+
+/* Card backgrounds */
+[data-theme="light"] .bg-\[\#1a1d24\],
+[data-theme="light"] .bg-\[\#111318\],
+[data-theme="light"] .bg-\[\#111118\],
+[data-theme="light"] .bg-\[\#1e2128\] {
+  background-color: var(--bg-card) !important;
+}
+
+[data-theme="light"] .bg-\[\#161616\],
+[data-theme="light"] .bg-\[\#181b21\],
+[data-theme="light"] .bg-\[\#161920\],
+[data-theme="light"] .bg-\[\#1f2229\] {
+  background-color: var(--bg-card-alt) !important;
+}
+
+[data-theme="light"] .bg-\[\#282e39\],
+[data-theme="light"] .bg-\[\#27272a\],
+[data-theme="light"] .bg-\[\#202020\],
+[data-theme="light"] .bg-\[\#2a2f3a\],
+[data-theme="light"] .bg-\[\#3b4354\] {
+  background-color: var(--bg-element) !important;
+}
+
+[data-theme="light"] .bg-\[\#121217\],
+[data-theme="light"] .bg-\[\#101922\],
+[data-theme="light"] .bg-\[\#151921\],
+[data-theme="light"] .bg-\[\#16202a\] {
+  background-color: var(--bg-card-deep) !important;
+}
+
+/* Text overrides */
+[data-theme="light"] .text-white {
+  color: var(--text-primary) !important;
+}
+[data-theme="light"] .text-slate-100,
+[data-theme="light"] .text-slate-200 {
+  color: var(--text-secondary) !important;
+}
+[data-theme="light"] .text-slate-300,
+[data-theme="light"] .text-slate-400 {
+  color: var(--text-muted) !important;
+}
+[data-theme="light"] .text-slate-500,
+[data-theme="light"] .text-slate-600 {
+  color: var(--text-faint) !important;
+}
+[data-theme="light"] .text-gray-300,
+[data-theme="light"] .text-gray-400 {
+  color: var(--text-muted) !important;
+}
+[data-theme="light"] .text-\[\#9c9cba\] {
+  color: var(--text-muted) !important;
+}
+
+/* Border overrides */
+[data-theme="light"] .border-\[\#282e39\],
+[data-theme="light"] .border-\[\#2a2f3a\],
+[data-theme="light"] .border-\[\#27272a\],
+[data-theme="light"] .border-\[\#3b4354\] {
+  border-color: var(--border-color) !important;
+}
+
+/* Input fields */
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: var(--text-hint) !important;
+}
+
+/* Glass card - used in Home, Subjects, etc */
+[data-theme="light"] .glass-card {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0,0,0,0.08) !important;
+}
+
+/* Backdrop/overlay elements */
+[data-theme="light"] .backdrop-blur-xl,
+[data-theme="light"] .backdrop-blur-2xl {
+  background-color: rgba(255,255,255,0.92) !important;
+}
+
+/* Mobile menu drawer */
+[data-theme="light"] .fixed.inset-0.z-40 {
+  background-color: rgba(248, 250, 252, 0.98) !important;
+}
+
+/* Gradient backgrounds - soften in light mode */
+[data-theme="light"] .bg-gradient-to-b,
+[data-theme="light"] .bg-gradient-to-br {
+  /* Let most gradients pass through, only override dark ones */
+}
+
+/* Specific gradient cards (like pricing pro card) - keep as is since they use blue */
+
+/* Scrollbars in light mode */
+[data-theme="light"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+}
+
+/* White/5 and white/10 opacity backgrounds */
+[data-theme="light"] .bg-white\/5 {
+  background-color: rgba(0,0,0,0.04) !important;
+}
+[data-theme="light"] .bg-white\/10 {
+  background-color: rgba(0,0,0,0.07) !important;
+}
+[data-theme="light"] .hover\:bg-white\/5:hover {
+  background-color: rgba(0,0,0,0.04) !important;
+}
+
+/* Border white opacity */
+[data-theme="light"] .border-white\/5 {
+  border-color: rgba(0,0,0,0.06) !important;
+}
+[data-theme="light"] .border-white\/10 {
+  border-color: rgba(0,0,0,0.1) !important;
+}
+
+/* Transition for smooth theme switch */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+/* But don't slow down animations */
+.animate-spin,
+.animate-ping,
+.animate-fade-in-up,
+.animate-pulse {
+  transition: none !important;
 }
