@@ -18,13 +18,18 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
 
-  // Check Auth Status on Load
+  // Check Auth Status on Load (With Crash Protection)
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser && storedUser !== 'undefined') {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (e) {
+      console.error("Session data issue, clearing...", e);
+      localStorage.removeItem('user');
     }
-  }, [location.pathname]); // Update whenever route changes
+  }, [location.pathname]); 
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -34,7 +39,6 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
-  // Helper to check active links
   const isActive = (path) => location.pathname === path;
 
   // ── PREPARE SEARCH DATA ──
@@ -161,11 +165,11 @@ export default function Navbar() {
                 <button onClick={() => navigate('/')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/') ? 'text-white' : ''}`}>Home</button>
                 <button onClick={() => navigate('/practice')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/practice') ? 'text-white' : ''}`}>Practice</button>
                 
-                {/* 👇 LEADERBOARD LINK ADDED HERE 👇 */}
-                <button onClick={() => navigate('/leaderboard')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/leaderboard') ? 'text-white' : ''}`}>Leaderboard</button>
+                {/* 🔥 Leaderboard yahan se hata diya gaya hai 🔥 */}
+
                 <button onClick={() => navigate('/pricing')} className={`hover:text-white transition-colors cursor-pointer flex items-center gap-1 ${isActive('/pricing') ? 'text-white' : ''}`}>
-  Pricing <Sparkles className="w-3 h-3 text-yellow-400" />
-</button>
+                  Pricing <Sparkles className="w-3 h-3 text-yellow-400" />
+                </button>
                 <button onClick={() => navigate('/about')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/about') ? 'text-white' : ''}`}>About</button>
                 {/* ADVANCED SUBJECTS DROPDOWN */}
                 <div className="group dropdown-trigger relative h-20 flex items-center">
@@ -210,7 +214,6 @@ export default function Navbar() {
               <div className="hidden lg:flex items-center pl-6 border-l border-[#27272a]">
                 {user ? (
                   <div className="flex items-center gap-4">
-                    {/* 👇 CLICKABLE PROFILE CHIP 👇 */}
                     <button 
                       onClick={() => navigate('/profile')} 
                       className="flex items-center gap-2 bg-[#161616] hover:bg-[#27272a] transition-colors py-1.5 px-3 rounded-full border border-[#27272a] cursor-pointer"
@@ -255,7 +258,6 @@ export default function Navbar() {
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-40 bg-[#0a0a0a]/98 backdrop-blur-2xl lg:hidden pt-24 px-6 flex flex-col h-screen overflow-y-auto">
           
-          {/* USER INFO IN MOBILE */}
           {user ? (
             <div 
               onClick={() => { navigate('/profile'); setIsMobileMenuOpen(false); }} 
@@ -298,13 +300,10 @@ export default function Navbar() {
           <nav className="flex flex-col gap-2 text-lg font-medium text-slate-300">
             <button onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">Home</button>
             <button onClick={() => { navigate('/practice'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">Practice</button>
-            
-            {/* 👇 MOBILE LEADERBOARD LINK 👇 */}
-            <button onClick={() => { navigate('/leaderboard'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">Leaderboard</button>
             <button onClick={() => { navigate('/pricing'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors flex items-center justify-between">
-  <span>Pricing</span>
-  <Sparkles className="w-4 h-4 text-yellow-400" />
-</button>
+              <span>Pricing</span>
+              <Sparkles className="w-4 h-4 text-yellow-400" />
+            </button>
             <button onClick={() => { navigate('/about'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 hover:text-white cursor-pointer transition-colors">About</button>
             <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl hover:bg-white/5 text-[#0d59f2] cursor-pointer transition-colors">View All Subjects →</button>
             

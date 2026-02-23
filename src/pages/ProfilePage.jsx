@@ -4,7 +4,7 @@ import axios from 'axios';
 import { 
   CheckCircle2, Play, FileQuestion, BookOpen, Gauge, 
   TrendingUp, TrendingDown, MoreHorizontal, FileText, 
-  FlaskConical, Calculator, Brain, Globe
+  FlaskConical, Calculator, Brain, Globe, Trophy
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -140,10 +140,15 @@ export default function ProfilePage() {
                 </div>
               </div>
               
-              <div className="flex gap-4">
-                <button onClick={() => navigate('/practice')} className="bg-[#2525f4] hover:bg-blue-600 text-white px-6 py-3.5 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(37,37,244,0.4)] hover:shadow-[0_0_25px_rgba(37,37,244,0.6)] hover:-translate-y-1 flex items-center gap-2">
+              {/* 🔥 RESUME PRACTICE & LEADERBOARD BUTTONS 🔥 */}
+              <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-0">
+                <button onClick={() => navigate('/practice')} className="bg-[#2525f4] hover:bg-blue-600 text-white px-6 py-3.5 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(37,37,244,0.4)] hover:shadow-[0_0_25px_rgba(37,37,244,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
                   <Play className="w-5 h-5 fill-current" />
                   Resume Practice
+                </button>
+                <button onClick={() => navigate('/leaderboard')} className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-[#0a0a0a] px-6 py-3.5 rounded-xl font-black transition-all shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)] hover:-translate-y-1 flex items-center justify-center gap-2">
+                  <Trophy className="w-5 h-5" />
+                  Global Leaderboard
                 </button>
               </div>
             </div>
@@ -207,7 +212,7 @@ export default function ProfilePage() {
             </div>
           </section>
 
-          {/* Middle Section: Radar Chart & Heatmap (Visual Representation) */}
+          {/* Middle Section: Radar Chart & Heatmap */}
           <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden md:grid">
             <div className="lg:col-span-1 glass-card rounded-3xl p-6 flex flex-col items-center">
               <div className="flex w-full justify-between items-start mb-2">

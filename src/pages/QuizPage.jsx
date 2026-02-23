@@ -1,3 +1,4 @@
+// src/pages/QuizPage.jsx
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Database } from 'lucide-react';
@@ -24,13 +25,18 @@ export default function QuizPage() {
     );
   }
 
-  // 🚫 EMPTY DB SCREEN
+  // 🚫 EMPTY SECTION/DB SCREEN (FIXED MESSAGE) 🔥
   if (state.questions.length === 0) {
     return (
       <div className="h-screen bg-[#0f1115] flex flex-col items-center justify-center text-white p-6">
         <Database className="w-20 h-20 text-slate-600 mb-6" />
-        <h2 className="text-3xl font-bold mb-2">No Questions Available!</h2>
-        <p className="text-slate-400 mb-8 text-center max-w-md">Database is empty. Add questions from Admin Panel.</p>
+        <h2 className="text-3xl font-bold mb-2">No Questions Found!</h2>
+        <p className="text-slate-400 mb-8 text-center max-w-md">
+          {state.isFullMock 
+            ? "Not enough questions available for a Full Mock Test." 
+            : "No questions available for this specific subject yet."} 
+          <br /> Please add more questions from the Admin Panel.
+        </p>
         <button onClick={() => state.navigate('/admin')} className="px-8 py-3 rounded-full bg-[#0d59f2] hover:bg-blue-600 font-bold transition-colors">
           Go to Admin Panel
         </button>

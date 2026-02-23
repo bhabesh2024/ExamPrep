@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+// 🔥 Syllabus data import kiya taaki Asli naam mil sake
+import { subjectsData } from '../data/syllabusData'; 
 
 export default function useQuizLogic(type, testId) {
   const navigate = useNavigate();
@@ -28,12 +30,62 @@ export default function useQuizLogic(type, testId) {
       try {
         const res = await axios.get('/api/questions');
         if (res.data && res.data.length > 0) {
-          const shuffled = res.data.sort(() => 0.5 - Math.random());
+          
+          let availableQs = res.data;
+
+          if (!isFullMock && testId) {
+            const lastDashIdx = testId.lastIndexOf('-');
+            const subjectIdSlug = lastDashIdx !== -1 
+              ? testId.substring(0, lastDashIdx).toLowerCase() 
+              : testId.toLowerCase();
+              
+            // 🔥 BUG FIX: URL ID se Asli Title ("Mathematics") nikalenge
+            const matchedSubject = subjectsData.find(s => s.id.toLowerCase() === subjectIdSlug);
+            const actualSubjectTitle = matchedSubject ? matchedSubject.title.toLowerCase() : subjectIdSlug;
+
+            availableQs = availableQs.filter(q => q.subject.toLowerCase() === actualSubjectTitle);
+          }
+
           const limit = isFullMock ? 150 : 50;
-          setQuestions(shuffled.slice(0, limit));
+
+          // ROUND-ROBIN SMART ALGORITHM
+          const questionsByChapter = {};
+          availableQs.forEach(q => {
+            const chap = q.subtopic || q.chapterId || 'misc';
+            if (!questionsByChapter[chap]) questionsByChapter[chap] = [];
+            questionsByChapter[chap].push(q);
+          });
+
+          Object.keys(questionsByChapter).forEach(chap => {
+            questionsByChapter[chap].sort(() => 0.5 - Math.random());
+          });
+
+          const selectedQuestions = [];
+          const chapters = Object.keys(questionsByChapter);
+          let currentChapIdx = 0;
+          
+          while (selectedQuestions.length < limit && chapters.length > 0) {
+            const chapName = chapters[currentChapIdx];
+            const chapArray = questionsByChapter[chapName];
+            
+            if (chapArray && chapArray.length > 0) {
+              selectedQuestions.push(chapArray.pop());
+            } else {
+              chapters.splice(currentChapIdx, 1);
+              currentChapIdx--; 
+            }
+            
+            currentChapIdx++;
+            if (currentChapIdx >= chapters.length) {
+              currentChapIdx = 0; 
+            }
+          }
+
+          const finalShuffled = selectedQuestions.sort(() => 0.5 - Math.random());
+          setQuestions(finalShuffled);
         }
       } catch (err) {
-        console.error("Failed to fetch real questions:", err);
+        console.error("Failed to fetch mock questions:", err);
       } finally {
         setIsLoading(false);
       }
@@ -82,8 +134,11 @@ export default function useQuizLogic(type, testId) {
       try {
         const userObj = JSON.parse(userStr);
         await axios.post('/api/results', {
-          userId: userObj.id, subject: 'Mock Test', topic: testId || (isFullMock ? 'Full Mock Exam' : 'Sectional Mock Exam'),
-          score: correct, total: totalQuestions
+          userId: userObj.id, 
+          subject: 'Mock Test', 
+          topic: testId ? testId.toUpperCase() : (isFullMock ? 'FULL MOCK EXAM' : 'SECTIONAL MOCK'),
+          score: correct, 
+          total: totalQuestions
         });
       } catch (err) { console.error("⚠️ Failed to save mock score:", err); }
     }

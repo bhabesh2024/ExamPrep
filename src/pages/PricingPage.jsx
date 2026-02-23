@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Check, X, Zap, Crown, Sparkles, ShieldCheck, BrainCircuit } from 'lucide-react';
+import axios from 'axios';
+import { Check, X, Zap, Crown, Sparkles, ShieldCheck, BrainCircuit, Loader2 } from 'lucide-react';
 
 export default function PricingPage() {
   const navigate = useNavigate();
   
   // Nayi State: '3months', '6months', ya 'yearly'
   const [planDuration, setPlanDuration] = useState('yearly');
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // User checking logic
   const userStr = localStorage.getItem('user');
@@ -26,13 +28,86 @@ export default function PricingPage() {
     return 'year';
   };
 
-  const handleUpgradeClick = () => {
+  // Razorpay Load Script Function
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handleUpgradeClick = async () => {
     if (!user.email) {
       navigate('/login');
       return;
     }
-    // Razorpay Integration aayega yahan
-    alert(`🚀 Razorpay Payment Gateway will open here!\n\nPlan: ${planDuration}\nPrice: ₹${getPrice()}`);
+
+    setIsProcessing(true);
+
+    try {
+      const isLoaded = await loadRazorpayScript();
+      if (!isLoaded) {
+        alert('Razorpay SDK load nahi hua. Please check your internet connection.');
+        setIsProcessing(false);
+        return;
+      }
+
+      const amountToPay = getPrice();
+      const orderResponse = await axios.post('/api/create-order', { amount: amountToPay });
+      const orderData = orderResponse.data;
+
+      const options = {
+        key: 'rzp_test_SJZF5HPMUW1jwi', // Test Key
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'PrepIQ Premium',
+        description: `Upgrade to Pro (${getDurationText()})`,
+        order_id: orderData.id,
+        handler: async function (response) {
+          try {
+            await axios.post('/api/verify-payment', {
+              ...response,
+              userId: user.id
+            });
+            
+            // Success: Update Local Storage to show premium instantly
+            const updatedUser = { ...user, isPremium: true };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            
+            alert("Payment Successful! Welcome to PrepIQ Premium! 🎉");
+            navigate('/profile'); 
+          } catch (verifyErr) {
+            alert("Payment verification failed!");
+          }
+        },
+        prefill: {
+          name: user.name,
+          email: user.email,
+          contact: '9999999999'
+        },
+        theme: {
+          color: '#2525f4' // Match with your exact design color
+        }
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      
+      // Agar user popup band kar de toh loading hatane ke liye event
+      paymentObject.on('payment.failed', function (response){
+          alert("Payment Failed or Cancelled.");
+      });
+
+      paymentObject.open();
+
+    } catch (error) {
+      console.error("Payment init error:", error);
+      alert('Kuch galat ho gaya payment initiate karne mein.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -54,7 +129,7 @@ export default function PricingPage() {
             Choose the perfect plan to accelerate your exam preparation. Join thousands of top-ranking students today.
           </p>
 
-          {/* 👇 NAYA 3-WAY TOGGLE SWITCH 👇 */}
+          {/* NAYA 3-WAY TOGGLE SWITCH */}
           <div className="flex justify-center mt-10">
             <div className="bg-[#161616] border border-[#27272a] rounded-full p-1.5 flex gap-1 shadow-lg overflow-x-auto max-w-full">
               <button 
@@ -112,7 +187,7 @@ export default function PricingPage() {
             </div>
           </div>
 
-          {/* PRO PLAN CARD - Alignment Fixed (Removed md:-translate-y-4) */}
+          {/* PRO PLAN CARD - Alignment Fixed */}
           <div className="bg-gradient-to-b from-[#1a1ab8]/20 to-[#111118] border border-[#2525f4]/50 rounded-3xl p-8 flex flex-col relative shadow-[0_0_40px_rgba(37,37,244,0.15)] w-full">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
               Most Popular
@@ -130,9 +205,14 @@ export default function PricingPage() {
             
             <button 
               onClick={handleUpgradeClick}
-              className="w-full py-3.5 rounded-xl font-bold transition-all mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_0_20px_rgba(37,37,244,0.4)] hover:shadow-[0_0_30px_rgba(37,37,244,0.6)] hover:scale-[1.02] active:scale-[0.98]"
+              disabled={isProcessing}
+              className="w-full py-3.5 rounded-xl font-bold transition-all mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-[0_0_20px_rgba(37,37,244,0.4)] hover:shadow-[0_0_30px_rgba(37,37,244,0.6)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 flex justify-center items-center gap-2"
             >
-              {isPremium ? 'Manage Subscription' : 'Upgrade to Pro'}
+              {isProcessing ? (
+                <><Loader2 className="w-5 h-5 animate-spin" /> Processing...</>
+              ) : (
+                isPremium ? 'Manage Subscription' : 'Upgrade to Pro'
+              )}
             </button>
 
             <div className="space-y-4 flex-1">
