@@ -18,7 +18,7 @@ export default defineConfig({
           'Origin': 'https://api.groq.com'
         }
       },
-      // 2. Node.js Backend Proxies (Naye raste add kiye)
+      // 2. Node.js Backend Proxies
       '/api/questions': {
         target: 'http://localhost:5000',
         changeOrigin: true,
@@ -32,14 +32,22 @@ export default defineConfig({
         changeOrigin: true,
       },
       '/api/results': {
-  target: 'http://localhost:5000',
-  changeOrigin: true,
-},
-// 👇 YEH NAYI LINE ADD KAREIN 👇
-'/api/leaderboard': {
-  target: 'http://localhost:5000',
-  changeOrigin: true,
-}
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/api/leaderboard': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      // 👇 🔥 YE DONO NAYE PAYMENT PROXIES ADD KIYE HAIN 🔥 👇
+      '/api/create-order': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/api/verify-payment': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      }
     }
   }
 })

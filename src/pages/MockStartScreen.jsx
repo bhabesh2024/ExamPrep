@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Play, ArrowLeft, Timer, Target, Award, AlertCircle, FileText, CheckCircle2, TrendingUp } from 'lucide-react'; // 👈 TrendingUp import kiya
+import { Play, ArrowLeft, Timer, Target, Award, AlertCircle, FileText, CheckCircle2, TrendingUp, Lock } from 'lucide-react';
 
 export default function MockStartScreen() {
   const { type, testId } = useParams();
@@ -19,10 +19,23 @@ export default function MockStartScreen() {
   const testTitle = isFullMock ? formatTitle(testId) : `${formatTitle(testId)} Sectional Test`;
   const totalQs = isFullMock ? 150 : 50;
   
-  // 👇 Time aur Cut-off Update 👇
-  const duration = isFullMock ? 180 : 60; // 3 Hours for Full, 1 Hour for Sectional
+  const duration = isFullMock ? 180 : 60; 
   const cutOff = isFullMock ? "75%" : "80%"; 
   const totalMarks = isFullMock ? 150 : 50;
+
+  // 🔒 PREMIUM LOCK LOGIC 🔒
+  // Extract index from URL (e.g., adre-mock-3 -> index 3, maths-5 -> index 5)
+  const testIndex = parseInt(testId.split('-').pop()) || 1; 
+  
+  // Full mock: test > 2 premium hai. Sectional mock: test > 4 premium hai.
+  const isTestPremium = isFullMock ? testIndex > 2 : testIndex > 4;
+
+  const userStr = localStorage.getItem('user');
+  const user = userStr && userStr !== 'undefined' ? JSON.parse(userStr) : null;
+  const isUserPremium = user?.isPremium === true;
+  
+  // Test locked tabhi hoga jab test premium ho aur user premium naa ho
+  const isLocked = isTestPremium && !isUserPremium;
 
   return (
     <div className="min-h-screen bg-[#0f1115] text-slate-200 font-sans relative overflow-hidden pt-28 pb-20 selection:bg-blue-500/30 selection:text-white">
@@ -57,16 +70,29 @@ export default function MockStartScreen() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none"></div>
 
           <div className="border-b border-white/10 pb-8 mb-8">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-4">
-              <FileText className="w-3.5 h-3.5" /> {isFullMock ? 'Full Length Exam' : 'Sectional Exam'}
+            <div className="flex items-center justify-between mb-4">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold">
+                <FileText className="w-3.5 h-3.5" /> {isFullMock ? 'Full Length Exam' : 'Sectional Exam'}
+              </div>
+              
+              {/* Top Right Badge */}
+              {isTestPremium ? (
+                <span className="px-3 py-1 rounded bg-yellow-500/10 text-yellow-500 text-xs font-bold border border-yellow-500/20 flex items-center gap-1">
+                  <Lock className="w-3 h-3" /> PRO TEST
+                </span>
+              ) : (
+                <span className="px-3 py-1 rounded bg-green-500/10 text-green-400 text-xs font-bold border border-green-500/20">
+                  FREE TEST
+                </span>
+              )}
             </div>
+
             <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">
               {testTitle}
             </h1>
             <p className="text-slate-400">Please read the instructions carefully before starting the test.</p>
           </div>
 
-          {/* 👇 Grid ko 4 columns mein banaya taaki Cut-off fit aa jaye 👇 */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
             <div className="bg-[#1e2128] border border-white/5 rounded-2xl p-4 flex flex-col items-center text-center gap-2">
               <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-400">
@@ -98,7 +124,6 @@ export default function MockStartScreen() {
               </div>
             </div>
 
-            {/* 👇 Naya Cut-off Card 👇 */}
             <div className="bg-[#1e2128] border border-white/5 rounded-2xl p-4 flex flex-col items-center text-center gap-2 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-16 h-16 bg-purple-500/10 rounded-full blur-[20px] pointer-events-none"></div>
               <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 relative z-10">
@@ -137,15 +162,26 @@ export default function MockStartScreen() {
 
           <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-slate-400 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Server connection stable
+              <span className={`w-2 h-2 rounded-full ${isLocked ? 'bg-yellow-500' : 'bg-green-500 animate-pulse'}`}></span> 
+              {isLocked ? 'Premium Test Locked' : 'Server connection stable'}
             </p>
             
-            <button 
-              onClick={() => navigate(`/practice/run/${type}/${testId}`)}
-              className="w-full sm:w-auto px-10 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_20px_-5px_rgba(59,130,246,0.5)] group cursor-pointer"
-            >
-              Begin Test Now <Play className="w-5 h-5 fill-current transition-transform group-hover:translate-x-1" />
-            </button>
+            {/* 🔒 Dynamic Action Button 🔒 */}
+            {isLocked ? (
+               <button 
+                 onClick={() => navigate('/pricing')}
+                 className="w-full sm:w-auto px-10 py-4 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-[#0a0a0a] font-black text-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_20px_-5px_rgba(234,179,8,0.5)] group cursor-pointer"
+               >
+                 <Lock className="w-5 h-5 fill-current" /> Unlock with Pro Plan
+               </button>
+            ) : (
+               <button 
+                 onClick={() => navigate(`/practice/run/${type}/${testId}`)}
+                 className="w-full sm:w-auto px-10 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-lg transition-all duration-300 flex items-center justify-center gap-2 shadow-[0_0_20px_-5px_rgba(59,130,246,0.5)] group cursor-pointer"
+               >
+                 Begin Test Now <Play className="w-5 h-5 fill-current transition-transform group-hover:translate-x-1" />
+               </button>
+            )}
           </div>
 
         </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Target, Timer, Play, Database } from 'lucide-react';
+import { ArrowLeft, Target, Timer, Play, Database, Lock } from 'lucide-react';
 import { subjectsData } from '../data/syllabusData';
 
 export default function SectionalTestList() {
@@ -20,7 +20,6 @@ export default function SectionalTestList() {
     const fetchSubjectQuestionsCount = async () => {
       try {
         const res = await axios.get('/api/questions');
-        // 🔥 BUG FIX: ID ('maths') ki jagah Asli Title ('Mathematics') se match kiya
         if (subject) {
           const subjectQs = res.data.filter(q => q.subject.toLowerCase() === subject.title.toLowerCase());
           setMockQuestionCount(subjectQs.length >= 50 ? 50 : subjectQs.length);
@@ -33,7 +32,7 @@ export default function SectionalTestList() {
     };
 
     if (subject) fetchSubjectQuestionsCount();
-  }, [subject]); // cleanSubjectId hata kar subject use kiya
+  }, [subject]);
   
   if (!subject) {
     return (
@@ -44,12 +43,13 @@ export default function SectionalTestList() {
     );
   }
 
-  // Generate 20 Sectional Mocks
+  // Generate 20 Sectional Mocks: Pehle 4 FREE, baaki sab PRO
   const tests = Array.from({ length: 20 }, (_, i) => ({
     id: subject.id + '-' + (i + 1),
     title: subject.title + ' Mock Test ' + (i + 1),
     questions: mockQuestionCount,
     time: mockQuestionCount > 0 ? "60 Mins" : "0 Mins",
+    isPremium: i >= 4 // 0, 1, 2, 3 index free rahenge (yaani first 4)
   }));
 
   return (
@@ -62,7 +62,7 @@ export default function SectionalTestList() {
 
         <div className="mb-10">
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">{subject.title} Sectional Mocks</h1>
-          <p className="text-slate-400">Complete all 20 tests to master this subject. Each test has a strict 60-minute timer.</p>
+          <p className="text-slate-400">First 4 tests are free. Complete all 20 tests to master this subject!</p>
         </div>
 
         {isLoading ? (
@@ -73,15 +73,20 @@ export default function SectionalTestList() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {tests.map((test) => (
-              <div key={test.id} className="bg-[#181b21] border border-white/5 hover:border-[#0d59f2]/30 rounded-2xl p-6 transition-all group relative overflow-hidden">
+              <div key={test.id} className="bg-[#181b21] border border-white/5 hover:border-[#0d59f2]/30 rounded-2xl p-6 transition-all group relative overflow-hidden flex flex-col">
                 
-                {mockQuestionCount > 0 && (
-                  <div className="absolute top-4 right-4 px-2 py-0.5 rounded text-[10px] font-bold bg-[#00d26a]/15 text-[#00d26a] border border-[#00d26a]/30 shadow-[0_0_10px_rgba(0,210,106,0.2)] animate-pulse uppercase tracking-widest">
-                    Live Now
+                {/* PRO / FREE Badge */}
+                {test.isPremium ? (
+                  <div className="absolute top-4 right-4 px-2.5 py-1 rounded bg-yellow-500/10 text-yellow-500 text-[10px] font-bold border border-yellow-500/20 tracking-wider">
+                    PRO
+                  </div>
+                ) : (
+                  <div className="absolute top-4 right-4 px-2.5 py-1 rounded bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20 tracking-wider">
+                    FREE
                   </div>
                 )}
 
-                <h3 className="text-lg font-bold text-white mb-4 group-hover:text-[#0d59f2] transition-colors">{test.title}</h3>
+                <h3 className="text-lg font-bold text-white mb-4 pr-12 group-hover:text-[#0d59f2] transition-colors">{test.title}</h3>
                 
                 <div className="flex items-center gap-4 mb-6">
                   <div className={`flex items-center gap-1.5 text-xs font-semibold ${mockQuestionCount > 0 ? 'text-[#00d26a]' : 'text-slate-500'}`}>
@@ -92,16 +97,18 @@ export default function SectionalTestList() {
                   </div>
                 </div>
 
-                <button 
-                  onClick={() => navigate('/practice/start/sectional/' + test.id)}
-                  disabled={mockQuestionCount === 0}
-                  className={`w-full py-3 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 
-                    ${mockQuestionCount > 0 
-                      ? 'bg-[#282e39] group-hover:bg-[#0d59f2] text-white cursor-pointer' 
-                      : 'bg-[#1a1d24] text-slate-600 cursor-not-allowed border border-[#282e39]'}`}
-                >
-                  {mockQuestionCount > 0 ? <><Play className="w-4 h-4" /> Start Test</> : <><Database className="w-4 h-4"/> Add Qs from Admin</>}
-                </button>
+                <div className="mt-auto">
+                  <button 
+                    onClick={() => navigate('/practice/start/sectional/' + test.id)}
+                    disabled={mockQuestionCount === 0}
+                    className={`w-full py-3 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 
+                      ${mockQuestionCount > 0 
+                        ? 'bg-[#282e39] group-hover:bg-[#0d59f2] text-white cursor-pointer' 
+                        : 'bg-[#1a1d24] text-slate-600 cursor-not-allowed border border-[#282e39]'}`}
+                  >
+                    {mockQuestionCount > 0 ? <><Play className="w-4 h-4" /> Go to Test</> : <><Database className="w-4 h-4"/> Add Qs from Admin</>}
+                  </button>
+                </div>
               </div>
             ))}
           </div>
