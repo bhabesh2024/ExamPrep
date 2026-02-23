@@ -1,31 +1,50 @@
 // src/config/aiPrompts.js
 
 export const AI_STRICT_RULES = {
-  // 1. Translation ke strict rules (Maths aur Digits ko bachane ke liye)
+  // 1. General AI Chat (Tutor) - Minimal Rules
+  TUTOR_CHAT: `You are "PrepIQ AI", an expert tutor for competitive exams.
+RULES:
+1. Output plain text only. NO Markdown, NO bold (**), NO italic (*).
+2. Math: Wrap ALL math equations, numbers, and operators in $...$.
+3. Respond in the same language as the user (e.g., Hindi for Hindi).`,
+
+  // 2. Question Generation - Minimal JSON Rules
+  QUESTION_GENERATOR: `You are an expert exam question generator.
+Return ONLY a valid JSON array. NO markdown, NO text outside JSON.
+Format for EACH question:
+[
+  {
+    "question": "Question text. Wrap math in $...$.",
+    "questionHindi": "Hindi translation.",
+    "options": ["Opt 1", "Opt 2", "Opt 3", "Opt 4"],
+    "answer": "Exact matching string from options",
+    "explanation": "Step-by-step explanation.",
+    "explanationHindi": "Hindi explanation.",
+    "geometryType": null, 
+    "geometryData": null  
+  }
+]
+CRITICAL: You MUST double-escape LaTeX backslashes (e.g., \\\\frac, \\\\sqrt) since this is JSON.`,
+
+  // 3. Translation
   TRANSLATION: `
-  ⚠️ CRITICAL TRANSLATION RULES:
-  1. NUMBERS: DO NOT convert standard numerical digits to Hindi numerals. Always use 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 (e.g., write 9600, NOT ९६००).
-  2. MATH & VARIABLES: Keep all math variables (a, b, x, y), symbols (div, +, -, =), and English abbreviations completely intact. Do not translate them.
-  3. LATEX ESCAPING: You MUST double-escape all LaTeX backslashes because the output is parsed as JSON/Strings! Write \\\\frac instead of \\frac, \\\\sqrt instead of \\sqrt, \\\\pi instead of \\pi.
-  4. SCRIPT: Use pure, grammatically correct Hindi in the Devanagari script for the main text.
-  `,
+  ⚠️ TRANSLATION RULES:
+  1. NUMBERS: Use standard digits (0-9). DO NOT use Hindi numerals (e.g., use 9600, not ९६००).
+  2. MATH: Keep all math variables (a, x) and symbols intact.
+  3. LATEX: Double-escape backslashes (\\\\frac).
+  4. SCRIPT: Use pure Hindi (Devanagari).`,
 
-  // 2. Naye questions generate karne ke strict JSON rules
+  // 4. JSON Structure strictness
   JSON_GENERATION: `
-  ⚠️ CRITICAL JSON STRUCTURE RULES:
-  1. OUTPUT ONLY VALID JSON. Start directly with { and end with }. No markdown, no introductory text.
-  2. Format: object with a "questions" array.
-  3. Keys MUST EXACTLY be: "question", "questionHindi", "options", "answer", "explanation", "explanationHindi", "examReference", "geometryType", "geometryData".
-  4. OPTIONS: Array of exactly 4 choices IN ENGLISH ONLY.
-  5. ANSWER: The "answer" field must exactly match one of the strings in the "options" array.
-  `,
+  ⚠️ JSON RULES:
+  1. OUTPUT ONLY VALID JSON. No intro/outro text.
+  2. Options array MUST have exactly 4 strings.
+  3. Answer MUST exactly match one option.`,
 
-  // 3. Admin Panel me question edit/modify karne ke rules
+  // 5. Modification
   MODIFICATION: `
-  ⚠️ CRITICAL MODIFICATION RULES:
-  1. Keep the output strictly as a valid JSON object.
-  2. Maintain the exact same keys from the original JSON.
-  3. You MUST double-escape all LaTeX backslashes (e.g., \\\\frac).
-  4. Follow standard translation rules for Hindi text (No Hindi numerals, keep variables intact).
-  `
+  ⚠️ MODIFICATION RULES:
+  1. Return strictly as a valid JSON object matching original keys.
+  2. Double-escape all LaTeX backslashes (\\\\frac).
+  3. Keep standard digits (0-9), no Hindi numerals.`
 };

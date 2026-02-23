@@ -2,8 +2,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios'; 
-import { fetchAiResponse } from '../services/aiService';
+import { fetchAiResponse, applyStrictMathFilter, cleanMarkdown} from '../services/aiService';
 import { AI_STRICT_RULES } from '../config/aiPrompts';
+
+const safeFormat = (text) => {
+  if (!text) return "";
+  return cleanMarkdown(applyStrictMathFilter(text));
+};
 
 export default function useChapterPracticeLogic() {
   const { subjectId, topicId } = useParams();
@@ -92,6 +97,11 @@ export default function useChapterPracticeLogic() {
   // ── AI Translations ──
   const handleViewInHindi = async () => {
     if (showHindi) { setShowHindi(false); return; }
+    if (currentQuestionData?.explanationHindi) { 
+      setHindiCache(prev => ({ ...prev, [currentQ]: safeFormat(currentQuestionData.explanationHindi) })); 
+      setShowHindi(true); 
+      return; 
+    }
     if (currentQuestionData?.explanationHindi) { setHindiCache(prev => ({ ...prev, [currentQ]: currentQuestionData.explanationHindi })); setShowHindi(true); return; }
     if (hindiCache[currentQ]) { setShowHindi(true); return; }
     if (!currentQuestionData || !currentQuestionData.explanation) return;

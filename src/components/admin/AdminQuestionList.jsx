@@ -1,3 +1,4 @@
+// src/components/admin/AdminQuestionList.jsx
 import React from 'react';
 import { Database, PlusCircle } from 'lucide-react';
 import AdminActionBar from './AdminActionBar';
@@ -5,17 +6,21 @@ import AdminQuestionCard from './AdminQuestionCard';
 
 export default function AdminQuestionList(props) {
   const {
-    questions, selectedForDelete, handleSelectAll, clearScreen, deleteSelected, pushToPostgreSQL, isLoading,
+    questions, selectedForDelete, handleSelectAll, deleteSelected, pushToPostgreSQL, isLoading,
     toggleSelect, editingIndex, setEditingIndex, editPromptText, setEditPromptText, isEditingLoading,
     modifyQuestionWithAI, handleDeleteQuestion, handleQuestionChange, handleOptionChange,
-    setCorrectAnswer, difficulty, addNewQuestion
+    setCorrectAnswer, difficulty, addNewQuestion, translateSelectedToHindi, clearScreen,
+    downloadJson, handleBulkJsonUpload, bulkJsonRef // Added props
   } = props;
 
   return (
     <section className="flex-1 flex flex-col h-full overflow-hidden bg-[#0f1115]/50">
+      
       <AdminActionBar 
         questions={questions} selectedForDelete={selectedForDelete} handleSelectAll={handleSelectAll} 
-        clearScreen={clearScreen} deleteSelected={deleteSelected} pushToPostgreSQL={pushToPostgreSQL} isLoading={isLoading} 
+        deleteSelected={deleteSelected} pushToPostgreSQL={pushToPostgreSQL} isLoading={isLoading} 
+        translateSelectedToHindi={translateSelectedToHindi} clearScreen={clearScreen}
+        downloadJson={downloadJson} handleBulkJsonUpload={handleBulkJsonUpload} bulkJsonRef={bulkJsonRef}
       />
 
       <div className="flex-1 overflow-y-auto p-8 space-y-6 custom-scrollbar pb-32">

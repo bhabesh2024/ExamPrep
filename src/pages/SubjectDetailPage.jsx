@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { subjectsData } from '../data/syllabusData';
-import { getQuestions } from '../data/questionsLoader'; // ✅ IMPORT ADDED
 import { 
   ChevronRight, ArrowLeft, ArrowRight, Play, CheckCircle, Calculator, 
   BookOpen, Globe, Brain, FlaskConical, Terminal, Activity, FileText 
@@ -17,8 +17,47 @@ export default function SubjectDetailPage() {
 
   const subject = subjectsData.find(s => s.id.toLowerCase() === (subjectId || '').toLowerCase());
 
+  // 🔥 NAYA STATE: Asli User Progress aur DB Question Counts save karne ke liye
+  const [userProgress, setUserProgress] = useState({});
+  const [dbQuestionCounts, setDbQuestionCounts] = useState({});
+
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    // 1. Fetch User Progress (Scores)
+    const fetchUserProgress = async () => {
+      const userStr = localStorage.getItem('user');
+      if (!userStr) return; 
+      try {
+        const userObj = JSON.parse(userStr);
+        const res = await axios.get(`/api/results?userId=${userObj.id}`);
+        if (res.data && res.data.length > 0) {
+          const progressMap = {};
+          res.data.forEach(result => {
+            const percentage = Math.round((result.score / result.total) * 100) || 0;
+            if (!progressMap[result.topic] || percentage > progressMap[result.topic]) {
+              progressMap[result.topic] = Math.min(percentage, 100);
+            }
+          });
+          setUserProgress(progressMap);
+        }
+      } catch (error) { 
+        console.error("Failed to fetch user progress:", error); 
+      }
+    };
+
+    // 2. Fetch Actual Question Counts from Database 🔥
+    const fetchQuestionCounts = async () => {
+      try {
+        const res = await axios.get('/api/questions/counts');
+        if (res.data) setDbQuestionCounts(res.data);
+      } catch (error) { 
+        console.error("Failed to fetch question counts:", error); 
+      }
+    };
+
+    fetchUserProgress();
+    fetchQuestionCounts(); // API Call
   }, [subjectId]);
 
   if (!subject) {
@@ -121,14 +160,15 @@ export default function SubjectDetailPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {category.topics.map((topic) => {
                   
-                  // 🔥 NAYA LOGIC: Yahan actual questions ki length count ho rahi hai
-                  const actualQuestions = getQuestions(subject.id, topic.id);
-                  const questionCount = actualQuestions.length;
+                  // 🔥 NAYA LOGIC: Database ka asli count lagao 🔥
+                  const questionCount = dbQuestionCounts[topic.id] || 0;
+
+                  // DB se aayi hui progress 
+                  const progressValue = userProgress[topic.id] || 0;
 
                   return (
                     <div key={topic.id} className="topic-card rounded-2xl p-6 group flex flex-col h-full relative overflow-hidden">
                       
-                      {/* 🔥 Agar questionCount 0 se jyada hai toh NEW blink karega */}
                       {questionCount > 0 && (
                         <div className="absolute top-4 right-4 px-2 py-0.5 rounded text-[10px] font-bold bg-[#00d26a]/15 text-[#00d26a] border border-[#00d26a]/30 shadow-[0_0_10px_rgba(0,210,106,0.2)] animate-pulse uppercase tracking-widest">
                           New Data
@@ -152,10 +192,15 @@ export default function SubjectDetailPage() {
                       <div className="mt-auto pt-4 border-t border-white/5">
                         <div className="flex justify-between items-center mb-2">
                           <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Progress</span>
-                          <span className="text-[11px] font-bold text-slate-500">0%</span>
+                          <span className={`text-[11px] font-bold ${progressValue === 100 ? 'text-[#00d26a]' : progressValue > 0 ? 'text-blue-400' : 'text-slate-500'}`}>
+                            {progressValue}%
+                          </span>
                         </div>
-                        <div className="h-1.5 w-full bg-[#27272a] rounded-full overflow-hidden mb-5">
-                          <div className="h-full bg-blue-500 w-0 rounded-full"></div>
+                        <div className="h-1.5 w-full bg-[#27272a] rounded-full overflow-hidden mb-5 relative">
+                          <div 
+                            className={`absolute top-0 left-0 h-full rounded-full transition-all duration-1000 ease-out ${progressValue === 100 ? 'bg-gradient-to-r from-[#00d26a] to-emerald-400' : 'bg-gradient-to-r from-blue-600 to-blue-400'}`}
+                            style={{ width: `${progressValue}%` }}
+                          ></div>
                         </div>
                         
                         <button 

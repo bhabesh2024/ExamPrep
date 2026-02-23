@@ -128,6 +128,44 @@ app.get('/api/questions', async (req, res) => {
   }
 });
 
+app.get('/api/questions/counts', async (req, res) => {
+  try {
+    // Prisma ka groupBy function jo har chapterId ke hisaab se questions ginega
+    const counts = await prisma.question.groupBy({
+      by: ['chapterId'],
+      _count: { id: true }
+    });
+
+    // Frontend ke liye data ko simple object me badalna: { 'number-system': 10, 'algebra': 5 }
+    const countMap = {};
+    counts.forEach(item => {
+      if (item.chapterId) {
+        countMap[item.chapterId] = item._count.id;
+      }
+    });
+
+    res.json(countMap);
+  } catch (err) {
+    console.error("Count Error:", err);
+    res.status(500).json({ error: "Failed to fetch question counts." });
+  }
+});
+
+// FETCH USER RESULTS FOR PROGRESS BAR
+app.get('/api/results', async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) return res.status(400).json({ error: 'User ID is required' });
+    
+    const results = await prisma.result.findMany({
+      where: { userId: parseInt(userId) }
+    });
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // 2. Question Save karne ki API (Admin Panel se)
 app.post('/api/questions', async (req, res) => {
   try {
