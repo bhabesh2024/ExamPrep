@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Components
 import Navbar from './components/layout/Navbar';
@@ -15,12 +15,25 @@ import AboutPage from './pages/AboutPage';
 import AuthPage from './pages/AuthPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPanel from './pages/AdminPanel'; 
+import AdminLogin from './pages/AdminLogin'; // Naya Admin Login Page
 import LeaderboardPage from './pages/LeaderboardPage';
 import PricingPage from './pages/PricingPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import CookiePolicyPage from './pages/CookiePolicyPage';
 import ContactPage from './pages/ContactPage';
+
+// 🛡️ Admin Protection Route Setup
+const AdminRoute = ({ children }) => {
+  const secretKey = import.meta.env.VITE_ADMIN_SECRET;
+  const isAdminAuthenticated = localStorage.getItem('isAdminAuth') === secretKey;
+
+  if (!isAdminAuthenticated) {
+    // Agar koi normal user /admin type karega toh wo wapas Home par chala jayega
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
 
 export default function App() {
   return (
@@ -43,7 +56,20 @@ export default function App() {
           <Route path="/profile" element={<><Navbar /><ProfilePage /></>} />
           <Route path="/leaderboard" element={<><Navbar /><LeaderboardPage /></>} />
           <Route path="/pricing" element={<><Navbar /><PricingPage /></>} />
-          <Route path="/admin" element={<AdminPanel />} />
+          
+          {/* 🛡️ PROTECTED ADMIN ROUTE */}
+          <Route 
+            path="/admin" 
+            element={
+              <AdminRoute>
+                <AdminPanel />
+              </AdminRoute>
+            } 
+          />
+
+          {/* 🔑 SECRET LOGIN ROUTE (Tumhare access ke liye) */}
+          <Route path="/admin-secret-login" element={<AdminLogin />} />
+
           <Route path="/terms" element={<><Navbar /><TermsPage /></>} />
           <Route path="/privacy" element={<><Navbar /><PrivacyPage /></>} />
           <Route path="/cookie-policy" element={<><Navbar /><CookiePolicyPage /></>} />
