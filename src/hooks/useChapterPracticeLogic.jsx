@@ -31,6 +31,31 @@ const smartShuffle = (questionsArray) => {
   return allBlocks.flat();
 };
 
+// 💾 SessionStorage helpers
+const SESSION_KEY_PREFIX = 'practice_session_';
+
+const getSessionKey = (topicId) => `${SESSION_KEY_PREFIX}${topicId}`;
+
+const loadSessionState = (topicId) => {
+  try {
+    const saved = sessionStorage.getItem(getSessionKey(topicId));
+    if (saved) return JSON.parse(saved);
+  } catch (e) { /* ignore */ }
+  return null;
+};
+
+const saveSessionState = (topicId, state) => {
+  try {
+    sessionStorage.setItem(getSessionKey(topicId), JSON.stringify(state));
+  } catch (e) { /* ignore */ }
+};
+
+const clearSessionState = (topicId) => {
+  try {
+    sessionStorage.removeItem(getSessionKey(topicId));
+  } catch (e) { /* ignore */ }
+};
+
 export default function useChapterPracticeLogic() {
   const { subjectId, topicId } = useParams();
   const navigate = useNavigate();
@@ -39,15 +64,39 @@ export default function useChapterPracticeLogic() {
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
   const [showResult, setShowResult] = useState(false);
 
-  // ── Database Fetching ──
+  // ── Database Fetching with SessionStorage ──
   useEffect(() => {
     const fetchQuestionsFromDB = async () => {
       setIsLoadingQuestions(true);
+      
+      // 💾 Pehle session check karo - agar saved state hai toh wahi use karo
+      const savedSession = loadSessionState(topicId);
+      if (savedSession && savedSession.questions && savedSession.questions.length > 0) {
+        setAllQuestions(savedSession.questions);
+        setCurrentQ(savedSession.currentQ || 0);
+        setAnswers(savedSession.answers || {});
+        setReview(savedSession.review || {});
+        setVisited(savedSession.visited || { 0: true });
+        setShowResult(savedSession.showResult || false);
+        setIsLoadingQuestions(false);
+        return; // API call mat karo
+      }
+
+      // 🌐 Session nahi mila toh API se fetch karo
       try {
         const res = await axios.get(`/api/questions?chapterId=${topicId}`);
         if (res.data && res.data.length > 0) {
-          // 🚀 Yahan hum apna naya smart shuffle use karenge
-          setAllQuestions(smartShuffle(res.data));
+          const shuffled = smartShuffle(res.data);
+          setAllQuestions(shuffled);
+          // Pehli baar session save karo
+          saveSessionState(topicId, {
+            questions: shuffled,
+            currentQ: 0,
+            answers: {},
+            review: {},
+            visited: { 0: true },
+            showResult: false
+          });
         } else {
           setAllQuestions([]);
         }
@@ -67,6 +116,13 @@ export default function useChapterPracticeLogic() {
   const [answers, setAnswers] = useState({});
   const [review, setReview] = useState({});
   const [visited, setVisited] = useState({ 0: true });
+
+  // 💾 State change hone par session update karo
+  useEffect(() => {
+    if (allQuestions.length > 0 && topicId) {
+      saveSessionState(topicId, { questions: allQuestions, currentQ, answers, review, visited, showResult });
+    }
+  }, [currentQ, answers, review, visited, showResult, topicId]);
 
   const [isMobilePaletteOpen, setIsMobilePaletteOpen] = useState(false);
 
@@ -150,10 +206,14 @@ export default function useChapterPracticeLogic() {
   };
 
   const handleRetake = () => {
-    // 🚀 Retake me bhi naya group-based shuffle
-    setAllQuestions(smartShuffle([...allQuestions]));
+    // 🚀 Retake me session clear karo aur naya shuffle karo
+    clearSessionState(topicId);
+    const reshuffled = smartShuffle([...allQuestions]);
+    setAllQuestions(reshuffled);
     setCurrentQ(0); setAnswers({}); setReview({}); setVisited({ 0: true }); setShowResult(false);
     setHindiCache({}); setShowHindi(false); setQHindiCache({}); setShowQHindi(false);
+    // Nayi session state save karo
+    saveSessionState(topicId, { questions: reshuffled, currentQ: 0, answers: {}, review: {}, visited: { 0: true }, showResult: false });
   };
 
   // ── Computations ──
