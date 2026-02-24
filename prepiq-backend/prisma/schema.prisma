@@ -35,6 +35,7 @@ model User {
   email     String   @unique
   password  String
   isPremium Boolean  @default(false)
+  premiumExpiry DateTime?
   createdAt DateTime @default(now())
   results   Result[] // 👈 Nayi line: Ek user ke bohot saare results ho sakte hain
 }

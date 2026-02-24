@@ -4,7 +4,7 @@ import axios from 'axios';
 import { 
   CheckCircle2, Play, FileQuestion, BookOpen, Gauge, 
   TrendingUp, TrendingDown, MoreHorizontal, FileText, 
-  FlaskConical, Calculator, Brain, Globe, Trophy
+  FlaskConical, Calculator, Brain, Globe, Trophy, Lock // 👈 Lock icon import kiya
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -66,14 +66,12 @@ export default function ProfilePage() {
     return { icon: <FileText className="w-5 h-5" />, color: 'text-indigo-400', bg: 'bg-indigo-500/20' };
   };
 
-  // Review button - result ke type ke hisaab se redirect
+  // Review button
   const handleReview = (result) => {
     if (result.subject === 'Mock Test') {
-      // Mock test - testId lowercase mein save tha (e.g. "ADRE-MOCK-1" -> "adre-mock-1")
       const testId = result.topic.toLowerCase().replace(/\s+/g, '-');
       navigate(`/practice/run/full/${testId}`);
     } else {
-      // Chapter practice - subject aur topic dono URL mein jaate hain
       navigate(`/quiz/${result.subject}/${result.topic}`);
     }
   };
@@ -115,7 +113,7 @@ export default function ProfilePage() {
                 <div className="relative">
                   <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-br from-[#2525f4] via-purple-500 to-transparent">
                     <div className="w-full h-full rounded-full bg-[#161616] flex items-center justify-center text-4xl sm:text-5xl font-bold text-white shadow-inner">
-                      {user?.name ? user.name.charAt(0) : 'U'}
+                      {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </div>
                   </div>
                   <div className="absolute -bottom-2 -right-2 bg-[#161616] rounded-full p-1">
@@ -127,13 +125,25 @@ export default function ProfilePage() {
                 
                 <div className="flex flex-col items-center sm:items-start pt-2 text-center sm:text-left w-full">
                   <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">{user?.name}</h1>
+                  
+                  {/* 🚀 FIXED BADGES 🚀 */}
                   <div className="flex flex-wrap justify-center sm:justify-start gap-3 mb-4">
-                    <span className="px-3 py-1 rounded-full bg-[#2525f4]/10 border border-[#2525f4]/20 text-[#2525f4] text-xs font-bold uppercase tracking-wider shadow-[0_0_10px_rgba(37,37,244,0.1)]">
-                      Premium Student
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-[#202020] border border-white/10 text-[#9c9cba] text-xs font-medium">
-                      PrepIQ Member
-                    </span>
+                    {user?.isPremium ? (
+                      <>
+                        <span className="px-3 py-1 rounded-full bg-[#2525f4]/10 border border-[#2525f4]/20 text-[#2525f4] text-xs font-bold uppercase tracking-wider shadow-[0_0_10px_rgba(37,37,244,0.1)]">
+                          👑 Premium Student
+                        </span>
+                        {user?.premiumExpiry && (
+                          <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold tracking-wider">
+                            Valid till: {new Date(user.premiumExpiry).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      <span className="px-3 py-1 rounded-full bg-[#202020] border border-white/10 text-[#9c9cba] text-xs font-medium">
+                        PrepIQ Member {/* 👈 Changed from 'Free User' to 'PrepIQ Member' */}
+                      </span>
+                    )}
                   </div>
                   
                   {/* XP Progress */}
@@ -152,16 +162,30 @@ export default function ProfilePage() {
                 </div>
               </div>
               
-              {/* 🔥 RESUME PRACTICE & LEADERBOARD BUTTONS 🔥 */}
               <div className="flex flex-col sm:flex-row gap-4 mt-6 md:mt-0">
                 <button onClick={() => navigate('/practice')} className="bg-[#2525f4] hover:bg-blue-600 text-white px-6 py-3.5 rounded-xl font-bold transition-all shadow-[0_0_20px_rgba(37,37,244,0.4)] hover:shadow-[0_0_25px_rgba(37,37,244,0.6)] hover:-translate-y-1 flex items-center justify-center gap-2">
                   <Play className="w-5 h-5 fill-current" />
                   Resume Practice
                 </button>
-                <button onClick={() => navigate('/leaderboard')} className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-[#0a0a0a] px-6 py-3.5 rounded-xl font-black transition-all shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)] hover:-translate-y-1 flex items-center justify-center gap-2">
-                  <Trophy className="w-5 h-5" />
-                  Global Leaderboard
-                </button>
+
+                {/* 🚀 LEADERBOARD BUTTON LOGIC 🚀 */}
+                {user?.isPremium ? (
+                  <button onClick={() => navigate('/leaderboard')} className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-[#0a0a0a] px-6 py-3.5 rounded-xl font-black transition-all shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)] hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <Trophy className="w-5 h-5" />
+                    Global Leaderboard
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      alert("Global Leaderboard is a Premium feature. Upgrade to Pro to see where you rank!");
+                      navigate('/pricing');
+                    }} 
+                    className="bg-[#202020] text-[#9c9cba] border border-[#3b3b54] px-6 py-3.5 rounded-xl font-bold transition-all hover:bg-[#2a2a35] hover:text-white flex items-center justify-center gap-2"
+                  >
+                    <Lock className="w-5 h-5" /> {/* 👈 Lock Icon for free users */}
+                    Leaderboard (Pro)
+                  </button>
+                )}
               </div>
             </div>
           </section>

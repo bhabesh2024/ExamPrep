@@ -68,16 +68,22 @@ export default function PricingPage() {
         order_id: orderData.id,
         handler: async function (response) {
           try {
-            await axios.post('/api/verify-payment', {
+            // 🚀 FIX: Yahan planDuration backend ko bhej rahe hain
+            const verifyRes = await axios.post('/api/verify-payment', {
               ...response,
-              userId: user.id
+              userId: user.id,
+              planDuration: planDuration
             });
             
-            // Success: Update Local Storage to show premium instantly
-            const updatedUser = { ...user, isPremium: true };
+            // 🚀 FIX: Backend se aayi premiumExpiry date ko Local Storage me save kar rahe hain
+            const updatedUser = { 
+              ...user, 
+              isPremium: true,
+              premiumExpiry: verifyRes.data.premiumExpiry
+            };
             localStorage.setItem('user', JSON.stringify(updatedUser));
             
-            alert("Payment Successful! Welcome to PrepIQ Premium! 🎉");
+            alert(`Payment Successful! Your plan is valid for ${getDurationText()}. 🎉`);
             navigate('/profile'); 
           } catch (verifyErr) {
             alert("Payment verification failed!");
@@ -187,7 +193,7 @@ export default function PricingPage() {
             </div>
           </div>
 
-          {/* PRO PLAN CARD - Alignment Fixed */}
+          {/* PRO PLAN CARD */}
           <div className="bg-gradient-to-b from-[#1a1ab8]/20 to-[#111118] border border-[#2525f4]/50 rounded-3xl p-8 flex flex-col relative shadow-[0_0_40px_rgba(37,37,244,0.15)] w-full">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
               Most Popular

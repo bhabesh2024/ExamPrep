@@ -53,7 +53,7 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-// 2. Login API
+// 2. Login API (Updated for Premium Expiry)
 app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -73,7 +73,13 @@ app.post('/api/login', async (req, res) => {
     res.json({ 
       message: "Login successful!", 
       token, 
-      user: { id: user.id, name: user.name, email: user.email, isPremium: user.isPremium }
+      user: { 
+        id: user.id, 
+        name: user.name, 
+        email: user.email, 
+        isPremium: user.isPremium,
+        premiumExpiry: user.premiumExpiry // 👈 Expiry Date Login ke time send kar rahe hain
+      }
     });
   } catch (err) {
     console.error("Login Error:", err);
@@ -328,7 +334,6 @@ app.get('/api/leaderboard', async (req, res) => {
 // 💳 RAZORPAY PAYMENT GATEWAY APIs (STRICT ENV)
 // ==========================================
 
-// Ab setup strictly process.env se lega
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID, 
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -336,7 +341,6 @@ const razorpay = new Razorpay({
 
 app.post('/api/create-order', async (req, res) => {
   try {
-    // 🛡️ Strict Check: Agar `.env` mein keys nahi mili, toh error phek do
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
       console.error("🚨 CRITICAL: Razorpay keys .env se missing hain!");
       return res.status(500).json({ error: "Server Configuration Error: Razorpay keys missing in .env." });
@@ -357,26 +361,45 @@ app.post('/api/create-order', async (req, res) => {
   }
 });
 
+// 🚀 Updated Verify Payment API for Plan Duration
 app.post('/api/verify-payment', async (req, res) => {
   try {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, userId, planDuration } = req.body;
 
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
-    // 🛡️ Strict Check for Signature
     const expectedSign = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(sign.toString())
       .digest("hex");
 
     if (razorpay_signature === expectedSign) {
-      // ✅ PAYMENT SUCCESS! Asli jaadu yahan hoga, DB mein user Premium banega
+      let expiryDate = new Date();
+
       if (userId) {
+        // Expiry date calculation based on plan selected
+        if (planDuration === '3months') {
+          expiryDate.setMonth(expiryDate.getMonth() + 3);
+        } else if (planDuration === '6months') {
+          expiryDate.setMonth(expiryDate.getMonth() + 6);
+        } else {
+          // Yearly fallback
+          expiryDate.setFullYear(expiryDate.getFullYear() + 1); 
+        }
+
+        // Save new expiry date in DB
         await prisma.user.update({
           where: { id: parseInt(userId) },
-          data: { isPremium: true }
+          data: { 
+            isPremium: true,
+            premiumExpiry: expiryDate 
+          }
         });
       }
-      return res.status(200).json({ message: "Payment successfully verified! You are now a Premium user." });
+      
+      return res.status(200).json({ 
+        message: "Payment successfully verified! You are now a Premium user.",
+        premiumExpiry: expiryDate 
+      });
     } else {
       return res.status(400).json({ error: "Invalid signature! Payment fake ho sakti hai." });
     }
