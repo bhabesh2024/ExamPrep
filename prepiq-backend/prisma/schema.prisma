@@ -15,6 +15,8 @@ model Question {
   subtopic         String
   chapterId        String
   difficulty       String?
+  passage          String? // 👈 NAYI LINE: English passage ke liye
+  passageHindi     String?
   question         String
   questionHindi    String?
   options          String  // SQLite arrays support nahi karta, isliye isko String rakha hai

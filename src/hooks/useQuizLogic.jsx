@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-// 🔥 Syllabus data import kiya taaki Asli naam mil sake
 import { subjectsData } from '../data/syllabusData'; 
 
 export default function useQuizLogic(type, testId) {
@@ -39,7 +38,6 @@ export default function useQuizLogic(type, testId) {
               ? testId.substring(0, lastDashIdx).toLowerCase() 
               : testId.toLowerCase();
               
-            // 🔥 BUG FIX: URL ID se Asli Title ("Mathematics") nikalenge
             const matchedSubject = subjectsData.find(s => s.id.toLowerCase() === subjectIdSlug);
             const actualSubjectTitle = matchedSubject ? matchedSubject.title.toLowerCase() : subjectIdSlug;
 
@@ -48,28 +46,49 @@ export default function useQuizLogic(type, testId) {
 
           const limit = isFullMock ? 150 : 50;
 
-          // ROUND-ROBIN SMART ALGORITHM
-          const questionsByChapter = {};
+          // 🚀 SMART PASSAGE GROUPING ALGORITHM 🚀
+          const groupedBlocks = []; 
+          const passageMap = {};
+          
+          // Sabse pehle passage wale questions ko ek array/block me daalo
           availableQs.forEach(q => {
             const chap = q.subtopic || q.chapterId || 'misc';
-            if (!questionsByChapter[chap]) questionsByChapter[chap] = [];
-            questionsByChapter[chap].push(q);
+            if (q.passage && q.passage.trim() !== '') {
+              if (!passageMap[q.passage]) passageMap[q.passage] = { chapter: chap, questions: [] };
+              passageMap[q.passage].questions.push(q);
+            } else {
+              // Bina passage wale normal questions ko single block maano
+              groupedBlocks.push({ chapter: chap, questions: [q] });
+            }
+          });
+          
+          Object.values(passageMap).forEach(block => groupedBlocks.push(block));
+
+          // ROUND-ROBIN SELECTION (Blocks par base karega)
+          const blocksByChapter = {};
+          groupedBlocks.forEach(block => {
+            if (!blocksByChapter[block.chapter]) blocksByChapter[block.chapter] = [];
+            blocksByChapter[block.chapter].push(block);
           });
 
-          Object.keys(questionsByChapter).forEach(chap => {
-            questionsByChapter[chap].sort(() => 0.5 - Math.random());
+          // Har chapter ke blocks ko alag se shuffle karo
+          Object.keys(blocksByChapter).forEach(chap => {
+            blocksByChapter[chap].sort(() => 0.5 - Math.random());
           });
 
-          const selectedQuestions = [];
-          const chapters = Object.keys(questionsByChapter);
+          const selectedBlocks = [];
+          let currentQCount = 0;
+          const chapters = Object.keys(blocksByChapter);
           let currentChapIdx = 0;
           
-          while (selectedQuestions.length < limit && chapters.length > 0) {
+          while (currentQCount < limit && chapters.length > 0) {
             const chapName = chapters[currentChapIdx];
-            const chapArray = questionsByChapter[chapName];
+            const chapArray = blocksByChapter[chapName];
             
             if (chapArray && chapArray.length > 0) {
-              selectedQuestions.push(chapArray.pop());
+              const blockToAdd = chapArray.pop();
+              selectedBlocks.push(blockToAdd);
+              currentQCount += blockToAdd.questions.length;
             } else {
               chapters.splice(currentChapIdx, 1);
               currentChapIdx--; 
@@ -81,7 +100,13 @@ export default function useQuizLogic(type, testId) {
             }
           }
 
-          const finalShuffled = selectedQuestions.sort(() => 0.5 - Math.random());
+          // Aakhri me select kiye gaye blocks ko ek baar aur mix kar do
+          selectedBlocks.sort(() => 0.5 - Math.random());
+          
+          // Blocks ko khol kar wapas questions ki ek final list bana lo
+          // Isse passage ke 4 questions hamesha ek saath rahenge!
+          const finalShuffled = selectedBlocks.flatMap(block => block.questions);
+          
           setQuestions(finalShuffled);
         }
       } catch (err) {

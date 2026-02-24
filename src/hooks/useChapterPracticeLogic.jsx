@@ -9,6 +9,28 @@ const safeFormat = (text) => {
   return cleanMarkdown(applyStrictMathFilter(text));
 };
 
+// 🚀 NAYA SMART SHUFFLE FUNCTION (Passage questions ko ek saath group rakhega) 🚀
+const smartShuffle = (questionsArray) => {
+  const passageGroups = {};
+  const standaloneQs = [];
+  
+  questionsArray.forEach(q => {
+    if (q.passage && q.passage.trim() !== "") {
+      if (!passageGroups[q.passage]) passageGroups[q.passage] = [];
+      passageGroups[q.passage].push(q);
+    } else {
+      standaloneQs.push([q]); 
+    }
+  });
+
+  // Har ek group (block) ko mix karega
+  const allBlocks = [...Object.values(passageGroups), ...standaloneQs];
+  allBlocks.sort(() => 0.5 - Math.random());
+  
+  // Wapas unko seedhi line mein laga dega
+  return allBlocks.flat();
+};
+
 export default function useChapterPracticeLogic() {
   const { subjectId, topicId } = useParams();
   const navigate = useNavigate();
@@ -24,7 +46,8 @@ export default function useChapterPracticeLogic() {
       try {
         const res = await axios.get(`/api/questions?chapterId=${topicId}`);
         if (res.data && res.data.length > 0) {
-          setAllQuestions(res.data.sort(() => 0.5 - Math.random()));
+          // 🚀 Yahan hum apna naya smart shuffle use karenge
+          setAllQuestions(smartShuffle(res.data));
         } else {
           setAllQuestions([]);
         }
@@ -110,7 +133,6 @@ export default function useChapterPracticeLogic() {
     setShowHindi(false); setShowQHindi(false);
   };
 
-  // ── Hindi Translation (uses stored questionHindi/explanationHindi from DB) ──
   const handleViewInHindi = () => {
     if (showHindi) { setShowHindi(false); return; }
     if (currentQuestionData?.explanationHindi) {
@@ -128,7 +150,8 @@ export default function useChapterPracticeLogic() {
   };
 
   const handleRetake = () => {
-    setAllQuestions([...allQuestions].sort(() => 0.5 - Math.random()));
+    // 🚀 Retake me bhi naya group-based shuffle
+    setAllQuestions(smartShuffle([...allQuestions]));
     setCurrentQ(0); setAnswers({}); setReview({}); setVisited({ 0: true }); setShowResult(false);
     setHindiCache({}); setShowHindi(false); setQHindiCache({}); setShowQHindi(false);
   };

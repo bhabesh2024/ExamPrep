@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bookmark, CheckCircle2, Sparkles, Share2, Check, Landmark } from 'lucide-react';
+import { Bookmark, CheckCircle2, Sparkles, Share2, Check, Landmark, BookOpen } from 'lucide-react';
 import MathText from '../common/MathText';
 import GeometryVisualizer from '../common/GeometryVisualizer';
 
@@ -62,6 +62,20 @@ export default function QuizQuestionArea({ currentQ, currentQuestionData, handle
             </button>
           </div>
         </div>
+
+        {/* 🚀 FIXED PASSAGE UI: Solid separated header 🚀 */}
+        {currentQuestionData?.passage && (
+          <div className="mb-6 rounded-xl bg-[#111318]/80 border border-[#2a2f3a] overflow-hidden flex flex-col shadow-inner">
+            <div className="flex items-center gap-2 px-4 py-2.5 bg-[#1a1d24] border-b border-[#2a2f3a] text-[#0d59f2] text-[11px] font-black uppercase tracking-widest shrink-0">
+              <BookOpen className="w-4 h-4" /> Direction / Passage
+            </div>
+            <div className="p-4 md:p-5 max-h-56 overflow-y-auto custom-scrollbar">
+              <div className="text-sm md:text-base text-slate-300 leading-relaxed font-medium">
+                <MathText text={currentQuestionData.passage} />
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="text-lg md:text-xl font-medium leading-relaxed text-slate-200">
           <MathText text={currentQuestionData?.question || ''} />

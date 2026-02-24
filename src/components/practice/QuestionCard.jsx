@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Languages, Sparkles, Share2, Check, Landmark } from 'lucide-react';
+import { Languages, Sparkles, Share2, Check, Landmark, BookOpen } from 'lucide-react';
 import MathText from '../common/MathText';
 import GeometryVisualizer from '../common/GeometryVisualizer';
 
@@ -33,15 +33,14 @@ export default function QuestionCard({ currentQ, currentQuestionData, showQHindi
   };
 
   return (
-    <div className="bg-[#1a1d24] rounded-2xl p-4 sm:p-6 border border-[#282e39] shadow-xl relative overflow-hidden">
+    <div className="bg-[#1a1d24] rounded-2xl p-4 sm:p-6 border border-[#282e39] shadow-xl relative overflow-hidden flex flex-col">
       <div className="absolute top-0 right-0 w-64 h-32 bg-gradient-to-br from-blue-500/10 to-indigo-500/5 blur-2xl rounded-bl-full pointer-events-none"></div>
 
-      <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-6 relative z-10">
+      <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-4 mb-4 sm:mb-6 relative z-10 shrink-0">
         <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#0d59f2]/10 text-[#0d59f2] border border-[#0d59f2]/20 uppercase tracking-wider">
             Question {currentQ + 1}
           </span>
-          {/* 🏛️ EXAM REFERENCE BADGE HERE */}
           {currentQuestionData?.examReference && currentQuestionData.examReference !== "Expected" && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20 uppercase tracking-wider shadow-sm">
               <Landmark className="w-3 h-3" /> {currentQuestionData.examReference}
@@ -64,13 +63,34 @@ export default function QuestionCard({ currentQ, currentQuestionData, showQHindi
         </div>
       </div>
 
-      <div className="text-base md:text-xl font-medium leading-relaxed text-slate-200 relative z-10 min-h-[120px] sm:min-h-[140px] flex items-start">
+      {/* 🚀 FIXED PASSAGE UI: No Overlapping 🚀 */}
+      {currentQuestionData?.passage && (
+        <div className="mb-6 rounded-xl bg-[#111318]/80 border border-[#2a2f3a] overflow-hidden flex flex-col relative z-10 shadow-inner">
+          {/* Solid Header - separated from scrollable content */}
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-[#1a1d24] border-b border-[#2a2f3a] text-[#0d59f2] text-[11px] font-black uppercase tracking-widest shrink-0">
+            <BookOpen className="w-4 h-4" /> Direction / Passage
+          </div>
+          {/* Scrollable Text Body */}
+          <div className="p-4 md:p-5 max-h-56 overflow-y-auto custom-scrollbar">
+            <div className="text-sm md:text-base text-slate-300 leading-relaxed font-medium">
+              {showQHindi && currentQuestionData.passageHindi ? (
+                <MathText text={currentQuestionData.passageHindi} />
+              ) : (
+                <MathText text={currentQuestionData.passage} />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="text-base md:text-xl font-medium leading-relaxed text-slate-200 relative z-10 min-h-[80px] flex items-start">
         {showQHindi ? (
           <div key="hindi" className="fade-in-text font-display w-full"><MathText text={hindiQuestionText} /></div>
         ) : (
           <div key="english" className="fade-in-text w-full"><MathText text={currentQuestionData.question} /></div>
         )}
       </div>
+      
       <GeometryVisualizer type={currentQuestionData.geometryType} dataStr={currentQuestionData.geometryData} />
     </div>
   );

@@ -12,9 +12,6 @@ import { applyStrictMathFilter, cleanMarkdown } from '../utils/textUtils';
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 export default function useAdminLogic() {
-  // ==========================================
-  // SECTION 1: STATES & FORM HANDLERS
-  // ==========================================
   const mainSubjects = subjectsData.map(s => s.title);
   
   const getCategories = (mainCatTitle) => {
@@ -28,6 +25,16 @@ export default function useAdminLogic() {
     const cat = subj.categories.find(c => c.title === subCatTitle);
     if(!cat) return [];
     return cat.topics.map(t => t.title);
+  };
+
+  const getTrueChapterId = (topicTitle) => {
+    for (const subj of subjectsData) {
+      for (const cat of subj.categories) {
+        const found = cat.topics.find(t => t.title === topicTitle);
+        if (found) return found.id;
+      }
+    }
+    return topicTitle.toLowerCase().replace(/\s+/g, '-');
   };
 
   const [mainCategory, setMainCategory] = useState(mainSubjects[0]);
@@ -78,16 +85,14 @@ export default function useAdminLogic() {
   const handleFileSelect = (e) => { if (e.target.files?.[0]) setFile(e.target.files[0]); };
   const removeFile = () => setFile(null);
 
-
-  // ==========================================
-  // SECTION 2: UI QUESTION ACTIONS
-  // ==========================================
   const handleQuestionChange = (index, field, value) => { const updated = [...questions]; updated[index][field] = value; setQuestions(updated); };
   const handleOptionChange = (qIndex, optIndex, value) => { const updated = [...questions]; const oldOptValue = updated[qIndex].options[optIndex]; updated[qIndex].options[optIndex] = value; if (updated[qIndex].answer === oldOptValue) { updated[qIndex].answer = value; } setQuestions(updated); };
   const setCorrectAnswer = (qIndex, optValue) => { const updated = [...questions]; updated[qIndex].answer = optValue; setQuestions(updated); };
   const toggleSelect = (index) => { setSelectedForDelete(prev => prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]); };
   const handleSelectAll = (e) => { setSelectedForDelete(e.target.checked ? questions.map((_, i) => i) : []); };
-  const addNewQuestion = () => { setQuestions([...questions, { question: "", questionHindi: "", options: ["", "", "", ""], answer: "", explanation: "", explanationHindi: "", examReference: "Expected", geometryType: null, geometryData: null }]); };
+  
+  // 🚀 FIX: add passage to new question
+  const addNewQuestion = () => { setQuestions([...questions, { passage: "", passageHindi: "", question: "", questionHindi: "", options: ["", "", "", ""], answer: "", explanation: "", explanationHindi: "", examReference: "Expected", geometryType: null, geometryData: null }]); };
   
   const clearScreen = () => { 
     if (questions.length > 0 && window.confirm("Clear screen? (Database se delete nahi hoga)")) { 
@@ -95,10 +100,6 @@ export default function useAdminLogic() {
     } 
   };
 
-
-  // ==========================================
-  // SECTION 3: DATABASE OPERATIONS 
-  // ==========================================
   const fetchFromDatabase = async () => {
     setStatus('Fetching questions...'); setStatusType('loading'); setIsLoading(true);
     try {
@@ -118,11 +119,13 @@ export default function useAdminLogic() {
         const qSubject = q.subject || mainCategory;
         const qTopic = q.topic || subCategory;
         const qSubtopic = q.subtopic || chapter;
-        const qChapterId = q.chapterId || qSubtopic.toLowerCase().replace(/\s+/g, '-');
+        const qChapterId = q.chapterId || getTrueChapterId(qSubtopic);
         const qDifficulty = q.difficulty || difficulty;
 
+        // 🚀 FIX: Sending passage data
         await axios.post('/api/questions', {
           subject: qSubject, topic: qTopic, subtopic: qSubtopic, chapterId: qChapterId, difficulty: qDifficulty,
+          passage: q.passage || null, passageHindi: q.passageHindi || null,
           question: q.question, questionHindi: q.questionHindi || "", options: q.options, answer: q.answer,
           explanation: q.explanation || "", explanationHindi: q.explanationHindi || "", examReference: q.examReference || "Expected",
           geometryType: q.geometryType || null, geometryData: q.geometryData ? (typeof q.geometryData === 'string' ? q.geometryData : JSON.stringify(q.geometryData)) : null
@@ -157,31 +160,78 @@ export default function useAdminLogic() {
     } 
   };
 
+// 🚀 SMART EXPORT LOGIC FOR PASSAGES 🚀
+const downloadJson = () => {
+  const safeChapter = chapter || 'export_data';
+  const chapterIdSlug = getTrueChapterId(safeChapter);
+  
+  let dataToDownload;
 
-  // ==========================================
-  // SECTION 4: JSON EXPORT & AUTO-SAVE IMPORT
-  // ==========================================
-  const downloadJson = () => {
-    if (questions.length === 0) return;
-    const chapterIdSlug = chapter.toLowerCase().replace(/\s+/g, '-');
-    const dataToDownload = questions.map(q => ({
-      subject: mainCategory, topic: subCategory, subtopic: chapter, chapterId: chapterIdSlug, difficulty: difficulty,
+  // Agar screen par 0 questions hain, toh smart template generate karo
+  if (questions.length === 0) {
+    
+    // Check karo ki kya chapter "Passage" se related hai
+    const isComprehension = safeChapter.toLowerCase().includes('passage') || safeChapter.toLowerCase().includes('comprehension');
+    
+    // Agar passage hai toh 4 questions ka set banao, warna 1 normal question
+    const questionCount = isComprehension ? 4 : 1; 
+    
+    const sharedPassage = isComprehension 
+      ? "Read the following passage carefully and answer the questions below:\n\n[Your long passage goes here. This same passage will appear for all 4 questions in this set.]" 
+      : "Enter paragraph here (Optional)";
+      
+    const sharedPassageHindi = isComprehension 
+      ? "निम्नलिखित गद्यांश को ध्यानपूर्वक पढ़ें और नीचे दिए गए प्रश्नों के उत्तर दें:\n\n[आपका लंबा गद्यांश यहाँ आएगा। यह गद्यांश इस सेट के सभी 4 प्रश्नों के लिए समान रहेगा।]" 
+      : "पैसेज यहाँ दर्ज करें (वैकल्पिक)";
+
+    // Generate the array based on count
+    dataToDownload = Array.from({ length: questionCount }).map((_, i) => ({
+      subject: mainCategory, 
+      topic: subCategory, 
+      subtopic: safeChapter, 
+      chapterId: chapterIdSlug, 
+      difficulty: difficulty,
+      passage: sharedPassage, // Same passage sabme jayega
+      passageHindi: sharedPassageHindi,
+      question: isComprehension ? `Question ${i + 1} based on the passage? (Replace this)` : "Sample Question? (Replace this text)",
+      questionHindi: isComprehension ? `गद्यांश पर आधारित प्रश्न ${i + 1}? (इसे बदलें)` : "नमूना प्रश्न? (इसे बदलें)",
+      options: ["Option A", "Option B", "Option C", "Option D"], 
+      answer: "Option A",
+      explanation: "Explanation here", 
+      explanationHindi: "व्याख्या यहाँ",
+      examReference: "Expected", 
+      geometryType: null, 
+      geometryData: null
+    }));
+
+    setStatus(`✅ Downloaded ${isComprehension ? '4-Question Passage Template' : 'Blank Sample Template'} for ${safeChapter}!`); 
+    setStatusType('success');
+  } else {
+    // Agar pehle se questions hain toh unhe export karo
+    dataToDownload = questions.map(q => ({
+      subject: mainCategory, topic: subCategory, subtopic: safeChapter, chapterId: chapterIdSlug, difficulty: difficulty,
+      passage: q.passage || null, passageHindi: q.passageHindi || null,
       question: q.question || "", questionHindi: q.questionHindi || "",
       options: q.options || ["", "", "", ""], answer: q.answer || "",
       explanation: q.explanation || "", explanationHindi: q.explanationHindi || "",
       examReference: q.examReference || "Expected", geometryType: q.geometryType || null, geometryData: q.geometryData || null
     }));
-
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToDownload, null, 2));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `${chapterIdSlug}_draft.json`);
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-    
     setStatus(`✅ Downloaded ${dataToDownload.length} questions as JSON!`); setStatusType('success');
-  };
+  }
+
+  const jsonString = JSON.stringify(dataToDownload, null, 2);
+  const blob = new Blob([jsonString], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", url);
+  downloadAnchorNode.setAttribute("download", `${chapterIdSlug}_draft.json`);
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+  
+  URL.revokeObjectURL(url);
+};
 
   const handleBulkJsonUpload = (e) => {
     const uploadedFile = e.target.files[0];
@@ -192,8 +242,6 @@ export default function useAdminLogic() {
       try {
         const parsedData = JSON.parse(event.target.result);
         if (Array.isArray(parsedData) && parsedData.length > 0) {
-          
-          // 🔥 MAGIC: Auto-Fill Dropdowns 🔥
           const firstQ = parsedData[0];
           if (firstQ.subject) setMainCategory(firstQ.subject);
           if (firstQ.topic) setSubCategory(firstQ.topic);
@@ -203,7 +251,6 @@ export default function useAdminLogic() {
           setQuestions(parsedData); setSelectedForDelete([]);
           setStatus(`✅ Successfully loaded ${parsedData.length} questions from JSON!`); setStatusType('success');
           
-          // 🔥 AUTO-SAVE POPUP 🔥
           setTimeout(() => {
             if (window.confirm(`File Imported Successfully!\n\nDo you want to save these ${parsedData.length} questions directly to the Database?`)) {
               pushToPostgreSQL(parsedData);
@@ -217,10 +264,6 @@ export default function useAdminLogic() {
     if (bulkJsonRef.current) bulkJsonRef.current.value = '';
   };
 
-
-  // ==========================================
-  // SECTION 5: AI OPERATIONS (Generate & Translate)
-  // ==========================================
   const loadLocalJsonData = () => {
     setStatus('Loading local JSON data...'); setStatusType('loading');
     try {
@@ -228,6 +271,7 @@ export default function useAdminLogic() {
       if (loaded && loaded.length > 0) {
         const formattedData = loaded.map(q => ({
           ...q, questionHindi: "", explanationHindi: "", examReference: q.examReference || "Expected",
+          passage: q.passage || null, passageHindi: q.passageHindi || null,
           geometryType: q.geometryType || null, geometryData: q.geometryData || null
         }));
         setQuestions(formattedData); setSelectedForDelete([]);
@@ -280,6 +324,8 @@ export default function useAdminLogic() {
       if (jsonResponse.questions) {
         const cleanedQuestions = jsonResponse.questions.map(q => ({
           ...q,
+          passage: cleanMarkdown(applyStrictMathFilter(q.passage || "")),
+          passageHindi: cleanMarkdown(applyStrictMathFilter(q.passageHindi || "")),
           question: cleanMarkdown(applyStrictMathFilter(q.question || "")),
           questionHindi: cleanMarkdown(applyStrictMathFilter(q.questionHindi || "")),
           explanation: cleanMarkdown(applyStrictMathFilter(q.explanation || "")),
@@ -332,12 +378,14 @@ export default function useAdminLogic() {
     for (let i of selectedForDelete) {
       setStatus(`Force Translating question ${i + 1}...`); setStatusType('loading');
       try {
-        const prompt = `Translate to pure Hindi.\n${AI_STRICT_RULES.TRANSLATION}\nQuestion: ${updatedQs[i].question}\nExplanation: ${updatedQs[i].explanation || "N/A"}\nReturn STRICTLY ONLY a JSON object: {"questionHindi": "...", "explanationHindi": "..."}`;
+        const prompt = `Translate to pure Hindi.\n${AI_STRICT_RULES.TRANSLATION}\nPassage: ${updatedQs[i].passage || "N/A"}\nQuestion: ${updatedQs[i].question}\nExplanation: ${updatedQs[i].explanation || "N/A"}\nReturn STRICTLY ONLY a JSON object: {"passageHindi": "...", "questionHindi": "...", "explanationHindi": "..."}`;
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST', headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'user', content: prompt }], response_format: { type: 'json_object' }, temperature: 0.3 })
         });
         const result = await response.json(); const parsed = JSON.parse(result.choices[0].message.content);
+        
+        if (parsed.passageHindi && parsed.passageHindi !== "N/A") updatedQs[i].passageHindi = cleanMarkdown(applyStrictMathFilter(parsed.passageHindi));
         updatedQs[i].questionHindi = cleanMarkdown(applyStrictMathFilter(parsed.questionHindi || "")); 
         const rawExpl = parsed.explanationHindi === "N/A" ? "" : (parsed.explanationHindi || "");
         updatedQs[i].explanationHindi = cleanMarkdown(applyStrictMathFilter(rawExpl));
@@ -365,6 +413,8 @@ export default function useAdminLogic() {
       });
       const result = await response.json(); const modifiedQuestion = JSON.parse(result.choices[0].message.content);
       
+      if(modifiedQuestion.passage) modifiedQuestion.passage = cleanMarkdown(applyStrictMathFilter(modifiedQuestion.passage));
+      if(modifiedQuestion.passageHindi) modifiedQuestion.passageHindi = cleanMarkdown(applyStrictMathFilter(modifiedQuestion.passageHindi));
       modifiedQuestion.question = cleanMarkdown(applyStrictMathFilter(modifiedQuestion.question || ""));
       modifiedQuestion.questionHindi = cleanMarkdown(applyStrictMathFilter(modifiedQuestion.questionHindi || ""));
       modifiedQuestion.explanation = cleanMarkdown(applyStrictMathFilter(modifiedQuestion.explanation || ""));
@@ -377,9 +427,6 @@ export default function useAdminLogic() {
     } catch (error) { setStatus('Failed to modify.'); setStatusType('error'); } finally { setIsEditingLoading(false); }
   };
 
-  // ==========================================
-  // FINAL EXPORT
-  // ==========================================
   return {
     mainSubjects, getCategories, getChapters, mainCategory, handleMainCategoryChange,
     subCategory, handleSubCategoryChange, chapter, setChapter, difficulty, setDifficulty,

@@ -35,8 +35,8 @@ export default function AdminActionBar({
 
         <div className="h-5 w-[1px] bg-[#2a2f3a] mx-0.5"></div>
 
-        {/* DOWNLOAD JSON */}
-        <button onClick={downloadJson} disabled={questions.length === 0} className="px-3 py-1.5 rounded-md border border-[#2a2f3a] text-slate-300 hover:text-white hover:bg-[#181b21] cursor-pointer text-xs font-medium flex items-center gap-1.5 transition-colors" title="Export as JSON">
+        {/* 🚀 FIX: Yahan se 'disabled={questions.length === 0}' hata diya hai 🚀 */}
+        <button onClick={downloadJson} className="px-3 py-1.5 rounded-md border border-[#2a2f3a] text-slate-300 hover:text-white hover:bg-[#181b21] cursor-pointer text-xs font-medium flex items-center gap-1.5 transition-colors" title="Export as JSON">
           <Download className="w-3.5 h-3.5" /> Export
         </button>
 

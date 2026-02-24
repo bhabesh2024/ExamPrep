@@ -40,7 +40,7 @@ export const subjectsData = [
           { id: "lcm-and-hcf", title: "LCM and HCF", totalQuestions: 25, isNew: false },
           { id: "fraction-and-decimal", title: "Fraction and Decimal", totalQuestions: 20, isNew: false },
           { id: "train", title: "Train", totalQuestions: 35, isNew: false },
-          { id: "speed-distance-time", title: "Speed Distance and Time", totalQuestions: 50, isNew: false },
+          { id: "speed-distance-and-time", title: "Speed Distance and Time", totalQuestions: 50, isNew: false },
           { id: "boat-and-streams", title: "Boat and Streams", totalQuestions: 30, isNew: false },
           { id: "partnership", title: "Partnership", totalQuestions: 20, isNew: false },
         ]

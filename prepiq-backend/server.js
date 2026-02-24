@@ -206,12 +206,13 @@ app.delete('/api/questions/:id', async (req, res) => {
 app.patch('/api/questions/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { questionHindi, explanationHindi } = req.body;
+    const { questionHindi, explanationHindi, passageHindi } = req.body;
     
     const dataToUpdate = {};
     if (questionHindi) dataToUpdate.questionHindi = questionHindi;
     if (explanationHindi) dataToUpdate.explanationHindi = explanationHindi;
-
+    if (passageHindi) dataToUpdate.passageHindi = passageHindi;
+    
     const updatedQ = await prisma.question.update({
       where: { id: parseInt(id) },
       data: dataToUpdate

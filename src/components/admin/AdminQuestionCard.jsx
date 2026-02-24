@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Trash2, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Trash2, CheckCircle2, BookOpen } from 'lucide-react';
 
 export default function AdminQuestionCard({
   q, qIndex, isSelected, toggleSelect, editingIndex, setEditingIndex,
@@ -32,6 +32,18 @@ export default function AdminQuestionCard({
                </button>
              </div>
           )}
+
+          {/* 🚀 NEW: PASSAGE FIELD 🚀 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-4 border-b border-[#2a2f3a]/50">
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> Passage (English)</label>
+              <textarea value={q.passage || ''} onChange={e => handleQuestionChange(qIndex, 'passage', e.target.value)} placeholder="Leave blank if this is a normal MCQ" className="w-full bg-[#111318] border border-blue-900/30 rounded-xl p-3 text-sm text-slate-300 resize-none h-16 focus:ring-1 focus:ring-blue-500 outline-none custom-scrollbar" />
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] font-bold text-blue-400 uppercase tracking-wider flex items-center gap-1.5"><BookOpen className="w-3.5 h-3.5" /> Passage (Hindi)</label>
+              <textarea value={q.passageHindi || ''} onChange={e => handleQuestionChange(qIndex, 'passageHindi', e.target.value)} placeholder="पैसेज यहाँ लिखें (वैकल्पिक)" className="w-full bg-[#111318] border border-blue-900/30 rounded-xl p-3 text-sm text-slate-300 resize-none h-16 focus:ring-1 focus:ring-blue-500 outline-none custom-scrollbar font-display" />
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div className="space-y-1">
