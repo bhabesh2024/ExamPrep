@@ -8,6 +8,8 @@ import questionRoutes   from './routes/questions.routes.js';
 import resultRoutes     from './routes/results.routes.js';
 import leaderboardRoutes from './routes/leaderboard.routes.js';
 import paymentRoutes    from './routes/payment.routes.js';
+import adminRoutes from './routes/admin.routes.js';
+import supportRoutes from './routes/support.routes.js';
 
 dotenv.config();
 
@@ -23,5 +25,6 @@ app.use('/api/questions', questionRoutes);  // /api/questions, /api/questions/co
 app.use('/api/results',   resultRoutes);    // /api/results
 app.use('/api/leaderboard', leaderboardRoutes); // /api/leaderboard
 app.use('/api/payment',   paymentRoutes);   // /api/payment/create-order, /api/payment/verify-payment
-
+app.use('/api/admin', adminRoutes);
+app.use('/api/support', supportRoutes);
 app.listen(5000, () => console.log('✅ Server running on http://localhost:5000'));

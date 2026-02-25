@@ -1,6 +1,6 @@
 // src/components/admin/AdminSidebar.jsx
 import React from 'react';
-import { Database, Layers, BarChart2, Settings, LogOut, GraduationCap, Flag } from 'lucide-react'; 
+import { Database, Layers, BarChart2, Settings, LogOut, GraduationCap, Flag, MessageSquare } from 'lucide-react'; // 🔥 MessageSquare icon add kiya
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminSidebar({ activeTab, setActiveTab }) {
@@ -11,6 +11,7 @@ export default function AdminSidebar({ activeTab, setActiveTab }) {
     { id: 'duplicates', label: 'Duplicate Mgr', icon: Layers },
     { id: 'flags', label: 'Flagged Issues', icon: Flag },
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
+    { id: 'support', label: 'Help & Support', icon: MessageSquare }, // 🔥 Naya Support Tab add kiya
     { id: 'settings', label: 'Settings', icon: Settings },
   ];
 

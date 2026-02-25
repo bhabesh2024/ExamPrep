@@ -35,7 +35,8 @@ export default function useAdminConfig() {
   const [qCount,       setQCount]       = useState(10);
 
   const handleMainCategoryChange = (e) => {
-    const val = e.target.value;
+    // FIX: Support event object or direct string value
+    const val = e?.target?.value || e; 
     setMainCategory(val);
     const cats = getCategories(val);
     setSubCategory(cats[0] || '');
@@ -43,14 +44,15 @@ export default function useAdminConfig() {
   };
 
   const handleSubCategoryChange = (e) => {
-    const val = e.target.value;
+    const val = e?.target?.value || e;
     setSubCategory(val);
     setChapter(getChapters(mainCategory, val)[0] || '');
   };
 
   return {
     mainSubjects, getCategories, getChapters, getTrueChapterId,
-    mainCategory, subCategory, chapter, setChapter, difficulty, setDifficulty, qCount, setQCount,
+    // FIX: Added setMainCategory aur setSubCategory in return object
+    mainCategory, setMainCategory, subCategory, setSubCategory, chapter, setChapter, difficulty, setDifficulty, qCount, setQCount,
     handleMainCategoryChange, handleSubCategoryChange,
   };
 }

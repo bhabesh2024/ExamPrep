@@ -1,10 +1,11 @@
 // src/components/admin/AdminActionBar.jsx
 import React from 'react';
-import { Languages, Trash2, Save, Download } from 'lucide-react';
+import { Languages, Trash2, Save, Download, Eraser } from 'lucide-react'; // 🔥 Eraser icon import kiya
 
 export default function AdminActionBar({
   questions, setQuestions, selectedForDelete, setSelectedForDelete,
-  isLoading, autoTranslateAllToHindi, translateSelectedToHindi, pushToPostgreSQL, downloadJson
+  isLoading, autoTranslateAllToHindi, translateSelectedToHindi, pushToPostgreSQL, downloadJson,
+  clearScreen // 🔥 clearScreen prop yaha add kiya
 }) {
   if (questions.length === 0) return null;
 
@@ -51,6 +52,13 @@ export default function AdminActionBar({
         <button onClick={downloadJson} className="px-4 py-2 bg-[#2a3241] hover:bg-[#3b4754] text-slate-300 text-sm font-semibold rounded-lg transition-colors flex items-center gap-2">
           <Download className="w-4 h-4" /> Export Draft
         </button>
+
+        {/* 🔥 Clear UI Button Added Here */}
+        {clearScreen && (
+          <button onClick={clearScreen} disabled={isLoading} className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-semibold rounded-lg border border-red-500/20 transition-colors flex items-center gap-2">
+            <Eraser className="w-4 h-4" /> Clear UI
+          </button>
+        )}
 
         <button onClick={() => pushToPostgreSQL(questions)} disabled={isLoading} className="ml-2 px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all flex items-center gap-2">
           <Save className="w-4 h-4" /> Save to DB

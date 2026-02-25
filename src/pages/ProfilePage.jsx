@@ -4,7 +4,8 @@ import axios from 'axios';
 import { 
   CheckCircle2, Play, FileQuestion, BookOpen, Gauge, 
   TrendingUp, TrendingDown, MoreHorizontal, FileText, 
-  FlaskConical, Calculator, Brain, Globe, Trophy, Lock // 👈 Lock icon import kiya
+  FlaskConical, Calculator, Brain, Globe, Trophy, Lock, 
+  MessageSquare, Send // 👈 Naye icons for Support feature
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -12,6 +13,12 @@ export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  // 🔥 Support Feature States
+  const [tickets, setTickets] = useState([]);
+  const [supportSubject, setSupportSubject] = useState('');
+  const [supportMessage, setSupportMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchUserDataAndResults = async () => {
@@ -25,10 +32,16 @@ export default function ProfilePage() {
       setUser(parsedUser);
 
       try {
-        const response = await axios.get(`/api/results/${parsedUser.id}`);
-        setResults(response.data);
+        // Fetch results and support tickets parallely
+        const [resResponse, ticketsResponse] = await Promise.all([
+          axios.get(`/api/results/${parsedUser.id}`),
+          axios.get(`/api/support?userId=${parsedUser.id}`) // 🔥 Fetch User's Tickets
+        ]);
+        
+        setResults(Array.isArray(resResponse.data) ? resResponse.data : []);
+        setTickets(Array.isArray(ticketsResponse.data) ? ticketsResponse.data : []);
       } catch (error) {
-        console.error("Failed to fetch results:", error);
+        console.error("Failed to fetch data:", error);
       } finally {
         setIsLoading(false);
       }
@@ -73,6 +86,32 @@ export default function ProfilePage() {
       navigate(`/practice/run/full/${testId}`);
     } else {
       navigate(`/quiz/${result.subject}/${result.topic}`);
+    }
+  };
+
+  // 🔥 Support Ticket Submit Handler
+  const handleSupportSubmit = async (e) => {
+    e.preventDefault();
+    if (!supportSubject.trim() || !supportMessage.trim()) return;
+    
+    setIsSubmitting(true);
+    try {
+      await axios.post('/api/support', {
+        userId: user.id,
+        subject: supportSubject,
+        message: supportMessage
+      });
+      setSupportSubject('');
+      setSupportMessage('');
+      
+      // Refresh tickets list
+      const ticketsResponse = await axios.get(`/api/support?userId=${user.id}`);
+      setTickets(ticketsResponse.data);
+      alert("✅ Your query has been sent to the Admin!");
+    } catch (error) {
+      alert("❌ Failed to send query. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -126,7 +165,6 @@ export default function ProfilePage() {
                 <div className="flex flex-col items-center sm:items-start pt-2 text-center sm:text-left w-full">
                   <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">{user?.name}</h1>
                   
-                  {/* 🚀 FIXED BADGES 🚀 */}
                   <div className="flex flex-wrap justify-center sm:justify-start gap-3 mb-4">
                     {user?.isPremium ? (
                       <>
@@ -141,12 +179,11 @@ export default function ProfilePage() {
                       </>
                     ) : (
                       <span className="px-3 py-1 rounded-full bg-[#202020] border border-white/10 text-[#9c9cba] text-xs font-medium">
-                        PrepIQ Member {/* 👈 Changed from 'Free User' to 'PrepIQ Member' */}
+                        PrepIQ Member
                       </span>
                     )}
                   </div>
                   
-                  {/* XP Progress */}
                   <div className="w-full min-w-[240px] max-w-sm mt-2">
                     <div className="flex justify-between text-sm mb-1.5">
                       <span className="text-white font-bold">XP Level {level}</span>
@@ -168,7 +205,6 @@ export default function ProfilePage() {
                   Resume Practice
                 </button>
 
-                {/* 🚀 LEADERBOARD BUTTON LOGIC 🚀 */}
                 {user?.isPremium ? (
                   <button onClick={() => navigate('/leaderboard')} className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-[#0a0a0a] px-6 py-3.5 rounded-xl font-black transition-all shadow-[0_0_20px_rgba(234,179,8,0.3)] hover:shadow-[0_0_25px_rgba(234,179,8,0.5)] hover:-translate-y-1 flex items-center justify-center gap-2">
                     <Trophy className="w-5 h-5" />
@@ -182,7 +218,7 @@ export default function ProfilePage() {
                     }} 
                     className="bg-[#202020] text-[#9c9cba] border border-[#3b3b54] px-6 py-3.5 rounded-xl font-bold transition-all hover:bg-[#2a2a35] hover:text-white flex items-center justify-center gap-2"
                   >
-                    <Lock className="w-5 h-5" /> {/* 👈 Lock Icon for free users */}
+                    <Lock className="w-5 h-5" />
                     Leaderboard (Pro)
                   </button>
                 )}
@@ -248,90 +284,11 @@ export default function ProfilePage() {
             </div>
           </section>
 
-          {/* Middle Section: Radar Chart & Heatmap */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 hidden md:grid">
-            <div className="lg:col-span-1 glass-card rounded-3xl p-6 flex flex-col items-center">
-              <div className="flex w-full justify-between items-start mb-2">
-                <h3 className="text-white text-lg font-bold">Subject Proficiency</h3>
-                <button className="text-[#9c9cba] hover:text-white"><MoreHorizontal className="w-5 h-5" /></button>
-              </div>
-              <div className="flex-1 flex items-center justify-center relative min-h-[220px] w-full mt-4">
-                <div className="relative w-48 h-48 flex items-center justify-center">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-full h-[1px] bg-white/10 rotate-0"></div>
-                    <div className="w-full h-[1px] bg-white/10 rotate-[72deg]"></div>
-                    <div className="w-full h-[1px] bg-white/10 rotate-[144deg]"></div>
-                    <div className="w-full h-[1px] bg-white/10 rotate-[216deg]"></div>
-                    <div className="w-full h-[1px] bg-white/10 rotate-[288deg]"></div>
-                  </div>
-                  <div className="absolute w-40 h-40 border border-white/5 rounded-full"></div>
-                  <div className="absolute w-24 h-24 border border-white/5 rounded-full"></div>
-                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100">
-                    <polygon className="drop-shadow-[0_0_10px_rgba(37,37,244,0.5)]" fill="rgba(37, 37, 244, 0.2)" points="50,15 85,45 70,80 30,80 15,45" stroke="#2525f4" strokeLinejoin="round" strokeWidth="2"></polygon>
-                    <circle cx="50" cy="15" fill="white" r="2.5"></circle>
-                    <circle cx="85" cy="45" fill="white" r="2.5"></circle>
-                    <circle cx="70" cy="80" fill="white" r="2.5"></circle>
-                    <circle cx="30" cy="80" fill="white" r="2.5"></circle>
-                    <circle cx="15" cy="45" fill="white" r="2.5"></circle>
-                  </svg>
-                  <span className="absolute -top-2 text-[10px] font-bold text-white bg-[#161616] px-1.5 py-0.5 rounded border border-white/10">Maths</span>
-                  <span className="absolute -bottom-1 -right-2 text-[10px] font-bold text-white bg-[#161616] px-1.5 py-0.5 rounded border border-white/10">Science</span>
-                  <span className="absolute -bottom-1 -left-4 text-[10px] font-bold text-white bg-[#161616] px-1.5 py-0.5 rounded border border-white/10">Reasoning</span>
-                  <span className="absolute top-12 -right-4 text-[10px] font-bold text-[#9c9cba] bg-[#161616] px-1.5 py-0.5 rounded border border-white/10">English</span>
-                  <span className="absolute top-12 -left-3 text-[10px] font-bold text-[#9c9cba] bg-[#161616] px-1.5 py-0.5 rounded border border-white/10">GK</span>
-                </div>
-              </div>
-              <p className="text-center text-xs text-[#9c9cba] mt-4">Keep practicing to expand your proficiency area!</p>
-            </div>
-
-            <div className="lg:col-span-2 glass-card rounded-3xl p-6 flex flex-col">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <h3 className="text-white text-lg font-bold">30-Day Activity</h3>
-                  <p className="text-[#9c9cba] text-sm">Study Streak: <span className="text-[#2525f4] font-bold">{Math.min(totalTests, 30)} Days</span> 🔥</p>
-                </div>
-                <span className="px-3 py-1 text-xs rounded-lg bg-[#202020] text-white border border-white/5 font-medium">Last 30 Days</span>
-              </div>
-              <div className="flex-1 flex flex-col justify-center">
-                <div className="w-full overflow-x-auto pb-2">
-                  <div className="flex gap-1.5 min-w-max">
-                    <div className="flex flex-col gap-1 pr-2 text-[10px] text-[#9c9cba] font-medium justify-between py-1">
-                      <span>Mon</span><span>Wed</span><span>Fri</span>
-                    </div>
-                    {/* Simulated Heatmap blocks */}
-                    <div className="flex gap-1.5">
-                      {[...Array(14)].map((_, colIndex) => (
-                        <div key={colIndex} className="grid grid-rows-7 gap-1.5">
-                          {[...Array(7)].map((_, rowIndex) => {
-                            const rand = Math.random();
-                            let bgClass = "bg-[#202020]";
-                            if (rand > 0.8) bgClass = "bg-[#2525f4] shadow-[0_0_8px_rgba(37,37,244,0.6)]";
-                            else if (rand > 0.6) bgClass = "bg-[#2525f4]/80";
-                            else if (rand > 0.4) bgClass = "bg-[#2525f4]/50";
-                            else if (rand > 0.2) bgClass = "bg-[#2525f4]/20";
-                            return <div key={rowIndex} className={`w-3 h-3 sm:w-4 sm:h-4 rounded-[3px] ${bgClass}`}></div>;
-                          })}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-[#9c9cba] font-medium mt-4">
-                  <span>Less</span>
-                  <div className="w-3 h-3 rounded-[3px] bg-[#202020]"></div>
-                  <div className="w-3 h-3 rounded-[3px] bg-[#2525f4]/40"></div>
-                  <div className="w-3 h-3 rounded-[3px] bg-[#2525f4] shadow-[0_0_5px_rgba(37,37,244,0.6)]"></div>
-                  <span>More</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
           {/* Test History Table */}
-          <section className="glass-card rounded-3xl p-6 mb-10 overflow-hidden">
+          <section className="glass-card rounded-3xl p-6 overflow-hidden">
             <div className="flex justify-between items-center mb-6 px-2">
               <h3 className="text-white text-xl font-bold">Recent Test History</h3>
-              <button className="text-sm text-[#2525f4] font-bold hover:text-white transition-colors">View All</button>
+              <button onClick={() => navigate('/practice')} className="text-sm text-[#2525f4] font-bold hover:text-white transition-colors">View All</button>
             </div>
             
             {results.length === 0 ? (
@@ -356,7 +313,7 @@ export default function ProfilePage() {
                     </tr>
                   </thead>
                   <tbody className="text-white">
-                    {results.map((result) => {
+                    {results.slice(0, 5).map((result) => { // Only show last 5 for neatness
                       const percentage = Math.round((result.score / result.total) * 100);
                       const isGood = percentage >= 60;
                       const UIInfo = getSubjectIcon(result.subject);
@@ -401,6 +358,89 @@ export default function ProfilePage() {
               </div>
             )}
           </section>
+
+          {/* 🔥 NEW: Help & Support Section */}
+          <section className="mb-10">
+            <h3 className="text-white text-xl font-bold mb-6 flex items-center gap-2 px-2">
+              <MessageSquare className="w-6 h-6 text-[#2525f4]" /> 
+              Help & Support
+            </h3>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              
+              {/* Form Area */}
+              <div className="glass-card rounded-3xl p-6">
+                <h4 className="text-lg font-bold text-white mb-2">Have a question or issue?</h4>
+                <p className="text-[#9c9cba] text-sm mb-6">Drop a message to our admin team. We usually reply within 24 hours.</p>
+                
+                <form onSubmit={handleSupportSubmit} className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-[#9c9cba] uppercase tracking-widest">Subject</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={supportSubject}
+                      onChange={(e) => setSupportSubject(e.target.value)}
+                      placeholder="e.g. Account Upgrade Issue"
+                      className="bg-[#0f0f16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#2525f4] transition-colors"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-xs font-bold text-[#9c9cba] uppercase tracking-widest">Message</label>
+                    <textarea 
+                      required
+                      rows="4"
+                      value={supportMessage}
+                      onChange={(e) => setSupportMessage(e.target.value)}
+                      placeholder="Describe your issue in detail..."
+                      className="bg-[#0f0f16] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#2525f4] transition-colors resize-none custom-scrollbar"
+                    ></textarea>
+                  </div>
+                  <button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="mt-2 bg-[#2525f4] hover:bg-blue-600 disabled:opacity-50 text-white px-6 py-3.5 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(37,37,244,0.3)] hover:shadow-[0_0_20px_rgba(37,37,244,0.5)] flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-5 h-5" />
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
+                  </button>
+                </form>
+              </div>
+
+              {/* Ticket History Area */}
+              <div className="glass-card rounded-3xl p-6 flex flex-col h-[400px]">
+                <h4 className="text-lg font-bold text-white mb-4">Your Past Queries</h4>
+                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 flex flex-col gap-4">
+                {(!Array.isArray(tickets) || tickets.length === 0) ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center">
+                      <MessageSquare className="w-12 h-12 text-white/10 mb-3" />
+                      <p className="text-[#9c9cba] text-sm">No queries submitted yet.</p>
+                    </div>
+                  ) : (
+                    tickets.map(ticket => (
+                      <div key={ticket.id} className="bg-[#0f0f16] border border-white/5 rounded-xl p-4 transition-all hover:border-white/10">
+                        <div className="flex justify-between items-start mb-2">
+                          <h5 className="font-bold text-white text-sm">{ticket.subject}</h5>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${ticket.status === 'RESOLVED' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'}`}>
+                            {ticket.status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#9c9cba] line-clamp-2 mb-3">{ticket.message}</p>
+                        
+                        {ticket.adminReply && (
+                          <div className="bg-[#2525f4]/10 border border-[#2525f4]/20 rounded-lg p-3 relative">
+                            <span className="text-[10px] font-bold text-[#2525f4] uppercase tracking-wider mb-1 block">Admin Reply</span>
+                            <p className="text-sm text-slate-200">{ticket.adminReply}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </section>
+
         </div>
       </main>
     </div>

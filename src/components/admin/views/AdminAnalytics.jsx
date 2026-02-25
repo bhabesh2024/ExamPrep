@@ -17,7 +17,7 @@ export default function AdminAnalytics() {
         if(res.data) setStats(res.data);
       } catch (err) { console.error("Stats load failed", err); }
     };
-    // fetchStats(); // Uncomment when backend route is ready
+     fetchStats(); // Uncomment when backend route is ready
   }, []);
 
   const handleSearchUser = async (e) => {

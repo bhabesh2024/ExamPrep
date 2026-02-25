@@ -40,6 +40,7 @@ model User {
   premiumExpiry DateTime?
   createdAt DateTime @default(now())
   results   Result[] // 👈 Nayi line: Ek user ke bohot saare results ho sakte hain
+  tickets   SupportTicket[]
 }
 
 // 🏆 NAYA MODEL: Results save karne ke liye
@@ -52,4 +53,16 @@ model Result {
   score     Int      // Kitne marks aaye
   total     Int      // Total kitne marks ka tha
   createdAt DateTime @default(now())
+}
+
+model SupportTicket {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  subject    String
+  message    String
+  adminReply String?  // Admin ka reply
+  status     String   @default("OPEN") // "OPEN" ya "RESOLVED"
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
