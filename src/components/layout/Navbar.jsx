@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { GraduationCap, Search, ChevronDown, Sun, Moon, Menu, X, Globe, Calculator, Brain, BookOpen, FlaskConical, Terminal, ArrowRight, LogOut, User, Sparkles } from 'lucide-react';
+// 🔥 Bell icon ko main import me merge kar diya hai
+import { GraduationCap, Search, ChevronDown, Sun, Moon, Menu, X, Globe, Calculator, Brain, BookOpen, FlaskConical, Terminal, ArrowRight, LogOut, User, Sparkles, Bell } from 'lucide-react';
 import { subjectsData } from '../../data/syllabusData.jsx';
 
 export default function Navbar() {
@@ -221,8 +222,18 @@ export default function Navbar() {
                 </div>
               </nav>
 
-              {/* DESKTOP AUTH BUTTONS */}
+              {/* DESKTOP AUTH BUTTONS & NOTIFICATIONS */}
               <div className={`hidden lg:flex items-center pl-5 xl:pl-6 border-l ${isDarkMode ? 'border-[#27272a]' : 'border-slate-200'}`}>
+                
+                {/* 🔥 Notification Bell Icon (Desktop) */}
+                <button 
+                  className={`relative p-2 mr-3 transition-colors cursor-pointer rounded-full ${isDarkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`} 
+                  title="Notifications"
+                >
+                  <Bell className="w-5 h-5" />
+                  <span className={`absolute top-1 right-1.5 w-2 h-2 bg-red-500 border rounded-full animate-pulse ${isDarkMode ? 'border-[#0a0a0a]' : 'border-white'}`}></span>
+                </button>
+
                 {user ? (
                   <div className="flex items-center gap-3 xl:gap-4">
                     <button 
@@ -249,10 +260,18 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* MOBILE MENU ICON */}
-              <button className={`lg:hidden ml-3 sm:ml-4 transition-colors cursor-pointer ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
+              {/* MOBILE MENU ICONS (Bell + Hamburger) */}
+              <div className="lg:hidden flex items-center gap-2 sm:gap-4 ml-auto pl-3">
+                {/* 🔥 Notification Bell Icon (Mobile) */}
+                <button className={`relative p-2 transition-colors cursor-pointer rounded-full ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}>
+                  <Bell className="w-5 h-5" />
+                  <span className={`absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 border rounded-full animate-pulse ${isDarkMode ? 'border-[#0a0a0a]' : 'border-white'}`}></span>
+                </button>
+                
+                <button className={`transition-colors cursor-pointer ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                  {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
+              </div>
             </div>
           </div>
         </div>

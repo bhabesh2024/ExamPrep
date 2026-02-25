@@ -1,21 +1,56 @@
 import React from 'react';
-import { Settings } from 'lucide-react';
+import { Database, Layers, BarChart2, Settings, LogOut, GraduationCap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ activeTab, setActiveTab }) {
+  const navigate = useNavigate();
+
+  const menuItems = [
+    { id: 'questions', label: 'Question Bank', icon: Database },
+    { id: 'duplicates', label: 'Duplicate Mgr', icon: Layers },
+    { id: 'analytics', label: 'Analytics', icon: BarChart2 },
+    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'flags', label: 'Flagged Issues', icon: Flag }, 
+  ];
+
   return (
-    <aside className="hidden xl:flex w-20 flex-col items-center justify-between border-r border-[#2a2f3a] bg-[#111318] py-6 h-screen sticky top-0 z-20 shrink-0">
-      <div className="flex flex-col items-center gap-6">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0d59f2] text-white font-bold text-xl shadow-[0_0_20px_rgba(13,89,242,0.5)] cursor-pointer">
-          Q
-        </div>
+    <aside className="w-64 bg-[#181b21] border-r border-[#2a3241] flex flex-col flex-none z-20">
+      {/* App Logo */}
+      <div className="h-16 flex items-center px-6 border-b border-[#2a3241]">
+        <GraduationCap className="w-8 h-8 text-[#0d59f2] mr-3" />
+        <span className="font-bold text-lg text-white tracking-wide">PrepIQ Admin</span>
       </div>
-      <div className="flex flex-col items-center gap-4">
-        <button className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:bg-white/10 hover:text-white transition-colors cursor-pointer">
-          <Settings className="w-5 h-5" />
+
+      {/* Navigation Menu */}
+      <nav className="flex-1 py-6 px-3 space-y-2">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 font-medium text-sm cursor-pointer
+                ${isActive 
+                  ? 'bg-[#0d59f2]/10 text-[#0d59f2] border border-[#0d59f2]/20 shadow-[0_0_15px_rgba(13,89,242,0.1)]' 
+                  : 'text-slate-400 hover:bg-[#2a3241]/50 hover:text-slate-200'}`}
+            >
+              <Icon className="w-5 h-5" />
+              {item.label}
+            </button>
+          );
+        })}
+      </nav>
+
+      {/* Logout Bottom */}
+      <div className="p-4 border-t border-[#2a3241]">
+        <button 
+          onClick={() => { localStorage.removeItem('adminToken'); navigate('/admin-login'); }}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-400 hover:bg-red-500/10 transition-colors font-medium text-sm cursor-pointer"
+        >
+          <LogOut className="w-5 h-5" />
+          Logout
         </button>
-        <div className="h-10 w-10 rounded-full bg-slate-800 border border-[#2a2f3a] flex items-center justify-center font-bold text-slate-400">
-          A
-        </div>
       </div>
     </aside>
   );

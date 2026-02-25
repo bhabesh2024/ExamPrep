@@ -1,68 +1,59 @@
 // src/components/admin/AdminActionBar.jsx
 import React from 'react';
-import { Trash2, Database, Languages, RotateCcw, Download, Upload } from 'lucide-react';
+import { Languages, Trash2, Save, Download } from 'lucide-react';
 
-export default function AdminActionBar({ 
-  questions, selectedForDelete, handleSelectAll, deleteSelected, 
-  pushToPostgreSQL, isLoading, translateSelectedToHindi, clearScreen,
-  downloadJson, handleBulkJsonUpload, bulkJsonRef
+export default function AdminActionBar({
+  questions, setQuestions, selectedForDelete, setSelectedForDelete,
+  isLoading, autoTranslateAllToHindi, translateSelectedToHindi, pushToPostgreSQL, downloadJson
 }) {
+  if (questions.length === 0) return null;
+
+  const isAllSelected = questions.length > 0 && selectedForDelete.length === questions.length;
+  const toggleSelectAll = () => {
+    if (isAllSelected) setSelectedForDelete([]);
+    else setSelectedForDelete(questions.map((_, i) => i));
+  };
+
+  const deleteSelected = () => {
+    setQuestions(questions.filter((_, i) => !selectedForDelete.includes(i)));
+    setSelectedForDelete([]);
+  };
+
   return (
-    <div className="h-14 border-b border-[#2a2f3a] bg-[#0f1115]/95 backdrop-blur-sm sticky top-0 z-20 flex items-center justify-between px-4 lg:px-6 shrink-0">
+    <div className="sticky top-6 z-40 mb-8 bg-[#181b21]/90 backdrop-blur-xl border border-[#2a3241] rounded-2xl shadow-[0_10px_30px_rgba(0,0,0,0.5)] px-4 py-3 flex flex-wrap items-center justify-between gap-4">
       
-      {/* LEFT SIDE: Checkbox & Count */}
-      <div className="flex items-center gap-3">
-        <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none">
-          <input 
-            type="checkbox" 
-            checked={questions.length > 0 && selectedForDelete.length === questions.length}
-            onChange={handleSelectAll}
-            className="w-3.5 h-3.5 rounded border-slate-600 bg-[#181b21] text-[#0d59f2] focus:ring-0 focus:ring-offset-0 custom-checkbox transition-all cursor-pointer" 
-          />
+      <div className="flex items-center gap-4 pl-2">
+        <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-300 font-medium">
+          <input type="checkbox" checked={isAllSelected} onChange={toggleSelectAll} className="w-4 h-4 rounded border-[#2a3241] bg-[#0f1115] text-[#258cf4] focus:ring-[#258cf4]" />
           Select All
         </label>
-        <div className="h-4 w-[1px] bg-[#2a2f3a]"></div>
-        <span className="text-xs font-medium text-slate-400">{questions.length} Items</span>
+        {selectedForDelete.length > 0 && (
+          <span className="text-xs text-slate-500 bg-black/30 px-2 py-1 rounded-md">{selectedForDelete.length} Selected</span>
+        )}
       </div>
-      
-      {/* RIGHT SIDE: Compact Buttons */}
+
       <div className="flex items-center gap-2">
-        
-        {/* CLEAR UI */}
-        <button onClick={clearScreen} disabled={questions.length === 0} className="px-2.5 py-1.5 rounded-md border border-[#2a2f3a] text-slate-300 hover:text-yellow-400 hover:bg-[#181b21] cursor-pointer text-xs font-medium flex items-center gap-1.5 transition-colors" title="Clear screen">
-          <RotateCcw className="w-3.5 h-3.5" />
+        {selectedForDelete.length > 0 ? (
+          <>
+            <button onClick={deleteSelected} className="px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 text-sm font-semibold rounded-lg border border-red-500/20 transition-colors flex items-center gap-2">
+              <Trash2 className="w-4 h-4" /> Delete ({selectedForDelete.length})
+            </button>
+            <button onClick={translateSelectedToHindi} disabled={isLoading} className="px-4 py-2 bg-yellow-500/10 hover:bg-yellow-500/20 text-yellow-500 text-sm font-semibold rounded-lg border border-yellow-500/20 transition-colors flex items-center gap-2">
+              <Languages className="w-4 h-4" /> Translate Selected
+            </button>
+          </>
+        ) : (
+          <button onClick={autoTranslateAllToHindi} disabled={isLoading} className="px-4 py-2 bg-[#2a3241] hover:bg-[#3b4754] text-slate-300 text-sm font-semibold rounded-lg transition-colors flex items-center gap-2">
+            <Languages className="w-4 h-4" /> Translate All
+          </button>
+        )}
+
+        <button onClick={downloadJson} className="px-4 py-2 bg-[#2a3241] hover:bg-[#3b4754] text-slate-300 text-sm font-semibold rounded-lg transition-colors flex items-center gap-2">
+          <Download className="w-4 h-4" /> Export Draft
         </button>
 
-        <div className="h-5 w-[1px] bg-[#2a2f3a] mx-0.5"></div>
-
-        {/* 🚀 FIX: Yahan se 'disabled={questions.length === 0}' hata diya hai 🚀 */}
-        <button onClick={downloadJson} className="px-3 py-1.5 rounded-md border border-[#2a2f3a] text-slate-300 hover:text-white hover:bg-[#181b21] cursor-pointer text-xs font-medium flex items-center gap-1.5 transition-colors" title="Export as JSON">
-          <Download className="w-3.5 h-3.5" /> Export
-        </button>
-
-        {/* UPLOAD JSON */}
-        <input type="file" accept=".json" ref={bulkJsonRef} onChange={handleBulkJsonUpload} className="hidden" />
-        <button onClick={() => bulkJsonRef.current?.click()} className="px-3 py-1.5 rounded-md border border-[#2a2f3a] text-slate-300 hover:text-blue-400 hover:bg-[#181b21] cursor-pointer text-xs font-medium flex items-center gap-1.5 transition-colors" title="Import JSON">
-          <Upload className="w-3.5 h-3.5" /> Import
-        </button>
-
-        <div className="h-5 w-[1px] bg-[#2a2f3a] mx-0.5"></div>
-
-        {/* API TRANSLATE */}
-        <button onClick={translateSelectedToHindi} disabled={selectedForDelete.length === 0 || isLoading} className={`px-3 py-1.5 rounded-md border text-xs font-medium transition-colors flex items-center gap-1.5 ${selectedForDelete.length > 0 ? 'border-[#0d59f2]/50 text-[#0d59f2] hover:bg-[#0d59f2]/10 cursor-pointer' : 'border-transparent text-slate-600 cursor-not-allowed'}`}>
-          {isLoading ? <div className="w-3.5 h-3.5 border-2 border-[#0d59f2]/30 border-t-[#0d59f2] rounded-full animate-spin"></div> : <Languages className="w-3.5 h-3.5" />}
-          Translate
-        </button>
-
-        {/* DELETE FROM DB */}
-        <button onClick={deleteSelected} disabled={selectedForDelete.length === 0} className={`px-2.5 py-1.5 rounded-md border text-xs font-medium transition-colors flex items-center gap-1.5 ${selectedForDelete.length > 0 ? 'border-red-500/50 text-red-400 hover:bg-red-500/10 cursor-pointer' : 'border-transparent text-slate-600 cursor-not-allowed'}`} title="Delete selected">
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
-
-        {/* SAVE TO DB */}
-        <button onClick={pushToPostgreSQL} disabled={questions.length === 0 || isLoading} className="px-4 py-1.5 rounded-md bg-emerald-500 text-slate-900 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-[0_0_10px_rgba(16,185,129,0.2)] ml-1">
-          {isLoading ? <div className="w-3.5 h-3.5 border-2 border-slate-900/30 border-t-slate-900 rounded-full animate-spin"></div> : <Database className="w-3.5 h-3.5" />}
-          Save to DB
+        <button onClick={() => pushToPostgreSQL(questions)} disabled={isLoading} className="ml-2 px-6 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold rounded-lg shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all flex items-center gap-2">
+          <Save className="w-4 h-4" /> Save to DB
         </button>
       </div>
     </div>
