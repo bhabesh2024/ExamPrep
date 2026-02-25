@@ -1,19 +1,21 @@
 // src/components/admin/views/AdminSupportView.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { MessageSquare, Check, Trash2, Send } from 'lucide-react';
+// 🔥 BUG FIX: Yahan 'Check' icon wapas add kar diya hai
+import { MessageSquare, Check, Trash2, Send, Loader2 } from 'lucide-react'; 
 
 export default function AdminSupportView() {
   const [tickets, setTickets] = useState([]);
   const [replyText, setReplyText] = useState('');
   const [activeTicket, setActiveTicket] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => { fetchTickets(); }, []);
 
   const fetchTickets = async () => {
+    setIsLoading(true);
     try {
       const res = await axios.get('/api/support');
-      // 🔥 SAFE CHECK: Ensure data is array, varna empty array set karo
       if (Array.isArray(res.data)) {
         setTickets(res.data);
       } else {
@@ -21,7 +23,9 @@ export default function AdminSupportView() {
       }
     } catch (err) { 
       console.error(err); 
-      setTickets([]); // Error aane pe bhi app crash nahi hogi
+      setTickets([]); 
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,15 +48,19 @@ export default function AdminSupportView() {
   };
 
   return (
-    <div className="p-6 md:p-8 overflow-y-auto h-full text-slate-200">
+    <div className="p-6 md:p-8 overflow-y-auto h-full text-slate-200 custom-scrollbar">
       <h2 className="text-3xl font-bold mb-8 text-white flex items-center gap-3">
         <MessageSquare className="text-blue-500 w-8 h-8" />
         Help & Support Queries
       </h2>
 
       <div className="space-y-4">
-        {/* 🔥 SAFE CHECK: Only map if tickets is an array with length > 0 */}
-        {Array.isArray(tickets) && tickets.length > 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+            <Loader2 className="w-10 h-10 animate-spin text-[#258cf4] mb-4" />
+            <p>Loading queries...</p>
+          </div>
+        ) : Array.isArray(tickets) && tickets.length > 0 ? (
           tickets.map(ticket => (
             <div key={ticket.id} className="bg-[#181b21] p-5 rounded-xl border border-[#2a3241]">
               <div className="flex justify-between items-start mb-4">
@@ -61,7 +69,6 @@ export default function AdminSupportView() {
                     {ticket.status || 'UNKNOWN'}
                   </span>
                   <h3 className="text-lg font-bold text-white mt-2">{ticket.subject}</h3>
-                  {/* 🔥 SAFE CHECK: Optional chaining (?.) lagaya user detail me */}
                   <p className="text-sm text-slate-400">
                     By: {ticket?.user?.name || 'Unknown User'} ({ticket?.user?.email || 'No Email'})
                   </p>
@@ -101,9 +108,10 @@ export default function AdminSupportView() {
             </div>
           ))
         ) : (
-          <p className="text-slate-500 text-center py-10 border border-dashed border-[#2a3241] rounded-xl">
-            No support queries found. All good!
-          </p>
+          <div className="flex flex-col items-center justify-center py-20 text-slate-500 border border-dashed border-[#2a3241] rounded-xl">
+            <Check className="w-12 h-12 text-emerald-500/50 mb-4" />
+            <p>No support queries found. All good!</p>
+          </div>
         )}
       </div>
     </div>

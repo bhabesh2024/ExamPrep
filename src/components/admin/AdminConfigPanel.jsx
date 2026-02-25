@@ -1,12 +1,13 @@
 // src/components/admin/AdminConfigPanel.jsx
 import React, { useState } from 'react';
-import { Upload, Sparkles, FolderDown, ChevronDown, ChevronUp } from 'lucide-react';
-import { subjectsData } from '../../data/syllabusData.jsx'; // 🔥 Added .jsx to prevent import crashes
+import { Upload, Sparkles, FolderDown, ChevronDown, ChevronUp, Database } from 'lucide-react'; // 🔥 Database icon add kiya
+import { subjectsData } from '../../data/syllabusData.jsx'; 
 
 export default function AdminConfigPanel({
   mainCategory, setMainCategory, subCategory, setSubCategory, chapter, setChapter,
   difficulty, setDifficulty, qCount, setQCount, generateQuestions, isLoading,
-  handleBulkJsonUpload, bulkJsonRef, downloadJson
+  handleBulkJsonUpload, bulkJsonRef, downloadJson,
+  fetchFromDatabase // 🔥 Prop receive kiya
 }) {
   const [isOpen, setIsOpen] = useState(true);
   
@@ -106,10 +107,24 @@ export default function AdminConfigPanel({
               </button>
             </div>
             
-            <button onClick={generateQuestions} disabled={isLoading} className="bg-[#258cf4] hover:bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-[0_0_15px_rgba(37,140,244,0.3)] hover:shadow-[0_0_25px_rgba(37,140,244,0.5)] transition-all disabled:opacity-50 cursor-pointer">
-              <Sparkles className="w-4 h-4" />
-              {isLoading ? 'Processing...' : 'Generate with AI'}
-            </button>
+            <div className="flex gap-3">
+              {/* 🔥 Naya Fetch Button yahan add kiya */}
+              {fetchFromDatabase && (
+                <button 
+                  onClick={fetchFromDatabase} 
+                  disabled={isLoading} 
+                  className="bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                >
+                  <Database className="w-4 h-4" />
+                  {isLoading ? 'Fetching...' : 'Fetch from DB'}
+                </button>
+              )}
+
+              <button onClick={generateQuestions} disabled={isLoading} className="bg-[#258cf4] hover:bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2 shadow-[0_0_15px_rgba(37,140,244,0.3)] hover:shadow-[0_0_25px_rgba(37,140,244,0.5)] transition-all disabled:opacity-50 cursor-pointer">
+                <Sparkles className="w-4 h-4" />
+                {isLoading ? 'Processing...' : 'Generate with AI'}
+              </button>
+            </div>
           </div>
         </div>
       )}

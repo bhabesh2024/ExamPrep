@@ -1,16 +1,25 @@
 // src/pages/AdminPanel.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import QuestionBankView from '../components/admin/views/QuestionBankView';
 import DuplicateManager from '../components/admin/DuplicateManager/DuplicateManager';
 import AdminAnalytics from '../components/admin/views/AdminAnalytics';
 import AdminSettings from '../components/admin/views/AdminSettings';
 import FlaggedQuestionsView from '../components/admin/views/FlaggedQuestionsView'; 
-import AdminSupportView from '../components/admin/views/AdminSupportView'; // 🔥 Naya import yahan aayega
+import AdminSupportView from '../components/admin/views/AdminSupportView'; 
 import useAdminLogic from '../hooks/useAdminLogic';
 
 export default function AdminPanel() {
-  const [activeTab, setActiveTab] = useState('questions');
+  // 🔥 BUG FIX: Refresh karne par last active tab yaad rakhne ke liye localStorage lagaya
+  const [activeTab, setActiveTab] = useState(() => {
+    return localStorage.getItem('prepiq_admin_tab') || 'questions';
+  });
+
+  // Jab bhi tab change ho, use localStorage me save kar do
+  useEffect(() => {
+    localStorage.setItem('prepiq_admin_tab', activeTab);
+  }, [activeTab]);
+
   const adminState = useAdminLogic();
 
   return (
@@ -24,7 +33,7 @@ export default function AdminPanel() {
         {activeTab === 'duplicates' && <DuplicateManager />}
         {activeTab === 'flags' && <FlaggedQuestionsView />}  
         {activeTab === 'analytics' && <AdminAnalytics />}
-        {activeTab === 'support' && <AdminSupportView />}    {/* 🔥 Component yahan render hoga */}
+        {activeTab === 'support' && <AdminSupportView />}    
         {activeTab === 'settings' && <AdminSettings />}
       </main>
     </div>

@@ -39,12 +39,20 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
-      // 👇 🔥 YE DONO NAYE PAYMENT PROXIES ADD KIYE HAIN 🔥 👇
       '/api/create-order': {
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
       '/api/verify-payment': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      // 👇 🔥 ADMIN AUR SUPPORT KE NAYE PROXIES YAHAN HAIN 🔥 👇
+      '/api/admin': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      '/api/support': {
         target: 'http://localhost:5000',
         changeOrigin: true,
       }
