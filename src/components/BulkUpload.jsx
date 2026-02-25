@@ -4,6 +4,7 @@ import axios from 'axios';
 const BulkUpload = () => {
   const [jsonData, setJsonData] = useState('');
   const [topicId, setTopicId] = useState(''); // Example: "algebra-01"
+  const [subject, setSubject] = useState(''); // 🔥 NAYA STATE: Subject ke liye (e.g., "maths", "gk")
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async () => {
@@ -14,6 +15,7 @@ const BulkUpload = () => {
       // Hum loop chalayenge taki har question save ho jaye
       for (const q of parsedData) {
         await axios.post('http://localhost:5000/api/questions', {
+          subject: q.subject || subject || 'misc', // 🔥 ADDED: Subject DB me bhejne ke liye
           chapterId: topicId,
           question: q.question,
           questionHindi: q.questionHindi || q.questionHindi, // Hindi support
@@ -40,6 +42,15 @@ const BulkUpload = () => {
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <h2>Bulk Question Uploader (PostgreSQL)</h2>
       
+      {/* 🔥 NAYA INPUT FIELD: Subject type karne ke liye */}
+      <input 
+        type="text" 
+        placeholder="Subject (e.g. maths, gk, english)" 
+        value={subject}
+        onChange={(e) => setSubject(e.target.value)}
+        style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
+      />
+
       <input 
         type="text" 
         placeholder="Chapter ID (e.g. algebra-101)" 
@@ -58,11 +69,11 @@ const BulkUpload = () => {
 
       <button 
         onClick={handleUpload} 
-        disabled={loading || !jsonData || !topicId}
+        disabled={loading || !jsonData || !topicId || !subject} // Subject bhi mandatory kar diya
         style={{ 
           marginTop: '10px', 
           padding: '10px 20px', 
-          backgroundColor: loading ? '#ccc' : '#4CAF50', 
+          backgroundColor: (loading || !jsonData || !topicId || !subject) ? '#ccc' : '#4CAF50', 
           color: 'white',
           border: 'none',
           cursor: 'pointer'

@@ -41,7 +41,8 @@ export default function useQuizLogic(type, testId) {
             const matchedSubject = subjectsData.find(s => s.id.toLowerCase() === subjectIdSlug);
             const actualSubjectTitle = matchedSubject ? matchedSubject.title.toLowerCase() : subjectIdSlug;
 
-            availableQs = availableQs.filter(q => q.subject.toLowerCase() === actualSubjectTitle);
+            // 🔥 FIX APPLIED HERE: Added q.subject && to prevent null pointer crash
+            availableQs = availableQs.filter(q => q.subject && q.subject.toLowerCase() === actualSubjectTitle);
           }
 
           const limit = isFullMock ? 150 : 50;

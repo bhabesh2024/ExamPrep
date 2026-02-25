@@ -1,6 +1,4 @@
 // src/hooks/useAdminLogic.jsx
-// Ye sirf saare sub-hooks ko combine karta hai.
-// Isko directly edit karne ki zarurat bahut kam padegi.
 import { useState } from 'react';
 
 import useAdminConfig   from './admin/useAdminConfig.js';
@@ -33,6 +31,10 @@ export default function useAdminLogic() {
     mainCategory: config.mainCategory,
     subCategory:  config.subCategory,
     difficulty:   config.difficulty,
+    // 🔥 ADDED: Setters for auto-selecting dropdowns on JSON import
+    setMainCategory: config.setMainCategory,
+    setSubCategory:  config.setSubCategory,
+    setChapter:      config.setChapter,
     setQuestions: questionOps.setQuestions,
     setSelectedForDelete: questionOps.setSelectedForDelete,
     pushToPostgreSQL: questionOps.pushToPostgreSQL,

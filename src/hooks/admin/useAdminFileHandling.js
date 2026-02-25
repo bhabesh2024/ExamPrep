@@ -1,5 +1,4 @@
 // src/hooks/admin/useAdminFileHandling.js
-// Drag-drop, PDF extract, JSON upload aur JSON download
 import { useState, useRef } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs?url';
@@ -8,7 +7,12 @@ import { getTrueChapterId } from './useAdminConfig.js';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
-export default function useAdminFileHandling({ chapter, mainCategory, subCategory, difficulty, setQuestions, setSelectedForDelete, setStatus, setStatusType, pushToPostgreSQL }) {
+// 🔥 ADDED: setMainCategory, setSubCategory, setChapter in arguments
+export default function useAdminFileHandling({ 
+  chapter, mainCategory, subCategory, difficulty, 
+  setMainCategory, setSubCategory, setChapter, 
+  setQuestions, setSelectedForDelete, setStatus, setStatusType, pushToPostgreSQL 
+}) {
   const [isDragging, setIsDragging] = useState(false);
   const [file,       setFile]       = useState(null);
   const fileInputRef = useRef(null);
@@ -75,8 +79,18 @@ export default function useAdminFileHandling({ chapter, mainCategory, subCategor
       try {
         const parsed = JSON.parse(event.target.result);
         if (Array.isArray(parsed) && parsed.length > 0) {
+          
+          // 🔥 AUTO-SELECT LOGIC START 🔥
+          // Pehle question se details extract karke dropdowns ko update karenge
+          const firstQ = parsed[0];
+          if (firstQ.subject && setMainCategory) setMainCategory(firstQ.subject);
+          if (firstQ.topic && setSubCategory) setSubCategory(firstQ.topic);
+          if (firstQ.subtopic && setChapter) setChapter(firstQ.subtopic);
+          // 🔥 AUTO-SELECT LOGIC END 🔥
+
           setQuestions(parsed); setSelectedForDelete([]);
           setStatus(`✅ Loaded ${parsed.length} questions from JSON!`); setStatusType('success');
+          
           setTimeout(() => {
             if (window.confirm(`File Imported!\n\nSave these ${parsed.length} questions to DB?`)) {
               pushToPostgreSQL(parsed);

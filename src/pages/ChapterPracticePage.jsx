@@ -29,7 +29,7 @@ export default function ChapterPracticePage() {
 
       <PracticeHeader 
         topicId={state.topicId} showResult={state.showResult} isLoadingQuestions={state.isLoadingQuestions} 
-        totalQuestions={state.totalQuestions} currentQ={state.currentQ} setIsMobilePaletteOpen={state.setIsMobilePaletteOpen} 
+        totalQuestions={state.totalQuestions} currentQ={state.currentQ} setIsMobilePaletteOpen={state.setIsMobilePaletteOpen} handleExit={state.handleExit}
       />
 
       <div className="flex-1 flex overflow-hidden relative">

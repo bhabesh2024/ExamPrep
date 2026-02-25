@@ -9,7 +9,7 @@ const safeFormat = (text) => {
   return cleanMarkdown(applyStrictMathFilter(text));
 };
 
-// 🚀 NAYA SMART SHUFFLE FUNCTION (Passage questions ko ek saath group rakhega) 🚀
+// 🚀 SMART SHUFFLE FUNCTION 🚀
 const smartShuffle = (questionsArray) => {
   const passageGroups = {};
   const standaloneQs = [];
@@ -23,17 +23,14 @@ const smartShuffle = (questionsArray) => {
     }
   });
 
-  // Har ek group (block) ko mix karega
   const allBlocks = [...Object.values(passageGroups), ...standaloneQs];
   allBlocks.sort(() => 0.5 - Math.random());
   
-  // Wapas unko seedhi line mein laga dega
   return allBlocks.flat();
 };
 
-// 💾 SessionStorage helpers
+// 💾 SessionStorage Helpers (Progress save karne ke liye)
 const SESSION_KEY_PREFIX = 'practice_session_';
-
 const getSessionKey = (topicId) => `${SESSION_KEY_PREFIX}${topicId}`;
 
 const loadSessionState = (topicId) => {
@@ -64,60 +61,67 @@ export default function useChapterPracticeLogic() {
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
   const [showResult, setShowResult] = useState(false);
 
-  // ── Database Fetching with SessionStorage ──
-  useEffect(() => {
-    const fetchQuestionsFromDB = async () => {
-      setIsLoadingQuestions(true);
+  const [currentQ, setCurrentQ] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [review, setReview] = useState({});
+  const [visited, setVisited] = useState({ 0: true });
+
+ // ── Smart Fetching Logic ──
+ useEffect(() => {
+  const fetchQuestionsFromDB = async () => {
+    setIsLoadingQuestions(true);
+    
+    try {
+      // 1. CACHE BUSTER ADDED: &t=${Date.now()}
+      // Ye Hostinger/Vercel/Browser ko force karega ki wo hamesha fresh data laye, cache use na kare.
+      const res = await axios.get(`/api/questions?chapterId=${topicId}&t=${Date.now()}`);
+      let freshQuestions = [];
       
-      // 💾 Pehle session check karo - agar saved state hai toh wahi use karo
+      if (res.data && res.data.length > 0) {
+        freshQuestions = smartShuffle(res.data);
+      }
+
+      // 2. Ab check karo kya student ka koi aadhura progress (session) bacha hai?
       const savedSession = loadSessionState(topicId);
-      if (savedSession && savedSession.questions && savedSession.questions.length > 0) {
+
+      // 3. SMART SYNC CHECK
+      // Check karo ki kya DB ke questions aur Session ke questions barabar hain?
+      const hasProgress = savedSession && savedSession.answers && Object.keys(savedSession.answers).length > 0;
+      const isDbUnchanged = savedSession && savedSession.questions && savedSession.questions.length === freshQuestions.length;
+
+      if (hasProgress && isDbUnchanged) {
+        // Agar DB change nahi hua hai aur progress hai, toh wahi se resume karo
         setAllQuestions(savedSession.questions);
         setCurrentQ(savedSession.currentQ || 0);
         setAnswers(savedSession.answers || {});
         setReview(savedSession.review || {});
         setVisited(savedSession.visited || { 0: true });
         setShowResult(savedSession.showResult || false);
-        setIsLoadingQuestions(false);
-        return; // API call mat karo
-      }
-
-      // 🌐 Session nahi mila toh API se fetch karo
-      try {
-        const res = await axios.get(`/api/questions?chapterId=${topicId}`);
-        if (res.data && res.data.length > 0) {
-          const shuffled = smartShuffle(res.data);
-          setAllQuestions(shuffled);
-          // Pehli baar session save karo
-          saveSessionState(topicId, {
-            questions: shuffled,
-            currentQ: 0,
-            answers: {},
-            review: {},
-            visited: { 0: true },
-            showResult: false
-          });
-        } else {
-          setAllQuestions([]);
+      } else {
+        // Agar Admin ne questions ADD ya DELETE kiye hain, ya test ekdum naya hai
+        // Toh purana session clear karke fresh questions load karo
+        if (savedSession) {
+           clearSessionState(topicId); 
         }
-      } catch (error) {
-        console.error("Failed to fetch questions from DB:", error);
-      } finally {
-        setCurrentQ(0); setAnswers({}); setReview({}); setVisited({ 0: true });
-        setHindiCache({}); setShowHindi(false); setQHindiCache({}); setShowQHindi(false);
-        setShowResult(false); setIsLoadingQuestions(false);
+        setAllQuestions(freshQuestions);
+        setCurrentQ(0);
+        setAnswers({});
+        setReview({});
+        setVisited({ 0: true });
+        setShowResult(false);
       }
-    };
-    fetchQuestionsFromDB();
-  }, [subjectId, topicId]);
 
-  const totalQuestions = allQuestions.length;
-  const [currentQ, setCurrentQ] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [review, setReview] = useState({});
-  const [visited, setVisited] = useState({ 0: true });
+    } catch (error) {
+      console.error("Failed to fetch questions from DB:", error);
+    } finally {
+      setIsLoadingQuestions(false);
+    }
+  };
 
-  // 💾 State change hone par session update karo
+  fetchQuestionsFromDB();
+}, [subjectId, topicId]);
+
+  // 💾 Har click par progress background me save hota rahega
   useEffect(() => {
     if (allQuestions.length > 0 && topicId) {
       saveSessionState(topicId, { questions: allQuestions, currentQ, answers, review, visited, showResult });
@@ -125,10 +129,8 @@ export default function useChapterPracticeLogic() {
   }, [currentQ, answers, review, visited, showResult, topicId]);
 
   const [isMobilePaletteOpen, setIsMobilePaletteOpen] = useState(false);
-
   const explanationRef = useRef(null);
 
-  // ── Translation Caches ──
   const [hindiCache, setHindiCache] = useState({});
   const [isTranslating, setIsTranslating] = useState(false);
   const [showHindi, setShowHindi] = useState(false);
@@ -140,14 +142,22 @@ export default function useChapterPracticeLogic() {
   const hindiQuestionText = qHindiCache[currentQ] || null;
 
   const currentQuestionData = allQuestions[currentQ] || null;
+  const totalQuestions = allQuestions.length;
 
   // ── Core Actions ──
   const handleSelect = (idx) => {
     setAnswers(prev => ({ ...prev, [currentQ]: idx }));
     setTimeout(() => { explanationRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100);
   };
-  const handleClear = () => { const newAns = { ...answers }; delete newAns[currentQ]; setAnswers(newAns); };
+  
+  const handleClear = () => { 
+    const newAns = { ...answers }; 
+    delete newAns[currentQ]; 
+    setAnswers(newAns); 
+  };
+  
   const handleMarkReview = () => setReview(prev => ({ ...prev, [currentQ]: !prev[currentQ] }));
+  
   const handlePrev = () => {
     if (currentQ > 0) {
       setCurrentQ(currentQ - 1);
@@ -167,6 +177,7 @@ export default function useChapterPracticeLogic() {
         if (allQuestions[idx] && allQuestions[idx].options[opt] === allQuestions[idx].answer) correct++;
       });
       setShowResult(true);
+      
       const userStr = localStorage.getItem('user');
       if (userStr) {
         try {
@@ -206,15 +217,37 @@ export default function useChapterPracticeLogic() {
   };
 
   const handleRetake = () => {
-    // 🚀 Retake me session clear karo aur naya shuffle karo
+    // 🚀 Smooth Retake: Bina page refresh kiye test reset hoga
     clearSessionState(topicId);
+    
+    // Naya shuffle karke states ko zero par set kar do
     const reshuffled = smartShuffle([...allQuestions]);
     setAllQuestions(reshuffled);
-    setCurrentQ(0); setAnswers({}); setReview({}); setVisited({ 0: true }); setShowResult(false);
-    setHindiCache({}); setShowHindi(false); setQHindiCache({}); setShowQHindi(false);
-    // Nayi session state save karo
-    saveSessionState(topicId, { questions: reshuffled, currentQ: 0, answers: {}, review: {}, visited: { 0: true }, showResult: false });
+    setCurrentQ(0);
+    setAnswers({});
+    setReview({});
+    setVisited({ 0: true });
+    setShowResult(false);
+    setHindiCache({});
+    setShowHindi(false);
+    setQHindiCache({});
+    setShowQHindi(false);
   };
+
+  // 🔥 NAYA LOGIC: Browser ke Back button ya Exit button par session clear karna
+  const handleExit = () => {
+    clearSessionState(topicId); // Pehle session clear karo
+    navigate(-1); // Phir bahar niklo
+  };
+
+  // 🔥 Agar user browser ka Back (<-) arrow use kare
+  useEffect(() => {
+    const handlePopState = () => {
+      clearSessionState(topicId);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [topicId]);
 
   // ── Computations ──
   let correctCount = 0, wrongCount = 0;
@@ -237,6 +270,7 @@ export default function useChapterPracticeLogic() {
     explanationRef, isTranslating, showHindi, hindiExplanation, isTranslatingQ, showQHindi,
     hindiQuestionText, currentQuestionData, correctCount, wrongCount, skippedCount, isAnswered,
     handleSelect, handleClear, handleMarkReview, handlePrev, handleNext, jumpTo,
-    handleViewInHindi, handleTranslateQuestion, handleRetake
+    handleViewInHindi, handleTranslateQuestion, handleRetake,
+    handleExit // 🔥 YE NAYA FUNCTION EXPORT KIYA HAI
   };
 }
