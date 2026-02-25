@@ -1,7 +1,7 @@
 // src/components/admin/AdminConfigPanel.jsx
 import React, { useState } from 'react';
-import { Upload, FileDown, Sparkles, FolderDown, ChevronDown, ChevronUp } from 'lucide-react';
-import { subjectsData } from '../../data/syllabusData';
+import { Upload, Sparkles, FolderDown, ChevronDown, ChevronUp } from 'lucide-react';
+import { subjectsData } from '../../data/syllabusData.jsx'; // 🔥 Added .jsx to prevent import crashes
 
 export default function AdminConfigPanel({
   mainCategory, setMainCategory, subCategory, setSubCategory, chapter, setChapter,
@@ -10,10 +10,36 @@ export default function AdminConfigPanel({
 }) {
   const [isOpen, setIsOpen] = useState(true);
   
-  // Safe Fallbacks (Agar undefined ho toh crash na kare)
-  const currentSubject = subjectsData.find(s => s.title === mainCategory) || subjectsData[0];
-  const currentCategory = currentSubject?.categories?.find(c => c.title === subCategory) || currentSubject?.categories?.[0];
-  const topics = currentCategory?.topics || [];
+  // 🛡️ CRASH-PROOF SHIELD: Data na aane par app black screen nahi hogi
+  const safeSubjects = Array.isArray(subjectsData) && subjectsData.length > 0 ? subjectsData : [];
+  const currentSubject = safeSubjects.find(s => s.title === mainCategory) || safeSubjects[0] || {};
+  
+  const safeCategories = Array.isArray(currentSubject.categories) && currentSubject.categories.length > 0 ? currentSubject.categories : [];
+  const currentCategory = safeCategories.find(c => c.title === subCategory) || safeCategories[0] || {};
+  
+  const safeTopics = Array.isArray(currentCategory.topics) ? currentCategory.topics : [];
+
+  // ── Auto-Cascade Logic for Dropdowns ──
+  const handleSubjectChange = (e) => {
+    const val = e.target.value;
+    setMainCategory(val);
+    const subj = safeSubjects.find(s => s.title === val);
+    if (subj && subj.categories?.length > 0) {
+      setSubCategory(subj.categories[0].title);
+      if (subj.categories[0].topics?.length > 0) {
+        setChapter(subj.categories[0].topics[0].title);
+      } else { setChapter(''); }
+    } else { setSubCategory(''); setChapter(''); }
+  };
+
+  const handleCategoryChange = (e) => {
+    const val = e.target.value;
+    setSubCategory(val);
+    const cat = safeCategories.find(c => c.title === val);
+    if (cat && cat.topics?.length > 0) {
+      setChapter(cat.topics[0].title);
+    } else { setChapter(''); }
+  };
 
   return (
     <div className="bg-[#181b21] border border-[#2a3241] rounded-2xl shadow-xl mb-8 relative z-40">
@@ -34,71 +60,37 @@ export default function AdminConfigPanel({
           {/* ── Dropdowns ── */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4">
             
-            {/* Main Subject */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Main Subject</label>
-              <select 
-                value={mainCategory || ''} 
-                onChange={(e) => setMainCategory(e.target.value)} 
-                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer"
-              >
-                {subjectsData.map((s, i) => (
-                  <option key={`sub-${i}`} value={s.title} className="bg-[#0f1115] text-white py-2">{s.title}</option>
-                ))}
+              <select value={mainCategory || ''} onChange={handleSubjectChange} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer">
+                {safeSubjects.map((s, i) => <option key={`sub-${i}`} value={s.title}>{s.title}</option>)}
               </select>
             </div>
 
-            {/* Category */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Category</label>
-              <select 
-                value={subCategory || ''} 
-                onChange={(e) => setSubCategory(e.target.value)} 
-                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer"
-              >
-                {currentSubject?.categories?.map((c, i) => (
-                  <option key={`cat-${i}`} value={c.title} className="bg-[#0f1115] text-white py-2">{c.title}</option>
-                ))}
+              <select value={subCategory || ''} onChange={handleCategoryChange} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer">
+                {safeCategories.map((c, i) => <option key={`cat-${i}`} value={c.title}>{c.title}</option>)}
               </select>
             </div>
 
-            {/* Chapter */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Chapter</label>
-              <select 
-                value={chapter || ''} 
-                onChange={(e) => setChapter(e.target.value)} 
-                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer"
-              >
-                {topics.map((t, i) => (
-                  <option key={`top-${i}`} value={t.title} className="bg-[#0f1115] text-white py-2">{t.title}</option>
-                ))}
+              <select value={chapter || ''} onChange={(e) => setChapter(e.target.value)} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer">
+                {safeTopics.map((t, i) => <option key={`top-${i}`} value={t.title}>{t.title}</option>)}
               </select>
             </div>
 
-            {/* Difficulty */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Difficulty</label>
-              <select 
-                value={difficulty || 'Medium'} 
-                onChange={(e) => setDifficulty(e.target.value)} 
-                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer"
-              >
-                <option value="Easy" className="bg-[#0f1115] text-white">Easy</option>
-                <option value="Medium" className="bg-[#0f1115] text-white">Medium</option>
-                <option value="Hard" className="bg-[#0f1115] text-white">Hard</option>
+              <select value={difficulty || 'Medium'} onChange={(e) => setDifficulty(e.target.value)} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer">
+                <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
               </select>
             </div>
 
-            {/* AI Count */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">AI Count</label>
-              <input 
-                type="number" min="1" max="100" 
-                value={qCount} 
-                onChange={(e) => setQCount(parseInt(e.target.value) || 1)} 
-                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors" 
-              />
+              <input type="number" min="1" max="100" value={qCount || 1} onChange={(e) => setQCount(parseInt(e.target.value) || 1)} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors" />
             </div>
           </div>
 

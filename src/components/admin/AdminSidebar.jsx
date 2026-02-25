@@ -1,6 +1,6 @@
 // src/components/admin/AdminSidebar.jsx
 import React from 'react';
-import { Database, Layers, BarChart2, Settings, LogOut, GraduationCap, Flag } from 'lucide-react'; // 🔥 Flag import kiya
+import { Database, Layers, BarChart2, Settings, LogOut, GraduationCap, Flag } from 'lucide-react'; 
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminSidebar({ activeTab, setActiveTab }) {
@@ -9,7 +9,7 @@ export default function AdminSidebar({ activeTab, setActiveTab }) {
   const menuItems = [
     { id: 'questions', label: 'Question Bank', icon: Database },
     { id: 'duplicates', label: 'Duplicate Mgr', icon: Layers },
-    { id: 'flags', label: 'Flagged Issues', icon: Flag }, // 🔥 Naya Menu Item
+    { id: 'flags', label: 'Flagged Issues', icon: Flag },
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
     { id: 'settings', label: 'Settings', icon: Settings },
   ];

@@ -7,6 +7,9 @@ import AdminActionBar from '../AdminActionBar';
 import AdminQuestionList from '../AdminQuestionList';
 
 export default function QuestionBankView({ state }) {
+  // Guard condition agar state load na hua ho
+  if (!state) return null;
+
   return (
     <div className="flex-1 h-screen overflow-y-auto bg-[#0f1115] relative custom-scrollbar">
       <div className="max-w-[1400px] mx-auto p-6 md:p-8">
@@ -27,7 +30,7 @@ export default function QuestionBankView({ state }) {
           </div>
         </header>
 
-        {/* ── Sub-components render here (which are updated above) ── */}
+        {/* ── Sub-components ── */}
         <AdminConfigPanel 
           {...state} 
           handleFileSelect={state.handleFileSelect}
