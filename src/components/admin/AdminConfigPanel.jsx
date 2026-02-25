@@ -9,12 +9,14 @@ export default function AdminConfigPanel({
   handleBulkJsonUpload, bulkJsonRef, downloadJson
 }) {
   const [isOpen, setIsOpen] = useState(true);
+  
+  // Safe Fallbacks (Agar undefined ho toh crash na kare)
   const currentSubject = subjectsData.find(s => s.title === mainCategory) || subjectsData[0];
-  const currentCategory = currentSubject?.categories.find(c => c.title === subCategory) || currentSubject?.categories[0];
+  const currentCategory = currentSubject?.categories?.find(c => c.title === subCategory) || currentSubject?.categories?.[0];
   const topics = currentCategory?.topics || [];
 
   return (
-    <div className="bg-[#181b21]/80 backdrop-blur-xl border border-[#2a3241] rounded-2xl shadow-2xl mb-8 relative z-50">
+    <div className="bg-[#181b21] border border-[#2a3241] rounded-2xl shadow-xl mb-8 relative z-40">
       {/* Clickable Header for Toggle */}
       <div 
         className="px-6 py-5 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors rounded-t-2xl"
@@ -31,38 +33,77 @@ export default function AdminConfigPanel({
         <div className="p-6 pt-0 border-t border-[#2a3241]">
           {/* ── Dropdowns ── */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4">
-            <div className="flex flex-col gap-1.5 relative z-50">
+            
+            {/* Main Subject */}
+            <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Main Subject</label>
-              <select value={mainCategory} onChange={(e) => setMainCategory(e.target.value)} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors relative z-50 cursor-pointer">
-                {subjectsData.map((s, i) => <option key={i} value={s.title}>{s.title}</option>)}
+              <select 
+                value={mainCategory || ''} 
+                onChange={(e) => setMainCategory(e.target.value)} 
+                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer"
+              >
+                {subjectsData.map((s, i) => (
+                  <option key={`sub-${i}`} value={s.title} className="bg-[#0f1115] text-white py-2">{s.title}</option>
+                ))}
               </select>
             </div>
-            <div className="flex flex-col gap-1.5 relative z-50">
+
+            {/* Category */}
+            <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Category</label>
-              <select value={subCategory} onChange={(e) => setSubCategory(e.target.value)} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors relative z-50 cursor-pointer">
-                {currentSubject?.categories.map((c, i) => <option key={i} value={c.title}>{c.title}</option>)}
+              <select 
+                value={subCategory || ''} 
+                onChange={(e) => setSubCategory(e.target.value)} 
+                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer"
+              >
+                {currentSubject?.categories?.map((c, i) => (
+                  <option key={`cat-${i}`} value={c.title} className="bg-[#0f1115] text-white py-2">{c.title}</option>
+                ))}
               </select>
             </div>
-            <div className="flex flex-col gap-1.5 relative z-50">
+
+            {/* Chapter */}
+            <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Chapter</label>
-              <select value={chapter} onChange={(e) => setChapter(e.target.value)} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors relative z-50 cursor-pointer">
-                {topics.map((t, i) => <option key={i} value={t.title}>{t.title}</option>)}
+              <select 
+                value={chapter || ''} 
+                onChange={(e) => setChapter(e.target.value)} 
+                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer"
+              >
+                {topics.map((t, i) => (
+                  <option key={`top-${i}`} value={t.title} className="bg-[#0f1115] text-white py-2">{t.title}</option>
+                ))}
               </select>
             </div>
-            <div className="flex flex-col gap-1.5 relative z-50">
+
+            {/* Difficulty */}
+            <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Difficulty</label>
-              <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors relative z-50 cursor-pointer">
-                <option value="Easy">Easy</option><option value="Medium">Medium</option><option value="Hard">Hard</option>
+              <select 
+                value={difficulty || 'Medium'} 
+                onChange={(e) => setDifficulty(e.target.value)} 
+                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors cursor-pointer"
+              >
+                <option value="Easy" className="bg-[#0f1115] text-white">Easy</option>
+                <option value="Medium" className="bg-[#0f1115] text-white">Medium</option>
+                <option value="Hard" className="bg-[#0f1115] text-white">Hard</option>
               </select>
             </div>
-            <div className="flex flex-col gap-1.5 relative z-50">
+
+            {/* AI Count */}
+            <div className="flex flex-col gap-1.5">
               <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">AI Count</label>
-              <input type="number" min="1" max="100" value={qCount} onChange={(e) => setQCount(parseInt(e.target.value) || 1)} className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors relative z-50" />
+              <input 
+                type="number" min="1" max="100" 
+                value={qCount} 
+                onChange={(e) => setQCount(parseInt(e.target.value) || 1)} 
+                className="bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:border-[#258cf4] transition-colors" 
+              />
             </div>
           </div>
 
           {/* ── Action Buttons ── */}
-          <div className="mt-6 pt-6 border-t border-[#2a3241] flex flex-wrap items-center justify-between gap-4 relative z-50">
+          <div className="mt-6 pt-6 border-t border-[#2a3241] flex flex-wrap items-center justify-between gap-4">
             <div className="flex gap-3">
               <input type="file" accept=".json" ref={bulkJsonRef} onChange={handleBulkJsonUpload} className="hidden" />
               <button onClick={() => bulkJsonRef.current?.click()} className="px-4 py-2 bg-[#2a3241] hover:bg-[#3b4754] text-slate-200 text-sm font-semibold rounded-lg flex items-center gap-2 transition-colors border border-[#2a3241] cursor-pointer">
