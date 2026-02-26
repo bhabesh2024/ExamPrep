@@ -4,11 +4,20 @@ import prisma from '../prisma/db.js';
 
 const router = Router();
 
-// Get unread/all notifications for a user
+// Get unread/all notifications for a user & AUTO DELETE > 4 days
 router.get('/', async (req, res) => {
   try {
     const { userId } = req.query;
     if (!userId) return res.status(400).json({ error: "Missing userId" });
+
+    // 🔥 MEMORY SAVER: 4 din se purane notifications auto-delete
+    const fourDaysAgo = new Date(Date.now() - 4 * 24 * 60 * 60 * 1000);
+    await prisma.notification.deleteMany({
+      where: { 
+        userId: parseInt(userId),
+        createdAt: { lt: fourDaysAgo } 
+      }
+    });
 
     const notifications = await prisma.notification.findMany({
       where: { userId: parseInt(userId) },

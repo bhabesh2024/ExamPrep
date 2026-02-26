@@ -5,7 +5,7 @@ import {
   CheckCircle2, Play, FileQuestion, BookOpen, Gauge, 
   TrendingUp, TrendingDown, MoreHorizontal, FileText, 
   FlaskConical, Calculator, Brain, Globe, Trophy, Lock, 
-  MessageSquare, Send // 👈 Naye icons for Support feature
+  MessageSquare, Send 
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -317,7 +317,16 @@ export default function ProfilePage() {
                       const percentage = Math.round((result.score / result.total) * 100);
                       const isGood = percentage >= 60;
                       const UIInfo = getSubjectIcon(result.subject);
+                      let displayTopic = result.topic;
                       
+                      // 🔥 SUPER FIX: "adre" word hata diya, ab agar result Mock Test hai ya naam me "mock" hai
+                      // toh sabko automatically "Full Mock Test - X" dikhayega!
+                      if (result.subject === 'Mock Test' || /mock/i.test(displayTopic)) {
+                        const match = displayTopic.match(/\d+/);
+                        const testNumber = match ? match[0] : '';
+                        displayTopic = testNumber ? `Full Mock Test - ${testNumber}` : 'Full Mock Test';
+                      }
+
                       return (
                         <tr key={result.id} className="border-b border-white/5 group hover:bg-[#202020] transition-colors">
                           <td className="py-4 px-4">
@@ -326,7 +335,7 @@ export default function ProfilePage() {
                                 {UIInfo.icon}
                               </div>
                               <div>
-                                <span className="font-bold block text-base leading-tight mb-1">{result.topic}</span>
+                                <span className="font-bold block text-base leading-tight mb-1">{displayTopic}</span>
                                 <span className="text-xs text-[#9c9cba] font-medium uppercase tracking-wider">{result.subject}</span>
                               </div>
                             </div>
