@@ -1,63 +1,51 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
-/* Tailwind v4 ka naya import style */
 @import "tailwindcss";
 
-/* 🌟 Tailwind v4 mein class-based dark mode enable karne ka naya tarika */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   html {
     font-family: 'Plus Jakarta Sans', sans-serif;
     -webkit-tap-highlight-color: transparent;
+    /* Smooth scroll for native feel */
+    scroll-behavior: smooth;
   }
   
-  /* 🌟 LIGHT MODE DEFAULTS */
   body {
-    @apply bg-[#f8f9fa] text-slate-900 antialiased selection:bg-[#2525f4]/20 selection:text-[#2525f4] transition-colors duration-300;
-    overscroll-behavior-y: none;
+    /* Premium Light Mode */
+    @apply bg-[#FAFAFA] text-zinc-900 transition-colors duration-500 ease-in-out antialiased selection:bg-blue-500/20 selection:text-blue-700;
+    overscroll-behavior-y: none; /* Mobile par pull-to-refresh bounce roknay ke liye */
   }
 
-  /* 🌙 DARK MODE DEFAULTS */
   .dark body {
-    @apply bg-[#050508] text-slate-200 selection:bg-[#2525f4]/30 selection:text-white;
+    /* Premium Dark Mode (Deep OLED Zinc) */
+    @apply bg-[#09090B] text-zinc-100 selection:bg-blue-500/30 selection:text-blue-100;
   }
 }
 
 @layer utilities {
-  /* 🌟 UNIVERSAL GLASS SURFACE */
-  .glass-surface {
-    @apply bg-white/70 backdrop-blur-xl border border-black/[0.05] shadow-xl;
-  }
-  .dark .glass-surface {
-    @apply bg-[#12121a]/70 border border-white/[0.04] shadow-2xl;
+  /* Premium Glass Surface (For Navbars & Modals) */
+  .glass {
+    @apply bg-white/70 dark:bg-[#18181B]/70 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm transition-colors duration-500;
   }
   
-  /* 🌟 UNIVERSAL GLASS CARD */
+  /* Elevated Cards */
   .glass-card {
-    @apply bg-gradient-to-b from-black/[0.02] to-transparent border border-black/[0.05] backdrop-blur-lg;
-  }
-  .dark .glass-card {
-    @apply bg-gradient-to-b from-white/[0.04] to-transparent border border-white/[0.05];
+    @apply bg-white dark:bg-[#121214] border border-zinc-200 dark:border-zinc-800/80 shadow-sm rounded-2xl transition-all duration-300;
   }
 
-  /* Custom Scrollbar */
+  /* Invisible but functional scrollbar */
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-  .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+  /* Premium sleek scrollbar */
+  .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-slate-300 rounded-full; }
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-[#2a2a35]; }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover { @apply bg-slate-400; }
-  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { @apply bg-[#3f3f5a]; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { @apply bg-zinc-300 dark:bg-zinc-700 rounded-full transition-colors; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { @apply bg-zinc-400 dark:bg-zinc-600; }
 }
 
-.btn-press {
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.btn-press:active {
-  transform: scale(0.96);
+/* Mobile App Button Press Effect */
+.tap-effect {
+  @apply active:scale-95 transition-transform duration-150 ease-out;
 }

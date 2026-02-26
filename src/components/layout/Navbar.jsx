@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { GraduationCap, Search, ChevronDown, Sun, Moon, Menu, X, Globe, Calculator, Brain, BookOpen, FlaskConical, Terminal, ArrowRight, LogOut, User, Sparkles, Bell } from 'lucide-react';
+import { useTheme } from '../../context/ThemeProvider'; 
+import { GraduationCap, Search, ChevronDown, Sun, Moon, Home, BookOpen, User, Bell, LogOut, Sparkles, LayoutGrid, Globe, Calculator, Brain as BrainIcon, ArrowRight } from 'lucide-react';
 import { subjectsData } from '../../data/syllabusData.jsx';
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const saved = localStorage.getItem('theme');
-    return saved ? saved === 'dark' : true;
-  });
+  const { theme, toggleTheme } = useTheme(); 
   
   const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,47 +16,31 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
 
-  // 🔥 Notification States
+  // 🔔 Restored Notification States
   const [notifications, setNotifications] = useState([]);
   const [showNotifs, setShowNotifMenu] = useState(false);
   const desktopNotifRef = useRef(null);
   const mobileNotifRef = useRef(null);
 
-  // Theme Logic
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-  }, [isDarkMode]);
-
-  // Auth Logic
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('user');
-      if (storedUser && storedUser !== 'undefined') {
-        setUser(JSON.parse(storedUser));
-      }
-    } catch (e) {
-      localStorage.removeItem('user');
-    }
+      if (storedUser && storedUser !== 'undefined') setUser(JSON.parse(storedUser));
+    } catch (e) { localStorage.removeItem('user'); }
   }, [location.pathname]); 
 
-  // 🔥 FETCH NOTIFICATIONS (Safe Array Check)
+  // 🔔 Restored Notification Logic
   const fetchNotifications = async (userId) => {
     try {
       const res = await axios.get(`/api/notifications?userId=${userId}`);
-      if (Array.isArray(res.data)) {
-        setNotifications(res.data);
-      }
+      if (Array.isArray(res.data)) setNotifications(res.data);
     } catch (e) { console.error("Notification fetch failed"); }
   };
 
-  // 🔥 NAYA FEATURE: AUTO POLLING (Har 5 second me auto check karega)
   useEffect(() => {
     if (user && user.id) {
-      fetchNotifications(user.id); // Pehli baar turant fetch kare
-      const interval = setInterval(() => {
-        fetchNotifications(user.id);
-      }, 5000); // 5 sec background checking
+      fetchNotifications(user.id); 
+      const interval = setInterval(() => fetchNotifications(user.id), 5000); 
       return () => clearInterval(interval);
     }
   }, [user?.id]);
@@ -73,12 +54,12 @@ export default function Navbar() {
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
+  // 🚪 Restored Logout Logic
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
     navigate('/login');
-    setIsMobileMenuOpen(false);
   };
 
   const isActive = (path) => location.pathname === path;
@@ -87,12 +68,6 @@ export default function Navbar() {
     const items = [];
     subjectsData.forEach(sub => {
       items.push({ name: sub.title, type: 'Subject', path: `/practice/${sub.id}` });
-      sub.categories.forEach(cat => {
-        items.push({ name: cat.title, type: 'Category', path: `/practice/${sub.id}`, parent: sub.title });
-        cat.topics.forEach(top => {
-          items.push({ name: top.title, type: 'Topic', path: `/quiz/${sub.title}/${top.title}`, parent: `${sub.title} > ${cat.title}` });
-        });
-      });
     });
     return items;
   }, []);
@@ -101,26 +76,18 @@ export default function Navbar() {
     const query = e.target.value;
     setSearchQuery(query);
     if (query.trim().length > 0) {
-      const results = searchableItems.filter(item => 
-        item.name.toLowerCase().includes(query.toLowerCase())
-      ).slice(0, 6); 
-      setSearchResults(results);
+      setSearchResults(searchableItems.filter(item => item.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5));
       setIsSearchOpen(true);
     } else {
-      setSearchResults([]);
       setIsSearchOpen(false);
     }
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setIsSearchOpen(false);
-      }
-      if (
-        (desktopNotifRef.current && !desktopNotifRef.current.contains(event.target)) &&
-        (mobileNotifRef.current && !mobileNotifRef.current.contains(event.target))
-      ) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) setIsSearchOpen(false);
+      if ((desktopNotifRef.current && !desktopNotifRef.current.contains(event.target)) &&
+          (mobileNotifRef.current && !mobileNotifRef.current.contains(event.target))) {
         setShowNotifMenu(false);
       }
     };
@@ -128,39 +95,21 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleResultClick = (path) => {
-    navigate(path);
-    setIsSearchOpen(false);
-    setSearchQuery('');
-    setIsMobileMenuOpen(false);
-  };
-
-  const navBg = isDarkMode ? 'rgba(10, 10, 10, 0.8)' : 'rgba(255, 255, 255, 0.88)';
-  const navBorder = isDarkMode ? 'border-[#27272a]' : 'border-slate-200';
-  const logoText = isDarkMode ? 'text-white' : 'text-slate-900';
-  const navLinks = isDarkMode ? 'text-slate-300 hover:text-white' : 'text-slate-600 hover:text-slate-900';
-  const inputBg = isDarkMode ? 'bg-[#161616]/80 text-slate-100 placeholder-slate-500 focus:bg-[#161616] focus:border-[#0d59f2]/50' : 'bg-slate-100 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-[#0d59f2]/50';
-  const dropdownBg = isDarkMode ? 'bg-[#181b21] border-[#27272a]' : 'bg-white border-slate-200 shadow-xl';
-  const resultHover = isDarkMode ? 'hover:bg-white/5 border-[#2a2f3a]' : 'hover:bg-slate-50 border-slate-100';
-  const textPrimary = isDarkMode ? 'text-slate-200' : 'text-slate-800';
-  const textSecondary = isDarkMode ? 'text-slate-500' : 'text-slate-500';
-  const mobileMenuBg = isDarkMode ? 'bg-[#0a0a0a]/98' : 'bg-white/98';
-  const mobileLinkHover = isDarkMode ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-100 hover:text-slate-900';
-
+  // 🔔 Premium Notification Dropdown Component
   const NotificationDropdown = () => (
-    <div className={`absolute top-full right-0 mt-3 w-80 sm:w-96 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-[999] overflow-hidden flex flex-col border ${isDarkMode ? 'bg-[#15171c] border-[#282e39]' : 'bg-white border-slate-200'}`}>
-      <div className={`p-4 border-b font-bold flex justify-between items-center ${isDarkMode ? 'border-[#282e39] bg-[#1a1d24] text-white' : 'border-slate-100 bg-slate-50 text-slate-800'}`}>
-        <span>Notifications</span>
-        {unreadCount > 0 && <span className="text-[10px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">{unreadCount} New</span>}
+    <div className="absolute top-full right-0 mt-3 w-80 sm:w-96 rounded-2xl shadow-2xl z-[999] overflow-hidden flex flex-col border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#18181b] transition-colors duration-500">
+      <div className="p-4 border-b border-zinc-100 dark:border-white/5 bg-zinc-50 dark:bg-[#121214] flex justify-between items-center transition-colors">
+        <span className="font-bold text-zinc-900 dark:text-white">Notifications</span>
+        {unreadCount > 0 && <span className="text-[10px] bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">{unreadCount} New</span>}
       </div>
       <div className="max-h-72 overflow-y-auto custom-scrollbar p-2 flex flex-col gap-1">
         {notifications.length === 0 ? (
-          <div className={`text-center p-6 text-sm ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>No new notifications</div>
+          <div className="text-center p-6 text-sm text-zinc-500 dark:text-slate-500 font-medium">No new notifications</div>
         ) : (
           notifications.map(n => (
-            <div key={n.id} onClick={() => !n.isRead && markAsRead(n.id)} className={`p-3 rounded-xl cursor-pointer transition-colors border ${n.isRead ? (isDarkMode ? 'bg-transparent border-transparent hover:bg-white/5 opacity-60 text-slate-400' : 'bg-transparent border-transparent hover:bg-slate-50 opacity-70 text-slate-500') : (isDarkMode ? 'bg-[#0d59f2]/10 border-[#0d59f2]/20 hover:bg-[#0d59f2]/20 text-slate-200' : 'bg-blue-50 border-blue-100 hover:bg-blue-100 text-slate-800')}`}>
-              <h4 className={`text-sm ${n.isRead ? '' : 'font-bold text-[#0d59f2]'}`}>{n.title}</h4>
-              <p className="text-xs mt-1 line-clamp-2">{n.message}</p>
+            <div key={n.id} onClick={() => !n.isRead && markAsRead(n.id)} className={`p-3 rounded-xl cursor-pointer transition-colors border ${n.isRead ? 'bg-transparent border-transparent hover:bg-zinc-50 dark:hover:bg-white/5 text-zinc-500 dark:text-slate-400' : 'bg-blue-50 dark:bg-blue-500/10 border-blue-100 dark:border-blue-500/20 text-zinc-800 dark:text-slate-200'}`}>
+              <h4 className={`text-sm ${n.isRead ? 'font-medium' : 'font-bold text-blue-600 dark:text-blue-400'}`}>{n.title}</h4>
+              <p className="text-xs mt-1 line-clamp-2 opacity-80">{n.message}</p>
             </div>
           ))
         )}
@@ -171,267 +120,163 @@ export default function Navbar() {
   return (
     <>
       <style>{`
-        .glass-nav { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .dropdown-trigger:hover .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
         .dropdown-menu { opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        .search-scrollbar::-webkit-scrollbar { width: 4px; }
-        .search-scrollbar::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
       `}</style>
 
-      <header className={`fixed top-0 w-full z-50 glass-nav border-b ${navBorder}`} style={{ background: navBg }}>
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            
-            <div onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity shrink-0">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#0d59f2] to-violet-600 flex items-center justify-center text-white shadow-lg shadow-[#0d59f2]/20">
-                <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
-              </div>
-              <span className={`text-lg sm:text-xl font-bold tracking-tight ${logoText}`}>PrepIQ</span>
+      {/* DESKTOP TOP NAVBAR */}
+      <header className="fixed top-0 w-full z-50 glass border-b border-zinc-200 dark:border-white/5 hidden md:block transition-colors duration-500">
+        <div className="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
+          
+          <div onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity shrink-0 tap-effect">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white shadow-lg">
+              <GraduationCap className="w-5 h-5" />
             </div>
+            <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-white transition-colors duration-500">PrepIQ</span>
+          </div>
 
-            <div className="hidden md:flex flex-1 items-center justify-center px-4 lg:px-8 gap-4" ref={searchRef}>
-              <div className="relative w-full max-w-md group">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0d59f2] transition-colors z-10">
-                  <Search className="w-5 h-5" />
-                </div>
-                <input 
-                  value={searchQuery} onChange={handleSearch} onFocus={() => searchQuery.trim().length > 0 && setIsSearchOpen(true)}
-                  className={`block w-full pl-10 pr-3 py-2.5 border border-transparent rounded-full leading-5 sm:text-sm transition-all shadow-inner outline-none ${inputBg}`}
-                  placeholder="Search exams, topics..." type="text"
-                />
-                
-                {isSearchOpen && (
-                  <div className={`absolute top-full left-0 right-0 mt-2 border rounded-xl shadow-2xl overflow-hidden z-50 ${dropdownBg}`}>
-                    {searchResults.length > 0 ? (
-                      <ul className="max-h-80 overflow-y-auto search-scrollbar">
-                        {searchResults.map((result, idx) => (
-                          <li key={idx} onClick={() => handleResultClick(result.path)} className={`px-4 py-3 cursor-pointer border-b last:border-0 transition-colors flex flex-col group/result ${resultHover}`}>
-                            <span className={`text-sm font-semibold group-hover/result:text-[#0d59f2] transition-colors ${textPrimary}`}>{result.name}</span>
-                            <span className={`text-xs mt-0.5 ${textSecondary}`}>{result.type} {result.parent ? `in ${result.parent}` : ''}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <div className={`px-4 py-8 flex flex-col items-center justify-center ${textSecondary}`}>
-                        <Search className="w-8 h-8 mb-2 opacity-20" />
-                        <span className="text-sm">No results found</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+          <div className="flex-1 max-w-md mx-8 relative group" ref={searchRef}>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+            <input 
+              value={searchQuery} onChange={handleSearch} onFocus={() => searchQuery.length > 0 && setIsSearchOpen(true)}
+              className="w-full bg-zinc-100 dark:bg-zinc-900/50 border border-transparent focus:border-blue-500/50 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 text-sm rounded-full py-2.5 pl-10 pr-4 outline-none transition-all duration-300"
+              placeholder="Search exams, subjects..." type="text"
+            />
+          </div>
+
+          <div className="flex items-center gap-6">
+            <nav className="flex items-center gap-6 text-sm font-semibold text-zinc-500 dark:text-slate-400">
+              <button onClick={() => navigate('/')} className={`hover:text-zinc-900 dark:hover:text-white transition-colors ${isActive('/') && 'text-zinc-900 dark:text-white font-bold'}`}>Home</button>
+              <button onClick={() => navigate('/practice')} className={`hover:text-zinc-900 dark:hover:text-white transition-colors ${isActive('/practice') && 'text-zinc-900 dark:text-white font-bold'}`}>Practice</button>
+              <button onClick={() => navigate('/pricing')} className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-white transition-colors">Pricing <Sparkles className="w-3 h-3 text-amber-500" /></button>
               
-              <button 
-                aria-label="Toggle Theme"
-                className={`h-10 w-[64px] rounded-full relative cursor-pointer flex items-center shrink-0 hidden lg:flex border transition-colors ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-200 border-slate-300'}`}
-                onClick={() => setIsDarkMode(!isDarkMode)}
-              >
-                <div className="absolute inset-0 flex justify-between items-center px-1.5 text-[18px]">
-                  <Sun className={`w-4 h-4 ${isDarkMode ? 'text-amber-500/80' : 'text-amber-500'}`} />
-                  <Moon className={`w-4 h-4 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-400/50'}`} />
-                </div>
-                <div className={`absolute h-7 w-7 rounded-full flex items-center justify-center text-white transition-transform duration-300 ${isDarkMode ? 'translate-x-[28px] bg-gradient-to-br from-indigo-500 to-indigo-800 shadow-[0_0_10px_rgba(79,70,229,0.5)]' : 'translate-x-[2px] bg-gradient-to-br from-amber-400 to-amber-600 shadow-[0_0_10px_rgba(245,158,11,0.5)]'}`}>
-                  {isDarkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                </div>
-              </button>
-            </div>
-
-            <div className="flex items-center shrink-0">
-              <nav className={`hidden lg:flex items-center gap-5 xl:gap-6 text-sm font-medium mr-6 ${navLinks}`}>
-                <button onClick={() => navigate('/')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>Home</button>
-                <button onClick={() => navigate('/practice')} className={`transition-colors cursor-pointer ${isActive('/practice') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>Practice</button>
-                <button onClick={() => navigate('/pricing')} className={`transition-colors cursor-pointer flex items-center gap-1 ${isActive('/pricing') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>
-                  Pricing <Sparkles className="w-3 h-3 text-yellow-400" />
+              {/* DESKTOP SUBJECTS DROPDOWN */}
+              <div className="group dropdown-trigger relative h-20 flex items-center cursor-pointer">
+                <button className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-white transition-colors outline-none">
+                  Subjects <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                 </button>
-                <button onClick={() => navigate('/about')} className={`transition-colors cursor-pointer ${isActive('/about') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>About</button>
                 
-                <div className="group dropdown-trigger relative h-16 sm:h-20 flex items-center">
-                  <button className={`flex items-center gap-1 transition-colors focus:outline-none cursor-pointer ${isDarkMode ? 'hover:text-white group-hover:text-white' : 'hover:text-slate-900 group-hover:text-slate-900'}`}>
-                    Subjects <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
-                  </button>
-                  
-                  <div className="dropdown-menu absolute top-full right-[-100px] w-[580px] xl:w-[600px] pt-4">
-                    <div className={`rounded-2xl border p-5 xl:p-6 shadow-2xl relative overflow-hidden ${isDarkMode ? 'bg-[#0d0d0d] border-[#27272a]' : 'bg-white border-slate-200'}`}>
-                      <div className="relative z-10 grid grid-cols-2 gap-3 xl:gap-4 text-left">
-                        <button onClick={() => { navigate('/practice/gk'); setIsMobileMenuOpen(false); }} className={`flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left border border-transparent ${isDarkMode ? 'hover:bg-white/5 hover:border-white/5' : 'hover:bg-slate-50 hover:border-slate-100'}`}>
-                          <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shrink-0"><Globe className="w-5 h-5 xl:w-6 xl:h-6" /></div>
-                          <div><h4 className={`font-semibold text-sm xl:text-base ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>General Knowledge</h4><p className={`text-xs mt-1 ${textSecondary}`}>Current affairs & history.</p></div>
-                        </button>
-                        <button onClick={() => { navigate('/practice/maths'); setIsMobileMenuOpen(false); }} className={`flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left border border-transparent ${isDarkMode ? 'hover:bg-white/5 hover:border-white/5' : 'hover:bg-slate-50 hover:border-slate-100'}`}>
-                          <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white shrink-0"><Calculator className="w-5 h-5 xl:w-6 xl:h-6" /></div>
-                          <div><h4 className={`font-semibold text-sm xl:text-base ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Mathematics</h4><p className={`text-xs mt-1 ${textSecondary}`}>Algebra & geometry prep.</p></div>
-                        </button>
-                        <button onClick={() => { navigate('/practice/reasoning'); setIsMobileMenuOpen(false); }} className={`flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left border border-transparent ${isDarkMode ? 'hover:bg-white/5 hover:border-white/5' : 'hover:bg-slate-50 hover:border-slate-100'}`}>
-                          <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-white shrink-0"><Brain className="w-5 h-5 xl:w-6 xl:h-6" /></div>
-                          <div><h4 className={`font-semibold text-sm xl:text-base ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>Reasoning</h4><p className={`text-xs mt-1 ${textSecondary}`}>Logical & critical thinking.</p></div>
-                        </button>
-                        <button onClick={() => { navigate('/practice/english'); setIsMobileMenuOpen(false); }} className={`flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left border border-transparent ${isDarkMode ? 'hover:bg-white/5 hover:border-white/5' : 'hover:bg-slate-50 hover:border-slate-100'}`}>
-                          <div className="w-10 h-10 xl:w-12 xl:h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center text-white shrink-0"><BookOpen className="w-5 h-5 xl:w-6 xl:h-6" /></div>
-                          <div><h4 className={`font-semibold text-sm xl:text-base ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>English</h4><p className={`text-xs mt-1 ${textSecondary}`}>Grammar & vocabulary.</p></div>
-                        </button>
-                      </div>
-                      <div className={`mt-4 pt-4 border-t flex justify-between items-center relative z-10 ${isDarkMode ? 'border-white/5' : 'border-slate-100'}`}>
-                        <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-xs font-medium text-[#0d59f2] hover:text-[#3b82f6] flex items-center gap-1 transition-colors">
-                          View all subjects <ArrowRight className="w-3 h-3" />
-                        </button>
-                      </div>
+                <div className="dropdown-menu absolute top-full right-[-80px] w-[500px] pt-2">
+                  <div className="glass-card p-5 shadow-2xl border border-zinc-200 dark:border-white/10 relative overflow-hidden">
+                    <div className="grid grid-cols-2 gap-3 text-left">
+                      <button onClick={() => navigate('/practice/gk')} className="flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left hover:bg-zinc-50 dark:hover:bg-white/5 border border-transparent hover:border-zinc-200 dark:hover:border-white/10">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0"><Globe className="w-5 h-5" /></div>
+                        <div><h4 className="font-bold text-sm text-zinc-900 dark:text-white">General Knowledge</h4><p className="text-xs mt-0.5 text-zinc-500 dark:text-slate-400">Current affairs & history</p></div>
+                      </button>
+                      <button onClick={() => navigate('/practice/maths')} className="flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left hover:bg-zinc-50 dark:hover:bg-white/5 border border-transparent hover:border-zinc-200 dark:hover:border-white/10">
+                        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0"><Calculator className="w-5 h-5" /></div>
+                        <div><h4 className="font-bold text-sm text-zinc-900 dark:text-white">Mathematics</h4><p className="text-xs mt-0.5 text-zinc-500 dark:text-slate-400">Algebra & geometry prep</p></div>
+                      </button>
+                      <button onClick={() => navigate('/practice/reasoning')} className="flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left hover:bg-zinc-50 dark:hover:bg-white/5 border border-transparent hover:border-zinc-200 dark:hover:border-white/10">
+                        <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0"><BrainIcon className="w-5 h-5" /></div>
+                        <div><h4 className="font-bold text-sm text-zinc-900 dark:text-white">Reasoning</h4><p className="text-xs mt-0.5 text-zinc-500 dark:text-slate-400">Logical & critical thinking</p></div>
+                      </button>
+                      <button onClick={() => navigate('/practice/english')} className="flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left hover:bg-zinc-50 dark:hover:bg-white/5 border border-transparent hover:border-zinc-200 dark:hover:border-white/10">
+                        <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0"><BookOpen className="w-5 h-5" /></div>
+                        <div><h4 className="font-bold text-sm text-zinc-900 dark:text-white">English</h4><p className="text-xs mt-0.5 text-zinc-500 dark:text-slate-400">Grammar & vocabulary</p></div>
+                      </button>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-white/5 flex justify-between items-center">
+                      <button onClick={() => navigate('/subjects')} className="text-xs font-bold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 flex items-center gap-1 transition-colors">
+                        View all subjects <ArrowRight className="w-3 h-3" />
+                      </button>
                     </div>
                   </div>
                 </div>
-              </nav>
+              </div>
+            </nav>
 
-              <div className={`hidden lg:flex items-center pl-5 xl:pl-6 border-l ${isDarkMode ? 'border-[#27272a]' : 'border-slate-200'}`}>
-                
-                {user && (
-                  <div className="relative" ref={desktopNotifRef}>
-                    <button 
-                      onClick={() => setShowNotifMenu(!showNotifs)}
-                      className={`relative p-2 mr-3 transition-colors cursor-pointer rounded-full ${isDarkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`} 
-                      title="Notifications"
-                    >
-                      <Bell className="w-5 h-5" />
-                      {unreadCount > 0 && (
-                        <span className={`absolute top-1 right-1.5 w-2.5 h-2.5 bg-red-500 border-2 rounded-full animate-pulse ${isDarkMode ? 'border-[#0a0a0a]' : 'border-white'}`}></span>
-                      )}
-                    </button>
-                    {showNotifs && <NotificationDropdown />}
-                  </div>
-                )}
-
-                {user ? (
-                  <div className="flex items-center gap-3 xl:gap-4">
-                    <button 
-                      onClick={() => navigate('/profile')} 
-                      className={`flex items-center gap-2 transition-colors py-1.5 px-3 rounded-full border cursor-pointer ${isDarkMode ? 'bg-[#161616] hover:bg-[#27272a] border-[#27272a]' : 'bg-slate-100 hover:bg-slate-200 border-slate-200'}`}
-                    >
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-xs font-bold text-white uppercase">
-                        {user.name ? user.name.charAt(0) : 'U'}
-                      </div>
-                      <span className={`text-sm font-medium ${isDarkMode ? 'text-slate-200' : 'text-slate-700'}`}>{user.name?.split(' ')[0]}</span>
-                    </button>
-                    <button onClick={handleLogout} className="text-slate-400 hover:text-red-400 transition-colors p-1.5 rounded-lg hover:bg-red-500/10" title="Logout">
-                      <LogOut className="w-5 h-5" />
-                    </button>
-                  </div>
-                ) : (
-                  <button 
-                    onClick={() => navigate('/login')} 
-                    className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-4 xl:px-5 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:scale-105 active:scale-95 flex items-center gap-2"
-                  >
-                    <User className="w-4 h-4" />
-                    Sign In
+            <div className="flex items-center gap-3 pl-6 border-l border-zinc-200 dark:border-white/10">
+              <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-[#27272a] text-zinc-500 dark:text-slate-400 transition-colors tap-effect">
+                {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+              
+              {/* 🔔 Desktop Notifications */}
+              {user && (
+                <div className="relative" ref={desktopNotifRef}>
+                  <button onClick={() => setShowNotifMenu(!showNotifs)} className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-[#27272a] text-zinc-500 dark:text-slate-400 transition-colors tap-effect">
+                    <Bell className="w-5 h-5" />
+                    {unreadCount > 0 && <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-rose-500 border-2 border-white dark:border-[#09090b] rounded-full animate-pulse"></span>}
                   </button>
-                )}
-              </div>
+                  {showNotifs && <NotificationDropdown />}
+                </div>
+              )}
 
-              <div className="lg:hidden flex items-center gap-2 sm:gap-4 ml-auto pl-3">
-                {user && (
-                  <div className="relative" ref={mobileNotifRef}>
-                    <button 
-                      onClick={() => setShowNotifMenu(!showNotifs)}
-                      className={`relative p-2 transition-colors cursor-pointer rounded-full ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}
-                    >
-                      <Bell className="w-5 h-5" />
-                      {unreadCount > 0 && (
-                        <span className={`absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border-2 rounded-full animate-pulse ${isDarkMode ? 'border-[#0a0a0a]' : 'border-white'}`}></span>
-                      )}
-                    </button>
-                    {showNotifs && <NotificationDropdown />}
-                  </div>
-                )}
-                <button className={`transition-colors cursor-pointer ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                  {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {/* 🚪 User Profile / Auth Actions */}
+              {user ? (
+                <div className="flex items-center gap-2 ml-1">
+                  <button onClick={() => navigate('/profile')} className="flex items-center gap-2 bg-zinc-100 dark:bg-[#18181b] hover:bg-zinc-200 dark:hover:bg-[#27272a] py-1.5 px-3 rounded-full transition-colors tap-effect border border-transparent dark:border-white/5">
+                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white shadow-sm">{user.name?.charAt(0)}</div>
+                    <span className="text-sm font-bold text-zinc-800 dark:text-slate-200">{user.name?.split(' ')[0]}</span>
+                  </button>
+                  <button onClick={handleLogout} className="p-2 rounded-full text-zinc-400 dark:text-slate-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors tap-effect" title="Logout">
+                    <LogOut className="w-5 h-5" />
+                  </button>
+                </div>
+              ) : (
+                <button onClick={() => navigate('/login')} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all tap-effect shadow-md flex items-center gap-2">
+                  <User className="w-4 h-4" /> Sign In / Sign Up
                 </button>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </header>
 
-      {/* MOBILE MENU DRAWER */}
-      {isMobileMenuOpen && (
-        <div className={`fixed inset-0 z-40 backdrop-blur-2xl lg:hidden pt-20 sm:pt-24 px-5 sm:px-6 flex flex-col h-screen overflow-y-auto ${mobileMenuBg}`}>
-          
+      {/* MOBILE TOP BAR */}
+      <header className="fixed top-0 w-full z-40 glass border-b border-zinc-200 dark:border-white/5 md:hidden h-16 flex items-center justify-between px-4 transition-colors duration-500">
+        <div onClick={() => navigate('/')} className="flex items-center gap-2 tap-effect">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-white shadow-sm">
+            <GraduationCap className="w-4 h-4" />
+          </div>
+          <span className="text-lg font-black text-zinc-900 dark:text-white">PrepIQ</span>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {/* 🔔 Mobile Notifications */}
+          {user && (
+            <div className="relative" ref={mobileNotifRef}>
+              <button onClick={() => setShowNotifMenu(!showNotifs)} className="relative p-2 rounded-full text-zinc-500 dark:text-slate-400 tap-effect">
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 border border-white dark:border-[#09090b] rounded-full"></span>}
+              </button>
+              {showNotifs && <NotificationDropdown />}
+            </div>
+          )}
+          <button onClick={toggleTheme} className="p-2 rounded-full bg-zinc-100 dark:bg-[#18181b] text-zinc-600 dark:text-slate-300 tap-effect">
+             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
+        </div>
+      </header>
+
+      {/* NATIVE MOBILE BOTTOM NAVIGATION BAR */}
+      <nav className="fixed bottom-0 w-full z-50 glass border-t border-zinc-200 dark:border-white/5 pb-safe pt-2 px-6 md:hidden flex justify-between items-center text-[10px] font-bold text-zinc-500 dark:text-slate-400 transition-colors duration-500">
+        <button onClick={() => navigate('/')} className={`flex flex-col items-center gap-1 p-2 w-16 tap-effect transition-colors ${isActive('/') ? 'text-blue-600 dark:text-blue-400' : 'hover:text-zinc-900 dark:hover:text-slate-200'}`}>
+          <Home className={`w-6 h-6 ${isActive('/') && 'fill-blue-600/20'}`} />
+          <span>Home</span>
+        </button>
+        
+        <button onClick={() => navigate('/practice')} className={`flex flex-col items-center gap-1 p-2 w-16 tap-effect transition-colors ${isActive('/practice') ? 'text-blue-600 dark:text-blue-400' : 'hover:text-zinc-900 dark:hover:text-slate-200'}`}>
+          <BookOpen className={`w-6 h-6 ${isActive('/practice') && 'fill-blue-600/20'}`} />
+          <span>Practice</span>
+        </button>
+
+        <button onClick={() => navigate('/subjects')} className={`flex flex-col items-center gap-1 p-2 w-16 tap-effect transition-colors ${isActive('/subjects') ? 'text-blue-600 dark:text-blue-400' : 'hover:text-zinc-900 dark:hover:text-slate-200'}`}>
+          <LayoutGrid className={`w-6 h-6 ${isActive('/subjects') && 'fill-blue-600/20'}`} />
+          <span>Subjects</span>
+        </button>
+
+        <button onClick={() => navigate(user ? '/profile' : '/login')} className={`flex flex-col items-center gap-1 p-2 w-16 tap-effect transition-colors ${isActive('/profile') || isActive('/login') ? 'text-blue-600 dark:text-blue-400' : 'hover:text-zinc-900 dark:hover:text-slate-200'}`}>
           {user ? (
-            <div 
-              onClick={() => { navigate('/profile'); setIsMobileMenuOpen(false); }} 
-              className={`flex items-center justify-between p-4 rounded-xl border mb-5 sm:mb-6 cursor-pointer transition-colors ${isDarkMode ? 'bg-[#161616] hover:bg-[#27272a] border-[#27272a]' : 'bg-slate-100 hover:bg-slate-200 border-slate-200'}`}
-            >
-               <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-lg font-bold text-white uppercase">
-                    {user.name ? user.name.charAt(0) : 'U'}
-                  </div>
-                  <div>
-                    <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{user.name}</h3>
-                    <p className="text-slate-400 text-xs">View Dashboard & Progress</p>
-                  </div>
-               </div>
-               <ArrowRight className="w-5 h-5 text-slate-500" />
+            <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-[11px] text-white ${isActive('/profile') ? 'bg-blue-600 border-blue-400 shadow-sm' : 'bg-zinc-400 dark:bg-slate-600 border-transparent'}`}>
+              {user.name?.charAt(0)}
             </div>
           ) : (
-             <div className="mb-5 sm:mb-6">
-                <button 
-                  onClick={() => { navigate('/login'); setIsMobileMenuOpen(false); }} 
-                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
-                >
-                  <User className="w-5 h-5" />
-                  Sign In / Create Account
-                </button>
-             </div>
+            <User className={`w-6 h-6 ${isActive('/login') && 'fill-blue-600/20'}`} />
           )}
-
-          <div className="relative w-full mb-5 sm:mb-6">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-              <Search className="w-5 h-5" />
-            </div>
-            <input 
-              value={searchQuery} onChange={handleSearch}
-              className={`block w-full pl-10 pr-3 py-3 border rounded-xl leading-5 outline-none ${isDarkMode ? 'border-[#27272a] bg-[#161616] text-slate-100 placeholder-slate-500 focus:border-[#0d59f2]' : 'border-slate-200 bg-slate-100 text-slate-800 placeholder-slate-400 focus:border-[#0d59f2]'}`}
-              placeholder="Search subjects..." type="text"
-            />
-          </div>
-
-          <div className={`flex items-center justify-between p-4 rounded-xl border mb-4 ${isDarkMode ? 'bg-[#161616] border-[#27272a]' : 'bg-slate-100 border-slate-200'}`}>
-            <span className={`text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-              {isDarkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
-            </span>
-            <button 
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`h-8 w-14 rounded-full relative transition-colors ${isDarkMode ? 'bg-indigo-600' : 'bg-amber-400'}`}
-            >
-              <div className={`absolute top-1 h-6 w-6 rounded-full bg-white shadow-sm transition-transform duration-300 ${isDarkMode ? 'translate-x-7' : 'translate-x-1'}`}></div>
-            </button>
-          </div>
-
-          <nav className={`flex flex-col gap-1 text-base font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
-            <button onClick={() => { navigate('/'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors ${mobileLinkHover}`}>Home</button>
-            <button onClick={() => { navigate('/practice'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors ${mobileLinkHover}`}>Practice</button>
-            <button onClick={() => { navigate('/pricing'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors flex items-center justify-between ${mobileLinkHover}`}>
-              <span>Pricing</span>
-              <Sparkles className="w-4 h-4 text-yellow-400" />
-            </button>
-            <button onClick={() => { navigate('/about'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors ${mobileLinkHover}`}>About</button>
-            <button onClick={() => { navigate('/subjects'); setIsMobileMenuOpen(false); }} className="text-left py-3 px-4 rounded-xl text-[#0d59f2] transition-colors">View All Subjects →</button>
-            <button onClick={() => { navigate('/contact'); setIsMobileMenuOpen(false); }} className={`text-left py-3 px-4 rounded-xl transition-colors ${mobileLinkHover}`}>Contact</button>
-            
-            {user && (
-              <button 
-                onClick={handleLogout} 
-                className="text-left py-3 px-4 rounded-xl hover:bg-red-500/10 text-red-400 mt-3 flex items-center gap-2 transition-colors border border-red-500/20 bg-red-500/5"
-              >
-                <LogOut className="w-5 h-5" />
-                Sign Out
-              </button>
-            )}
-          </nav>
-
-          <div className={`mt-auto pt-6 pb-8 border-t mt-6 flex flex-wrap gap-3 ${isDarkMode ? 'border-[#27272a]' : 'border-slate-200'}`}>
-            <button onClick={() => { navigate('/terms'); setIsMobileMenuOpen(false); }} className="text-xs text-slate-500 hover:text-[#0d59f2]">Terms</button>
-            <button onClick={() => { navigate('/privacy'); setIsMobileMenuOpen(false); }} className="text-xs text-slate-500 hover:text-[#0d59f2]">Privacy</button>
-            <button onClick={() => { navigate('/cookie-policy'); setIsMobileMenuOpen(false); }} className="text-xs text-slate-500 hover:text-[#0d59f2]">Cookie Policy</button>
-          </div>
-        </div>
-      )}
+          <span>{user ? 'Profile' : 'Sign In'}</span>
+        </button>
+      </nav>
     </>
   );
 }

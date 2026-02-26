@@ -1,15 +1,27 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ChevronRight, Eraser } from 'lucide-react';
 
 export default function QuizFooter({ handleClear, handleNext, currentQ, totalQuestions }) {
   return (
-    <div className="bg-[#1a1d24] border-t border-[#282e39] p-3 md:p-4 px-4 md:px-6 flex justify-between items-center gap-4 shrink-0 z-10 w-full">
-      <button onClick={handleClear} className="px-5 py-2.5 rounded-full border border-slate-600 text-slate-400 hover:text-white hover:bg-slate-700/50 font-semibold text-sm transition-colors cursor-pointer">
-        Clear
+    <footer className="h-16 sm:h-20 border-t border-zinc-200 dark:border-white/5 bg-white dark:bg-[#121214] px-4 md:px-6 flex items-center justify-between z-10 shrink-0 transition-colors duration-500 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.02)] dark:shadow-none">
+      
+      <button
+        onClick={handleClear}
+        className="flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-zinc-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 font-bold text-sm transition-all tap-effect"
+      >
+        <Eraser className="w-4 h-4" /> 
+        <span className="hidden sm:inline">Clear Response</span>
+        <span className="sm:hidden">Clear</span>
       </button>
-      <button onClick={handleNext} className="px-8 py-2.5 rounded-full bg-[#0d59f2] hover:bg-blue-600 text-white font-bold text-sm transition-all flex items-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(13,89,242,0.3)]">
-        {currentQ === totalQuestions - 1 ? 'Finish' : 'Save & Next'} <ArrowRight className="w-4 h-4" />
+
+      <button
+        onClick={handleNext}
+        className="flex items-center gap-2 px-6 sm:px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm transition-all shadow-md hover:shadow-blue-500/30 tap-effect group"
+      >
+        {currentQ === totalQuestions - 1 ? 'Save & Finish' : 'Save & Next'}
+        <ChevronRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
       </button>
-    </div>
+
+    </footer>
   );
 }
