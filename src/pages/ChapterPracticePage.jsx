@@ -18,9 +18,8 @@ export default function ChapterPracticePage() {
   const state = useChapterPracticeLogic();
 
   return (
-    <div className="bg-[#0f1115] text-slate-100 font-sans h-screen flex flex-col overflow-hidden relative">
+    <div className="bg-[#FAFAFA] dark:bg-[#09090B] text-zinc-900 dark:text-slate-100 font-sans h-screen flex flex-col overflow-hidden relative transition-colors duration-500">
       <style>{`
-        ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: #282e39; border-radius: 10px; }
         .chat-bubble { animation: fadeIn 0.3s ease-out forwards; }
         .fade-in-text { animation: fadeInText 0.4s ease-in-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -41,21 +40,28 @@ export default function ChapterPracticePage() {
               <div className="flex-1 overflow-y-auto p-4 md:p-6 pb-10 custom-scrollbar">
                 <div className="max-w-3xl mx-auto flex flex-col gap-6">
 
-                  {state.isLoadingQuestions && <div className="flex justify-center h-64 items-center"><div className="w-8 h-8 border-2 border-[#0d59f2]/30 border-t-[#0d59f2] rounded-full animate-spin"></div></div>}
+                  {/* LOADING SPINNER */}
+                  {state.isLoadingQuestions && (
+                    <div className="flex justify-center h-64 items-center">
+                      <div className="w-10 h-10 border-4 border-blue-500/30 border-t-blue-600 rounded-full animate-spin"></div>
+                    </div>
+                  )}
                   
-                  {/* 🔥 YAHAN UPDATE HUA HAI: ROLE-BASED EMPTY SCREEN 🔥 */}
+                  {/* 🔥 ROLE-BASED EMPTY SCREEN (Premium Glass Card) 🔥 */}
                   {!state.isLoadingQuestions && state.allQuestions.length === 0 && (
-                    <div className="flex flex-col items-center justify-center h-64 gap-4 text-center">
-                      <AlertCircle className="w-12 h-12 text-slate-500" />
+                    <div className="flex flex-col items-center justify-center h-72 gap-5 text-center bg-white dark:bg-[#121214] border border-zinc-200 dark:border-white/5 rounded-[2rem] p-8 shadow-md transition-colors mt-8">
+                      <div className="w-16 h-16 rounded-full bg-zinc-50 dark:bg-[#18181b] flex items-center justify-center mb-2 border border-zinc-200 dark:border-white/5 shadow-sm">
+                        <AlertCircle className="w-8 h-8 text-zinc-400 dark:text-slate-500" />
+                      </div>
                       
                       {state.isAdmin ? (
                         <>
                           {/* 👑 ADMIN VIEW */}
                           <div>
-                            <p className="text-white font-bold text-lg mb-1">Database is Empty</p>
-                            <p className="text-slate-400 text-sm">Admin Panel se is chapter ke liye questions save karein.</p>
+                            <p className="text-zinc-900 dark:text-white font-black text-xl mb-1.5 transition-colors">Database is Empty</p>
+                            <p className="text-zinc-500 dark:text-slate-400 text-sm font-medium transition-colors">Admin Panel se is chapter ke liye questions save karein.</p>
                           </div>
-                          <button onClick={() => state.navigate('/admin')} className="px-5 py-2 rounded-full bg-[#0d59f2] text-white text-sm font-bold hover:bg-[#0b4ecf] cursor-pointer">
+                          <button onClick={() => state.navigate('/admin')} className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-black hover:shadow-blue-500/30 shadow-md tap-effect transition-all mt-2">
                             Go to Admin Panel
                           </button>
                         </>
@@ -63,10 +69,10 @@ export default function ChapterPracticePage() {
                         <>
                           {/* 👨‍🎓 STUDENT VIEW */}
                           <div>
-                            <p className="text-white font-bold text-lg mb-1">Questions Coming Soon!</p>
-                            <p className="text-slate-400 text-sm">Our experts are preparing the best questions for this chapter.</p>
+                            <p className="text-zinc-900 dark:text-white font-black text-xl mb-1.5 transition-colors">Questions Coming Soon!</p>
+                            <p className="text-zinc-500 dark:text-slate-400 text-sm font-medium transition-colors">Our experts are preparing the best questions for this chapter.</p>
                           </div>
-                          <button onClick={() => state.navigate('/practice')} className="px-5 py-2 rounded-full border border-slate-600 hover:bg-[#282e39] text-white text-sm font-bold cursor-pointer transition-colors">
+                          <button onClick={() => state.navigate('/practice')} className="px-6 py-3 rounded-xl bg-zinc-100 dark:bg-[#18181b] border border-zinc-200 dark:border-white/5 hover:bg-zinc-200 dark:hover:bg-[#27272a] text-zinc-800 dark:text-slate-200 text-sm font-black tap-effect transition-all shadow-sm mt-2">
                             Go Back to Subjects
                           </button>
                         </>
@@ -74,6 +80,7 @@ export default function ChapterPracticePage() {
                     </div>
                   )}
 
+                  {/* MAIN QUESTION RENDER */}
                   {!state.isLoadingQuestions && state.currentQuestionData && (<>
                     <QuestionCard {...state} />
                     <OptionsList {...state} />
@@ -82,7 +89,6 @@ export default function ChapterPracticePage() {
                 </div>
               </div>
 
-              
               {!state.isLoadingQuestions && state.totalQuestions > 0 && (
                 <PracticeFooter {...state} isReviewMarked={state.review[state.currentQ]} />
               )}

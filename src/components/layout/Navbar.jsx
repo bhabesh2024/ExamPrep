@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useTheme } from '../../context/ThemeProvider'; 
-import { GraduationCap, Search, ChevronDown, Sun, Moon, Home, BookOpen, User, Bell, LogOut, Sparkles, LayoutGrid, Globe, Calculator, Brain as BrainIcon, ArrowRight } from 'lucide-react';
+import { GraduationCap, Search, ChevronDown, Sun, Moon, Home, BookOpen, User, Bell, LogOut, Sparkles, LayoutGrid, Globe, Calculator, Brain as BrainIcon, ArrowRight, X } from 'lucide-react';
 import { subjectsData } from '../../data/syllabusData.jsx';
 
 export default function Navbar() {
@@ -11,12 +11,13 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme(); 
   
   const [user, setUser] = useState(null);
+  
+  // 🔍 Search States
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
 
-  // 🔔 Restored Notification States
   const [notifications, setNotifications] = useState([]);
   const [showNotifs, setShowNotifMenu] = useState(false);
   const desktopNotifRef = useRef(null);
@@ -29,7 +30,6 @@ export default function Navbar() {
     } catch (e) { localStorage.removeItem('user'); }
   }, [location.pathname]); 
 
-  // 🔔 Restored Notification Logic
   const fetchNotifications = async (userId) => {
     try {
       const res = await axios.get(`/api/notifications?userId=${userId}`);
@@ -54,7 +54,6 @@ export default function Navbar() {
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  // 🚪 Restored Logout Logic
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -64,11 +63,19 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path;
 
+  // 🔍 Dynamic Search Data Preparation
   const searchableItems = useMemo(() => {
     const items = [];
-    subjectsData.forEach(sub => {
-      items.push({ name: sub.title, type: 'Subject', path: `/practice/${sub.id}` });
-    });
+    if(subjectsData) {
+      subjectsData.forEach(sub => {
+        items.push({ name: sub.title, type: 'Subject', path: `/practice/${sub.id}` });
+        sub.categories?.forEach(cat => {
+          cat.topics?.forEach(topic => {
+            items.push({ name: topic.title, type: sub.title, path: `/quiz/${sub.id}/${topic.id}` });
+          });
+        });
+      });
+    }
     return items;
   }, []);
 
@@ -76,11 +83,20 @@ export default function Navbar() {
     const query = e.target.value;
     setSearchQuery(query);
     if (query.trim().length > 0) {
-      setSearchResults(searchableItems.filter(item => item.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5));
+      const filtered = searchableItems.filter(item => 
+        item.name.toLowerCase().includes(query.toLowerCase())
+      );
+      setSearchResults(filtered.slice(0, 6));
       setIsSearchOpen(true);
     } else {
       setIsSearchOpen(false);
     }
+  };
+
+  const handleResultClick = (path) => {
+    navigate(path);
+    setIsSearchOpen(false);
+    setSearchQuery('');
   };
 
   useEffect(() => {
@@ -95,7 +111,6 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // 🔔 Premium Notification Dropdown Component
   const NotificationDropdown = () => (
     <div className="absolute top-full right-0 mt-3 w-80 sm:w-96 rounded-2xl shadow-2xl z-[999] overflow-hidden flex flex-col border border-zinc-200 dark:border-white/10 bg-white dark:bg-[#18181b] transition-colors duration-500">
       <div className="p-4 border-b border-zinc-100 dark:border-white/5 bg-zinc-50 dark:bg-[#121214] flex justify-between items-center transition-colors">
@@ -135,13 +150,48 @@ export default function Navbar() {
             <span className="text-xl font-black tracking-tight text-zinc-900 dark:text-white transition-colors duration-500">PrepIQ</span>
           </div>
 
-          <div className="flex-1 max-w-md mx-8 relative group" ref={searchRef}>
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-slate-500 group-focus-within:text-blue-500 transition-colors" />
+          <div className="flex-1 max-w-md mx-8 relative z-[100]" ref={searchRef}>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 dark:text-slate-500 transition-colors" />
             <input 
-              value={searchQuery} onChange={handleSearch} onFocus={() => searchQuery.length > 0 && setIsSearchOpen(true)}
-              className="w-full bg-zinc-100 dark:bg-zinc-900/50 border border-transparent focus:border-blue-500/50 text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 text-sm rounded-full py-2.5 pl-10 pr-4 outline-none transition-all duration-300"
-              placeholder="Search exams, subjects..." type="text"
+              value={searchQuery} 
+              onChange={handleSearch} 
+              onFocus={() => searchQuery.length > 0 && setIsSearchOpen(true)}
+              className="w-full bg-zinc-100 dark:bg-zinc-900/50 border border-transparent focus:border-blue-500/50 focus:bg-white dark:focus:bg-[#121214] text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 text-sm rounded-full py-2.5 pl-10 pr-10 outline-none transition-all duration-300 shadow-sm"
+              placeholder="Search exams, subjects, topics..." 
+              type="text"
             />
+            {searchQuery && (
+              <button onClick={() => { setSearchQuery(''); setIsSearchOpen(false); }} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            )}
+
+            {isSearchOpen && (
+              <div className="absolute top-full mt-2 left-0 right-0 bg-white dark:bg-[#18181b] border border-zinc-200 dark:border-white/10 rounded-2xl shadow-xl overflow-hidden animate-fade-in flex flex-col">
+                {searchResults.length > 0 ? (
+                  <div className="flex flex-col max-h-[300px] overflow-y-auto custom-scrollbar p-1">
+                    {searchResults.map((result, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleResultClick(result.path)}
+                        className="flex items-center justify-between w-full text-left px-4 py-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-[#27272a] transition-colors group tap-effect"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Search className="w-3.5 h-3.5 text-zinc-400 group-hover:text-blue-500" />
+                          <span className="font-semibold text-sm text-zinc-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">{result.name}</span>
+                        </div>
+                        <span className="text-[9px] font-black uppercase tracking-widest text-zinc-400 dark:text-zinc-500 shrink-0 bg-zinc-100 dark:bg-white/5 px-2 py-0.5 rounded">{result.type}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="px-4 py-8 text-center flex flex-col items-center">
+                    <Search className="w-6 h-6 text-zinc-300 dark:text-slate-600 mb-2" />
+                    <p className="text-sm text-zinc-500 dark:text-slate-400 font-medium">No matches found for <span className="text-zinc-900 dark:text-white font-bold">"{searchQuery}"</span></p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-6">
@@ -149,15 +199,15 @@ export default function Navbar() {
               <button onClick={() => navigate('/')} className={`hover:text-zinc-900 dark:hover:text-white transition-colors ${isActive('/') && 'text-zinc-900 dark:text-white font-bold'}`}>Home</button>
               <button onClick={() => navigate('/practice')} className={`hover:text-zinc-900 dark:hover:text-white transition-colors ${isActive('/practice') && 'text-zinc-900 dark:text-white font-bold'}`}>Practice</button>
               <button onClick={() => navigate('/pricing')} className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-white transition-colors">Pricing <Sparkles className="w-3 h-3 text-amber-500" /></button>
+              <button onClick={() => navigate('/about')} className={`hover:text-zinc-900 dark:hover:text-white transition-colors ${isActive('/about') && 'text-zinc-900 dark:text-white font-bold'}`}>About</button>
               
-              {/* DESKTOP SUBJECTS DROPDOWN */}
               <div className="group dropdown-trigger relative h-20 flex items-center cursor-pointer">
                 <button className="flex items-center gap-1 hover:text-zinc-900 dark:hover:text-white transition-colors outline-none">
                   Subjects <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
                 </button>
                 
-                <div className="dropdown-menu absolute top-full right-[-80px] w-[500px] pt-2">
-                  <div className="glass-card p-5 shadow-2xl border border-zinc-200 dark:border-white/10 relative overflow-hidden">
+                <div className="dropdown-menu absolute top-full right-[-80px] w-[500px] pt-2 z-50">
+                  <div className="glass-card p-5 shadow-2xl border border-zinc-200 dark:border-white/10 relative overflow-hidden bg-white dark:bg-[#121214]">
                     <div className="grid grid-cols-2 gap-3 text-left">
                       <button onClick={() => navigate('/practice/gk')} className="flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left hover:bg-zinc-50 dark:hover:bg-white/5 border border-transparent hover:border-zinc-200 dark:hover:border-white/10">
                         <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0"><Globe className="w-5 h-5" /></div>
@@ -165,11 +215,11 @@ export default function Navbar() {
                       </button>
                       <button onClick={() => navigate('/practice/maths')} className="flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left hover:bg-zinc-50 dark:hover:bg-white/5 border border-transparent hover:border-zinc-200 dark:hover:border-white/10">
                         <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0"><Calculator className="w-5 h-5" /></div>
-                        <div><h4 className="font-bold text-sm text-zinc-900 dark:text-white">Mathematics</h4><p className="text-xs mt-0.5 text-zinc-500 dark:text-slate-400">Algebra & geometry prep</p></div>
+                        <div><h4 className="font-bold text-sm text-zinc-900 dark:text-white">Mathematics</h4><p className="text-xs mt-0.5 text-zinc-500 dark:text-slate-400">Algebra & geometry</p></div>
                       </button>
                       <button onClick={() => navigate('/practice/reasoning')} className="flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left hover:bg-zinc-50 dark:hover:bg-white/5 border border-transparent hover:border-zinc-200 dark:hover:border-white/10">
                         <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0"><BrainIcon className="w-5 h-5" /></div>
-                        <div><h4 className="font-bold text-sm text-zinc-900 dark:text-white">Reasoning</h4><p className="text-xs mt-0.5 text-zinc-500 dark:text-slate-400">Logical & critical thinking</p></div>
+                        <div><h4 className="font-bold text-sm text-zinc-900 dark:text-white">Reasoning</h4><p className="text-xs mt-0.5 text-zinc-500 dark:text-slate-400">Logical thinking</p></div>
                       </button>
                       <button onClick={() => navigate('/practice/english')} className="flex items-start gap-3 p-3 rounded-xl transition-all w-full text-left hover:bg-zinc-50 dark:hover:bg-white/5 border border-transparent hover:border-zinc-200 dark:hover:border-white/10">
                         <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-500/10 flex items-center justify-center text-rose-600 dark:text-rose-400 shrink-0"><BookOpen className="w-5 h-5" /></div>
@@ -191,7 +241,6 @@ export default function Navbar() {
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
               
-              {/* 🔔 Desktop Notifications */}
               {user && (
                 <div className="relative" ref={desktopNotifRef}>
                   <button onClick={() => setShowNotifMenu(!showNotifs)} className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-[#27272a] text-zinc-500 dark:text-slate-400 transition-colors tap-effect">
@@ -202,20 +251,21 @@ export default function Navbar() {
                 </div>
               )}
 
-              {/* 🚪 User Profile / Auth Actions */}
               {user ? (
                 <div className="flex items-center gap-2 ml-1">
                   <button onClick={() => navigate('/profile')} className="flex items-center gap-2 bg-zinc-100 dark:bg-[#18181b] hover:bg-zinc-200 dark:hover:bg-[#27272a] py-1.5 px-3 rounded-full transition-colors tap-effect border border-transparent dark:border-white/5">
                     <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-600 to-violet-600 flex items-center justify-center text-xs font-bold text-white shadow-sm">{user.name?.charAt(0)}</div>
                     <span className="text-sm font-bold text-zinc-800 dark:text-slate-200">{user.name?.split(' ')[0]}</span>
                   </button>
-                  <button onClick={handleLogout} className="p-2 rounded-full text-zinc-400 dark:text-slate-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors tap-effect" title="Logout">
+                  
+                  {/* 🔥 THE RESTORED LOGOUT BUTTON FOR DESKTOP */}
+                  <button onClick={handleLogout} className="hidden md:flex p-2 rounded-full text-zinc-400 dark:text-slate-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-600 dark:hover:text-rose-400 transition-colors tap-effect" title="Logout">
                     <LogOut className="w-5 h-5" />
                   </button>
                 </div>
               ) : (
                 <button onClick={() => navigate('/login')} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all tap-effect shadow-md flex items-center gap-2">
-                  <User className="w-4 h-4" /> Sign In / Sign Up
+                  <User className="w-4 h-4" /> Sign In
                 </button>
               )}
             </div>
@@ -233,7 +283,6 @@ export default function Navbar() {
         </div>
         
         <div className="flex items-center gap-2">
-          {/* 🔔 Mobile Notifications */}
           {user && (
             <div className="relative" ref={mobileNotifRef}>
               <button onClick={() => setShowNotifMenu(!showNotifs)} className="relative p-2 rounded-full text-zinc-500 dark:text-slate-400 tap-effect">
@@ -266,15 +315,15 @@ export default function Navbar() {
           <span>Subjects</span>
         </button>
 
-        <button onClick={() => navigate(user ? '/profile' : '/login')} className={`flex flex-col items-center gap-1 p-2 w-16 tap-effect transition-colors ${isActive('/profile') || isActive('/login') ? 'text-blue-600 dark:text-blue-400' : 'hover:text-zinc-900 dark:hover:text-slate-200'}`}>
+        <button onClick={() => navigate('/profile')} className={`flex flex-col items-center gap-1 p-2 w-16 tap-effect transition-colors ${isActive('/profile') ? 'text-blue-600 dark:text-blue-400' : 'hover:text-zinc-900 dark:hover:text-slate-200'}`}>
           {user ? (
             <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-[11px] text-white ${isActive('/profile') ? 'bg-blue-600 border-blue-400 shadow-sm' : 'bg-zinc-400 dark:bg-slate-600 border-transparent'}`}>
               {user.name?.charAt(0)}
             </div>
           ) : (
-            <User className={`w-6 h-6 ${isActive('/login') && 'fill-blue-600/20'}`} />
+            <User className={`w-6 h-6 ${isActive('/profile') && 'fill-blue-600/20'}`} />
           )}
-          <span>{user ? 'Profile' : 'Sign In'}</span>
+          <span>Profile</span>
         </button>
       </nav>
     </>

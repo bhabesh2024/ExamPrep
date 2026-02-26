@@ -87,3 +87,14 @@ model Notification {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+model CommunityPost {
+  id                 String   @id @default(uuid())
+  question           String
+  options            String[] // Array of strings for 4 options
+  correctOptionIndex Int
+  likes              Int      @default(0)
+  views              Int      @default(0)
+  comments           Int      @default(0)
+  createdAt          DateTime @default(now())
+}

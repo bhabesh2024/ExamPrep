@@ -13,6 +13,7 @@ export default function AdminSidebar({ activeTab, setActiveTab }) {
     { id: 'analytics', label: 'Analytics', icon: BarChart2 },
     { id: 'support', label: 'Help & Support', icon: MessageSquare }, // 🔥 Naya Support Tab add kiya
     { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'community', label: 'Community Posts', icon: MessageSquare },
   ];
 
   return (

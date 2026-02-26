@@ -8,6 +8,7 @@ import AdminSettings from '../components/admin/views/AdminSettings';
 import FlaggedQuestionsView from '../components/admin/views/FlaggedQuestionsView'; 
 import AdminSupportView from '../components/admin/views/AdminSupportView'; 
 import useAdminLogic from '../hooks/useAdminLogic';
+import AdminCommunityView from '../components/admin/views/AdminCommunityView';
 
 export default function AdminPanel() {
   // 🔥 BUG FIX: Refresh karne par last active tab yaad rakhne ke liye localStorage lagaya
@@ -34,6 +35,10 @@ export default function AdminPanel() {
         {activeTab === 'flags' && <FlaggedQuestionsView />}  
         {activeTab === 'analytics' && <AdminAnalytics />}
         {activeTab === 'support' && <AdminSupportView />}    
+        
+        {/* 🔥 NEW: Community Tab Rendered Here */}
+        {activeTab === 'community' && <AdminCommunityView />}
+        
         {activeTab === 'settings' && <AdminSettings />}
       </main>
     </div>

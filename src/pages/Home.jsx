@@ -1,9 +1,48 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PlayCircle, Activity, Brain, Zap, Languages, GraduationCap, Twitter, Briefcase, Code } from 'lucide-react';
+import { PlayCircle, Activity, Brain, Zap, Languages, GraduationCap, Twitter, Briefcase, Code, Star } from 'lucide-react';
 
 export default function HomePage() {
   const navigate = useNavigate();
+
+  const testimonials = [
+    {
+      name: 'Ananya Sharma',
+      handle: '@ananya_s',
+      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
+      text: "PrepIQ's mock tests are a game-changer. The realistic exam simulation helped me manage my time effectively and reduced my anxiety on the actual test day. The detailed performance analytics are pure gold!",
+    },
+    {
+      name: 'Rohan Verma',
+      handle: '@rohan_v',
+      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+      text: "The chapter-wise practice questions are incredibly helpful. I can focus on my weak areas and track my progress. The 'local-first' speed means no frustrating loading times. It just works!",
+    },
+    {
+      name: 'Priya Singh',
+      handle: '@priya_singh',
+      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+      text: 'The multilingual support is what sets PrepIQ apart. Being able to switch to Hindi for complex reasoning questions has been a lifesaver. It feels like this platform was built just for me.',
+    },
+    {
+        name: 'Sameer Khan',
+        handle: '@sameer_k',
+        avatar: 'https://randomuser.me/api/portraits/men/81.jpg',
+        text: 'From the intuitive UI to the vast question bank, everything about PrepIQ is top-notch. It has become an indispensable part of my daily study routine. I’ve recommended it to all my friends!',
+    },
+    {
+        name: 'Isha Gupta',
+        handle: '@isha_g',
+        avatar: 'https://randomuser.me/api/portraits/women/17.jpg',
+        text: 'The instant results and detailed explanations for each question are fantastic. It helps me understand my mistakes immediately and learn from them. PrepIQ is just brilliant!',
+    },
+    {
+        name: 'Vikram Rathore',
+        handle: '@vikram_r',
+        avatar: 'https://randomuser.me/api/portraits/men/36.jpg',
+        text: 'As someone preparing for multiple state exams, the variety of tests on PrepIQ is a blessing. The platform is super reliable and has boosted my confidence immensely. Two thumbs up!',
+    }
+  ];
 
   return (
     // Hardcoded bg hatakar transparent rakha hai taaki App.jsx ka background apply ho
@@ -16,6 +55,13 @@ export default function HomePage() {
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        .animate-scroll {
+            animation: scroll 60s linear infinite;
+        }
       `}</style>
 
       {/* Ambient Background Glows */}
@@ -123,6 +169,49 @@ export default function HomePage() {
           </div>
         </section>
       </main>
+
+      {/* =========================================
+      🔥 WHAT OUR STUDENTS SAY (WALL OF LOVE)
+      ========================================= */}
+      <div className="py-24 bg-white dark:bg-[#09090b] transition-colors relative overflow-hidden border-t border-zinc-200 dark:border-white/5">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 dark:bg-amber-500/10 blur-[100px] rounded-full pointer-events-none"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center mb-16 relative z-10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-600 dark:text-amber-500 text-xs font-bold uppercase tracking-widest mb-4 shadow-sm">
+            <Star className="w-3.5 h-3.5 fill-current" /> Wall of Love
+          </div>
+          <h2 className="text-3xl md:text-5xl font-black text-zinc-900 dark:text-white tracking-tight mb-4">
+            Loved by thousands of <br className="hidden sm:block" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">serious aspirants</span>
+          </h2>
+        </div>
+
+        <div className="relative [mask-image:linear-gradient(to_right,transparent,white_10%,white_90%,transparent)]">
+            <div className="flex w-max animate-scroll hover:[animation-play-state:paused]">
+                {[...testimonials, ...testimonials].map((testimonial, index) => (
+                    <div key={index} className="w-[380px] flex-shrink-0 mx-4">
+                        <div className="bg-white/50 dark:bg-zinc-900/50 backdrop-blur-md rounded-2xl p-6 border border-zinc-200 dark:border-zinc-800 h-full flex flex-col justify-between shadow-lg transition-all duration-300 hover:border-amber-400/50 hover:shadow-amber-500/10">
+                          <div>
+                            <div className="flex items-center gap-4 mb-4">
+                                <img className="w-12 h-12 rounded-full object-cover" src={testimonial.avatar} alt={testimonial.name} />
+                                <div>
+                                    <h4 className="font-bold text-zinc-800 dark:text-white">{testimonial.name}</h4>
+                                    <p className="text-sm text-zinc-500 dark:text-zinc-400">{testimonial.handle}</p>
+                                </div>
+                            </div>
+                            <p className="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed">{testimonial.text}</p>
+                          </div>
+                          <div className="flex mt-4">
+                              {[...Array(5)].map((_, i) => (
+                                  <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                              ))}
+                          </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+      </div>
       
       {/* Spacer for mobile bottom nav */}
       <div className="h-20 md:hidden"></div>

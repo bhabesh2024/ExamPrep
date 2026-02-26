@@ -11,6 +11,7 @@ import paymentRoutes    from './routes/payment.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import supportRoutes from './routes/support.routes.js';
 import notificationRoutes from './routes/notifications.routes.js';
+const communityRoutes = require('./routes/community.routes.js');
 
 dotenv.config();
 
