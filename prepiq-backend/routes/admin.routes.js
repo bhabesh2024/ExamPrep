@@ -19,7 +19,7 @@ router.get('/stats', async (req, res) => {
   }
 });
 
-// Search User by Email (Ye aapke UI ke User Search ke liye hai)
+// Search User by Email
 router.get('/user', async (req, res) => {
   try {
     const { email } = req.query;
@@ -70,4 +70,33 @@ router.patch('/flag/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to resolve flag' });
   }
 });
+
+// 🔥 4. NAYA FIX: Admin Broadcasts Message to ALL Users
+router.post('/broadcast', async (req, res) => {
+  try {
+    const { message } = req.body;
+    
+    // Sab users ki list nikalo (unke IDs chahiyein)
+    const users = await prisma.user.findMany({ select: { id: true } });
+    
+    // Sabke liye ek notification object banayein
+    const notificationsData = users.map(u => ({
+      userId: u.id,
+      title: "System Update",
+      message: message,
+      isRead: false
+    }));
+
+    // Ek saath sabke Notifications table me ghusa do
+    await prisma.notification.createMany({
+      data: notificationsData
+    });
+
+    res.json({ message: 'Broadcast successful', count: users.length });
+  } catch (err) {
+    console.error("Broadcast Error:", err);
+    res.status(500).json({ error: 'Failed to broadcast message' });
+  }
+});
+
 export default router;

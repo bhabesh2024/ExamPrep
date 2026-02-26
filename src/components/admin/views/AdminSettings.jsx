@@ -1,16 +1,28 @@
 // src/components/admin/views/AdminSettings.jsx
 import React, { useState } from 'react';
-import { BookOpen, BellRing, Plus, Send } from 'lucide-react';
+import { BookOpen, BellRing, Plus, Send, Loader2 } from 'lucide-react';
+import axios from 'axios'; // 🔥 Axios import kiya
 
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('syllabus');
   const [showAddModal, setShowAddModal] = useState(false);
   const [notificationMsg, setNotificationMsg] = useState('');
+  const [isSending, setIsSending] = useState(false); // 🔥 Sending state
 
-  const handleSendNotification = () => {
-    if(!notificationMsg) return;
-    alert("Notification Sent to all users!"); // Replace with API call to save in DB
-    setNotificationMsg('');
+  // 🔥 MAIN FIX: Dummy alert ki jagah Real API call lagayi
+  const handleSendNotification = async () => {
+    if (!notificationMsg) return;
+    setIsSending(true);
+    try {
+      await axios.post('/api/admin/broadcast', { message: notificationMsg });
+      alert("✅ Notification Sent to all users!"); 
+      setNotificationMsg('');
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to send notification");
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -67,8 +79,13 @@ export default function AdminSettings() {
               className="w-full h-32 bg-[#0f1115] border border-[#2a3241] text-white px-4 py-3 rounded-xl mb-4 focus:outline-none focus:border-[#258cf4]"
             ></textarea>
             
-            <button onClick={handleSendNotification} className="px-6 py-3 bg-[#258cf4] hover:bg-blue-600 text-white rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20">
-              <Send className="w-4 h-4" /> Broadcast Message
+            <button 
+              onClick={handleSendNotification} 
+              disabled={isSending}
+              className="px-6 py-3 bg-[#258cf4] hover:bg-blue-600 disabled:bg-[#258cf4]/50 text-white rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20 cursor-pointer"
+            >
+              {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} 
+              {isSending ? 'Broadcasting...' : 'Broadcast Message'}
             </button>
           </div>
         )}

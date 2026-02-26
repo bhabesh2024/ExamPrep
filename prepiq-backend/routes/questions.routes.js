@@ -1,4 +1,4 @@
-// routes/questions.routes.js
+// prepiq-backend/routes/questions.routes.js
 import { Router } from 'express';
 import prisma from '../prisma/db.js';
 
@@ -21,7 +21,7 @@ const serializeQuestion = (q) => {
   return data;
 };
 
-// GET /api/questions?chapterId=...  ya  ?chapter=...
+// GET /api/questions
 router.get('/', async (req, res) => {
   try {
     const { chapter, chapterId } = req.query;
@@ -42,12 +42,11 @@ router.get('/counts', async (req, res) => {
     counts.forEach(item => { if (item.chapterId) countMap[item.chapterId] = item._count.id; });
     res.json(countMap);
   } catch (err) {
-    console.error('Count Error:', err);
     res.status(500).json({ error: 'Failed to fetch question counts.' });
   }
 });
 
-// GET /api/questions/duplicates?chapterId=...
+// GET /api/questions/duplicates
 router.get('/duplicates', async (req, res) => {
   try {
     const { chapterId } = req.query;
@@ -59,7 +58,6 @@ router.get('/duplicates', async (req, res) => {
       orderBy: { id: 'asc' },
     });
 
-    // JS mein group karo same question text par
     const groupMap = {};
     for (const q of allQuestions) {
       const key = (q.question || '').trim();
@@ -86,12 +84,11 @@ router.get('/duplicates', async (req, res) => {
       duplicates,
     });
   } catch (err) {
-    console.error('Duplicate Find Error:', err);
     res.status(500).json({ error: 'Duplicates dhundhne mein problem aayi.' });
   }
 });
 
-// POST /api/questions  (single ya array — duplicate check ke saath)
+// POST /api/questions (Bulk or Single create)
 router.post('/', async (req, res) => {
   try {
     const payload = Array.isArray(req.body) ? req.body : [req.body];
@@ -107,7 +104,6 @@ router.post('/', async (req, res) => {
         await prisma.question.create({ data });
         results.saved++;
       } catch (err) {
-        console.error('Save Error (single):', err);
         results.errors++;
       }
     }
@@ -117,39 +113,49 @@ router.post('/', async (req, res) => {
       ...results,
     });
   } catch (err) {
-    console.error('Prisma Error:', err);
     res.status(500).json({ error: 'Failed to save question.' });
   }
 });
 
-// POST /api/questions/bulk-delete  (POST use kar rahe hain — Express v5 mein DELETE body reliable nahi)
+// 🔥 NAYA FEATURE: PUT /api/questions/:id (Full Question Edit directly from Admin)
+router.put('/:id', async (req, res) => {
+  try {
+    const data = { ...req.body };
+    delete data.id; // Prisma relation conflict bachane ke liye IDs hatana zaroori hai
+    delete data.flags; 
+
+    // Convert arrays/objects back to string for SQLite/DB compatibility
+    if (data.options && typeof data.options !== 'string') data.options = JSON.stringify(data.options);
+    if (data.geometryData && typeof data.geometryData !== 'string') data.geometryData = JSON.stringify(data.geometryData);
+
+    const updated = await prisma.question.update({
+      where: { id: parseInt(req.params.id) },
+      data: data,
+    });
+    res.json(updated);
+  } catch (err) {
+    console.error('Full Update Error:', err);
+    res.status(500).json({ error: 'Failed to fully update question.' });
+  }
+});
+
 router.post('/bulk-delete', async (req, res) => {
   try {
     const { ids } = req.body;
-    if (!ids || !Array.isArray(ids) || ids.length === 0)
-      return res.status(400).json({ error: 'IDs array required hai.' });
-
+    if (!ids || !Array.isArray(ids) || ids.length === 0) return res.status(400).json({ error: 'IDs required' });
     const numericIds = ids.map(Number).filter(id => !isNaN(id));
     const result = await prisma.question.deleteMany({ where: { id: { in: numericIds } } });
-    res.json({ message: `✅ ${result.count} questions delete ho gaye!`, deletedCount: result.count });
-  } catch (err) {
-    console.error('Bulk Delete Error:', err);
-    res.status(500).json({ error: 'Bulk delete mein problem aayi.' });
-  }
+    res.json({ message: `✅ ${result.count} deleted!`, deletedCount: result.count });
+  } catch (err) { res.status(500).json({ error: 'Bulk delete failed.' }); }
 });
 
-// DELETE /api/questions/:id
 router.delete('/:id', async (req, res) => {
   try {
     await prisma.question.delete({ where: { id: parseInt(req.params.id) } });
-    res.json({ message: 'Question permanently deleted from DB!' });
-  } catch (err) {
-    console.error('Delete Error:', err);
-    res.status(500).json({ error: 'Question delete karne mein problem aayi.' });
-  }
+    res.json({ message: 'Deleted!' });
+  } catch (err) { res.status(500).json({ error: 'Delete failed.' }); }
 });
 
-// PATCH /api/questions/:id  (Hindi translation save karna)
 router.patch('/:id', async (req, res) => {
   try {
     const { questionHindi, explanationHindi, passageHindi } = req.body;
@@ -162,11 +168,8 @@ router.patch('/:id', async (req, res) => {
       where: { id: parseInt(req.params.id) },
       data: dataToUpdate,
     });
-    res.json({ message: 'Translation permanently saved to DB!', question: updated });
-  } catch (err) {
-    console.error('Translation Save Error:', err);
-    res.status(500).json({ error: 'Failed to save translation in DB.' });
-  }
+    res.json({ message: 'Translation saved!', question: updated });
+  } catch (err) { res.status(500).json({ error: 'Save failed.' }); }
 });
 
 export default router;

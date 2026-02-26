@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios'; // 🔥 Axios for API calls
+import axios from 'axios';
 import { GraduationCap, Search, ChevronDown, Sun, Moon, Menu, X, Globe, Calculator, Brain, BookOpen, FlaskConical, Terminal, ArrowRight, LogOut, User, Sparkles, Bell } from 'lucide-react';
 import { subjectsData } from '../../data/syllabusData.jsx';
 
@@ -19,46 +19,56 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
 
-  // 🔥 Notification States & Refs
+  // 🔥 Notification States
   const [notifications, setNotifications] = useState([]);
   const [showNotifs, setShowNotifMenu] = useState(false);
   const desktopNotifRef = useRef(null);
   const mobileNotifRef = useRef(null);
 
-  // Apply theme via data-theme attribute - CSS handles everything else
+  // Theme Logic
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
-  // Fetch User & Notifications on route change
+  // Auth Logic
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('user');
       if (storedUser && storedUser !== 'undefined') {
-        const parsedUser = JSON.parse(storedUser);
-        setUser(parsedUser);
-        fetchNotifications(parsedUser.id); // 🔥 Load notifications
+        setUser(JSON.parse(storedUser));
       }
     } catch (e) {
       localStorage.removeItem('user');
     }
   }, [location.pathname]); 
 
-  // 🔥 Fetch API Function
+  // 🔥 FETCH NOTIFICATIONS (Safe Array Check)
   const fetchNotifications = async (userId) => {
     try {
       const res = await axios.get(`/api/notifications?userId=${userId}`);
-      setNotifications(res.data);
-    } catch (e) { console.error("Failed to fetch notifications"); }
+      if (Array.isArray(res.data)) {
+        setNotifications(res.data);
+      }
+    } catch (e) { console.error("Notification fetch failed"); }
   };
 
-  // 🔥 Mark Read API Function
+  // 🔥 NAYA FEATURE: AUTO POLLING (Har 5 second me auto check karega)
+  useEffect(() => {
+    if (user && user.id) {
+      fetchNotifications(user.id); // Pehli baar turant fetch kare
+      const interval = setInterval(() => {
+        fetchNotifications(user.id);
+      }, 5000); // 5 sec background checking
+      return () => clearInterval(interval);
+    }
+  }, [user?.id]);
+
   const markAsRead = async (id) => {
     try {
       await axios.patch(`/api/notifications/${id}/read`);
       setNotifications(notifications.map(n => n.id === id ? { ...n, isRead: true } : n));
-    } catch (e) { console.error("Failed to mark as read"); }
+    } catch (e) {}
   };
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
@@ -102,7 +112,6 @@ export default function Navbar() {
     }
   };
 
-  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -126,7 +135,6 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
-  // UI Theme Variables
   const navBg = isDarkMode ? 'rgba(10, 10, 10, 0.8)' : 'rgba(255, 255, 255, 0.88)';
   const navBorder = isDarkMode ? 'border-[#27272a]' : 'border-slate-200';
   const logoText = isDarkMode ? 'text-white' : 'text-slate-900';
@@ -139,7 +147,6 @@ export default function Navbar() {
   const mobileMenuBg = isDarkMode ? 'bg-[#0a0a0a]/98' : 'bg-white/98';
   const mobileLinkHover = isDarkMode ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-100 hover:text-slate-900';
 
-  // 🔥 Shared Dropdown Component for Notifications
   const NotificationDropdown = () => (
     <div className={`absolute top-full right-0 mt-3 w-80 sm:w-96 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-[999] overflow-hidden flex flex-col border ${isDarkMode ? 'bg-[#15171c] border-[#282e39]' : 'bg-white border-slate-200'}`}>
       <div className={`p-4 border-b font-bold flex justify-between items-center ${isDarkMode ? 'border-[#282e39] bg-[#1a1d24] text-white' : 'border-slate-100 bg-slate-50 text-slate-800'}`}>
@@ -175,7 +182,6 @@ export default function Navbar() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="flex items-center justify-between h-16 sm:h-20">
             
-            {/* LOGO */}
             <div onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity shrink-0">
               <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br from-[#0d59f2] to-violet-600 flex items-center justify-center text-white shadow-lg shadow-[#0d59f2]/20">
                 <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -183,7 +189,6 @@ export default function Navbar() {
               <span className={`text-lg sm:text-xl font-bold tracking-tight ${logoText}`}>PrepIQ</span>
             </div>
 
-            {/* DESKTOP SEARCH & THEME TOGGLE */}
             <div className="hidden md:flex flex-1 items-center justify-center px-4 lg:px-8 gap-4" ref={searchRef}>
               <div className="relative w-full max-w-md group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#0d59f2] transition-colors z-10">
@@ -216,7 +221,6 @@ export default function Navbar() {
                 )}
               </div>
               
-              {/* THEME TOGGLE - Fully Functional */}
               <button 
                 aria-label="Toggle Theme"
                 className={`h-10 w-[64px] rounded-full relative cursor-pointer flex items-center shrink-0 hidden lg:flex border transition-colors ${isDarkMode ? 'bg-white/5 border-white/10' : 'bg-slate-200 border-slate-300'}`}
@@ -232,7 +236,6 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* DESKTOP NAVIGATION & AUTH */}
             <div className="flex items-center shrink-0">
               <nav className={`hidden lg:flex items-center gap-5 xl:gap-6 text-sm font-medium mr-6 ${navLinks}`}>
                 <button onClick={() => navigate('/')} className={`hover:text-white transition-colors cursor-pointer ${isActive('/') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>Home</button>
@@ -242,7 +245,6 @@ export default function Navbar() {
                 </button>
                 <button onClick={() => navigate('/about')} className={`transition-colors cursor-pointer ${isActive('/about') ? (isDarkMode ? 'text-white' : 'text-slate-900') : ''}`}>About</button>
                 
-                {/* SUBJECTS DROPDOWN */}
                 <div className="group dropdown-trigger relative h-16 sm:h-20 flex items-center">
                   <button className={`flex items-center gap-1 transition-colors focus:outline-none cursor-pointer ${isDarkMode ? 'hover:text-white group-hover:text-white' : 'hover:text-slate-900 group-hover:text-slate-900'}`}>
                     Subjects <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:rotate-180" />
@@ -278,10 +280,8 @@ export default function Navbar() {
                 </div>
               </nav>
 
-              {/* DESKTOP AUTH BUTTONS & NOTIFICATIONS */}
               <div className={`hidden lg:flex items-center pl-5 xl:pl-6 border-l ${isDarkMode ? 'border-[#27272a]' : 'border-slate-200'}`}>
                 
-                {/* 🔥 Desktop Notification Bell Area */}
                 {user && (
                   <div className="relative" ref={desktopNotifRef}>
                     <button 
@@ -324,10 +324,7 @@ export default function Navbar() {
                 )}
               </div>
 
-              {/* MOBILE MENU ICONS (Bell + Hamburger) */}
               <div className="lg:hidden flex items-center gap-2 sm:gap-4 ml-auto pl-3">
-                
-                {/* 🔥 Mobile Notification Bell Area */}
                 {user && (
                   <div className="relative" ref={mobileNotifRef}>
                     <button 
@@ -342,7 +339,6 @@ export default function Navbar() {
                     {showNotifs && <NotificationDropdown />}
                   </div>
                 )}
-                
                 <button className={`transition-colors cursor-pointer ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                   {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
@@ -384,7 +380,6 @@ export default function Navbar() {
              </div>
           )}
 
-          {/* Mobile Search */}
           <div className="relative w-full mb-5 sm:mb-6">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
               <Search className="w-5 h-5" />
@@ -396,7 +391,6 @@ export default function Navbar() {
             />
           </div>
 
-          {/* Mobile Theme Toggle */}
           <div className={`flex items-center justify-between p-4 rounded-xl border mb-4 ${isDarkMode ? 'bg-[#161616] border-[#27272a]' : 'bg-slate-100 border-slate-200'}`}>
             <span className={`text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`}>
               {isDarkMode ? '🌙 Dark Mode' : '☀️ Light Mode'}
@@ -431,7 +425,6 @@ export default function Navbar() {
             )}
           </nav>
 
-          {/* Mobile Footer Links */}
           <div className={`mt-auto pt-6 pb-8 border-t mt-6 flex flex-wrap gap-3 ${isDarkMode ? 'border-[#27272a]' : 'border-slate-200'}`}>
             <button onClick={() => { navigate('/terms'); setIsMobileMenuOpen(false); }} className="text-xs text-slate-500 hover:text-[#0d59f2]">Terms</button>
             <button onClick={() => { navigate('/privacy'); setIsMobileMenuOpen(false); }} className="text-xs text-slate-500 hover:text-[#0d59f2]">Privacy</button>
