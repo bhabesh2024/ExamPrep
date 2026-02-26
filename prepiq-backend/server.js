@@ -10,6 +10,7 @@ import leaderboardRoutes from './routes/leaderboard.routes.js';
 import paymentRoutes    from './routes/payment.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import supportRoutes from './routes/support.routes.js';
+import notificationRoutes from './routes/notifications.routes.js';
 
 dotenv.config();
 
@@ -27,4 +28,5 @@ app.use('/api/leaderboard', leaderboardRoutes); // /api/leaderboard
 app.use('/api/payment',   paymentRoutes);   // /api/payment/create-order, /api/payment/verify-payment
 app.use('/api/admin', adminRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.listen(5000, () => console.log('✅ Server running on http://localhost:5000'));

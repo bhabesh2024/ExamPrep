@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-// 🔥 Bell icon ko main import me merge kar diya hai
+import axios from 'axios'; // 🔥 Axios for API calls
 import { GraduationCap, Search, ChevronDown, Sun, Moon, Menu, X, Globe, Calculator, Brain, BookOpen, FlaskConical, Terminal, ArrowRight, LogOut, User, Sparkles, Bell } from 'lucide-react';
 import { subjectsData } from '../../data/syllabusData.jsx';
 
@@ -19,22 +19,49 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef(null);
 
+  // 🔥 Notification States & Refs
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifs, setShowNotifMenu] = useState(false);
+  const desktopNotifRef = useRef(null);
+  const mobileNotifRef = useRef(null);
+
   // Apply theme via data-theme attribute - CSS handles everything else
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
+  // Fetch User & Notifications on route change
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('user');
       if (storedUser && storedUser !== 'undefined') {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+        fetchNotifications(parsedUser.id); // 🔥 Load notifications
       }
     } catch (e) {
       localStorage.removeItem('user');
     }
   }, [location.pathname]); 
+
+  // 🔥 Fetch API Function
+  const fetchNotifications = async (userId) => {
+    try {
+      const res = await axios.get(`/api/notifications?userId=${userId}`);
+      setNotifications(res.data);
+    } catch (e) { console.error("Failed to fetch notifications"); }
+  };
+
+  // 🔥 Mark Read API Function
+  const markAsRead = async (id) => {
+    try {
+      await axios.patch(`/api/notifications/${id}/read`);
+      setNotifications(notifications.map(n => n.id === id ? { ...n, isRead: true } : n));
+    } catch (e) { console.error("Failed to mark as read"); }
+  };
+
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -75,10 +102,17 @@ export default function Navbar() {
     }
   };
 
+  // Close menus when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
         setIsSearchOpen(false);
+      }
+      if (
+        (desktopNotifRef.current && !desktopNotifRef.current.contains(event.target)) &&
+        (mobileNotifRef.current && !mobileNotifRef.current.contains(event.target))
+      ) {
+        setShowNotifMenu(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -92,7 +126,7 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
   };
 
-  // Navbar always uses dark styling for glass effect; CSS handles page theming
+  // UI Theme Variables
   const navBg = isDarkMode ? 'rgba(10, 10, 10, 0.8)' : 'rgba(255, 255, 255, 0.88)';
   const navBorder = isDarkMode ? 'border-[#27272a]' : 'border-slate-200';
   const logoText = isDarkMode ? 'text-white' : 'text-slate-900';
@@ -104,6 +138,28 @@ export default function Navbar() {
   const textSecondary = isDarkMode ? 'text-slate-500' : 'text-slate-500';
   const mobileMenuBg = isDarkMode ? 'bg-[#0a0a0a]/98' : 'bg-white/98';
   const mobileLinkHover = isDarkMode ? 'hover:bg-white/5 hover:text-white' : 'hover:bg-slate-100 hover:text-slate-900';
+
+  // 🔥 Shared Dropdown Component for Notifications
+  const NotificationDropdown = () => (
+    <div className={`absolute top-full right-0 mt-3 w-80 sm:w-96 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.5)] z-[999] overflow-hidden flex flex-col border ${isDarkMode ? 'bg-[#15171c] border-[#282e39]' : 'bg-white border-slate-200'}`}>
+      <div className={`p-4 border-b font-bold flex justify-between items-center ${isDarkMode ? 'border-[#282e39] bg-[#1a1d24] text-white' : 'border-slate-100 bg-slate-50 text-slate-800'}`}>
+        <span>Notifications</span>
+        {unreadCount > 0 && <span className="text-[10px] bg-red-500/20 text-red-500 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">{unreadCount} New</span>}
+      </div>
+      <div className="max-h-72 overflow-y-auto custom-scrollbar p-2 flex flex-col gap-1">
+        {notifications.length === 0 ? (
+          <div className={`text-center p-6 text-sm ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>No new notifications</div>
+        ) : (
+          notifications.map(n => (
+            <div key={n.id} onClick={() => !n.isRead && markAsRead(n.id)} className={`p-3 rounded-xl cursor-pointer transition-colors border ${n.isRead ? (isDarkMode ? 'bg-transparent border-transparent hover:bg-white/5 opacity-60 text-slate-400' : 'bg-transparent border-transparent hover:bg-slate-50 opacity-70 text-slate-500') : (isDarkMode ? 'bg-[#0d59f2]/10 border-[#0d59f2]/20 hover:bg-[#0d59f2]/20 text-slate-200' : 'bg-blue-50 border-blue-100 hover:bg-blue-100 text-slate-800')}`}>
+              <h4 className={`text-sm ${n.isRead ? '' : 'font-bold text-[#0d59f2]'}`}>{n.title}</h4>
+              <p className="text-xs mt-1 line-clamp-2">{n.message}</p>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -225,14 +281,22 @@ export default function Navbar() {
               {/* DESKTOP AUTH BUTTONS & NOTIFICATIONS */}
               <div className={`hidden lg:flex items-center pl-5 xl:pl-6 border-l ${isDarkMode ? 'border-[#27272a]' : 'border-slate-200'}`}>
                 
-                {/* 🔥 Notification Bell Icon (Desktop) */}
-                <button 
-                  className={`relative p-2 mr-3 transition-colors cursor-pointer rounded-full ${isDarkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`} 
-                  title="Notifications"
-                >
-                  <Bell className="w-5 h-5" />
-                  <span className={`absolute top-1 right-1.5 w-2 h-2 bg-red-500 border rounded-full animate-pulse ${isDarkMode ? 'border-[#0a0a0a]' : 'border-white'}`}></span>
-                </button>
+                {/* 🔥 Desktop Notification Bell Area */}
+                {user && (
+                  <div className="relative" ref={desktopNotifRef}>
+                    <button 
+                      onClick={() => setShowNotifMenu(!showNotifs)}
+                      className={`relative p-2 mr-3 transition-colors cursor-pointer rounded-full ${isDarkMode ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`} 
+                      title="Notifications"
+                    >
+                      <Bell className="w-5 h-5" />
+                      {unreadCount > 0 && (
+                        <span className={`absolute top-1 right-1.5 w-2.5 h-2.5 bg-red-500 border-2 rounded-full animate-pulse ${isDarkMode ? 'border-[#0a0a0a]' : 'border-white'}`}></span>
+                      )}
+                    </button>
+                    {showNotifs && <NotificationDropdown />}
+                  </div>
+                )}
 
                 {user ? (
                   <div className="flex items-center gap-3 xl:gap-4">
@@ -262,11 +326,22 @@ export default function Navbar() {
 
               {/* MOBILE MENU ICONS (Bell + Hamburger) */}
               <div className="lg:hidden flex items-center gap-2 sm:gap-4 ml-auto pl-3">
-                {/* 🔥 Notification Bell Icon (Mobile) */}
-                <button className={`relative p-2 transition-colors cursor-pointer rounded-full ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}>
-                  <Bell className="w-5 h-5" />
-                  <span className={`absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 border rounded-full animate-pulse ${isDarkMode ? 'border-[#0a0a0a]' : 'border-white'}`}></span>
-                </button>
+                
+                {/* 🔥 Mobile Notification Bell Area */}
+                {user && (
+                  <div className="relative" ref={mobileNotifRef}>
+                    <button 
+                      onClick={() => setShowNotifMenu(!showNotifs)}
+                      className={`relative p-2 transition-colors cursor-pointer rounded-full ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`}
+                    >
+                      <Bell className="w-5 h-5" />
+                      {unreadCount > 0 && (
+                        <span className={`absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 border-2 rounded-full animate-pulse ${isDarkMode ? 'border-[#0a0a0a]' : 'border-white'}`}></span>
+                      )}
+                    </button>
+                    {showNotifs && <NotificationDropdown />}
+                  </div>
+                )}
                 
                 <button className={`transition-colors cursor-pointer ${isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'}`} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                   {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}

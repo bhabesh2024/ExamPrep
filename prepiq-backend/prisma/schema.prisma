@@ -42,6 +42,7 @@ model User {
   createdAt DateTime @default(now())
   results   Result[] // 👈 Nayi line: Ek user ke bohot saare results ho sakte hain
   tickets   SupportTicket[]
+  notifications Notification[]
 }
 
 // 🏆 NAYA MODEL: Results save karne ke liye
@@ -75,4 +76,14 @@ model FlaggedQuestion {
   reason      String   // "Wrong Answer", "Typo", etc.
   status      String   @default("OPEN") // "OPEN" ya "RESOLVED"
   createdAt   DateTime @default(now())
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

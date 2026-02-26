@@ -20,7 +20,7 @@ router.post('/', async (req, res) => {
 // USER/ADMIN: Get tickets
 router.get('/', async (req, res) => {
   try {
-    const { userId } = req.query; // Agar userId pass kiya toh sirf uske dikhenge, warna sab (Admin ke liye)
+    const { userId } = req.query; 
     const whereClause = userId ? { userId: parseInt(userId) } : {};
     
     const tickets = await prisma.supportTicket.findMany({
@@ -38,12 +38,27 @@ router.get('/', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   try {
     const { adminReply, status } = req.body;
+    
+    // 1. Ticket ko update karo
     const ticket = await prisma.supportTicket.update({
       where: { id: parseInt(req.params.id) },
       data: { adminReply, status }
     });
+
+    // 2. 🔥 MAIN FIX: User ke liye Notification Create karo
+    if (adminReply && status === 'RESOLVED') {
+      await prisma.notification.create({
+        data: {
+          userId: ticket.userId,
+          title: "Support Reply",
+          message: `Admin replied: "${adminReply}"`
+        }
+      });
+    }
+
     res.json(ticket);
   } catch (err) {
+    console.error("Reply Error:", err);
     res.status(500).json({ error: 'Failed to reply.' });
   }
 });

@@ -55,6 +55,10 @@ export default defineConfig({
       '/api/support': {
         target: 'http://localhost:5000',
         changeOrigin: true,
+      },
+      '/api/notifications': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
       }
     }
   }
