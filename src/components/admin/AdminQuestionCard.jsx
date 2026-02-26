@@ -53,7 +53,6 @@ export default function AdminQuestionCard({
         </div>
         
         <div className="flex gap-2">
-          {/* 🔥 Individual Download Button */}
           <button onClick={downloadSingleJSON} className="p-1.5 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors cursor-pointer" title="Download this Question as JSON">
             <Download className="w-4 h-4" />
           </button>
@@ -75,7 +74,7 @@ export default function AdminQuestionCard({
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">English Question (Manual Edit)</label>
             <textarea 
               value={q.question || ''} 
-              onChange={e => updateQuestion(index, 'question', e.target.value)} 
+              onChange={e => updateQuestion && updateQuestion(index, 'question', e.target.value)} 
               className="w-full bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl p-3 focus:outline-none focus:border-[#258cf4] min-h-[80px]" 
             />
           </div>
@@ -88,21 +87,35 @@ export default function AdminQuestionCard({
                   type="radio" 
                   name={`ans-${index}`} 
                   checked={String(q.answer).trim() === String(opt).trim() && opt !== ''} 
-                  onChange={() => updateQuestion(index, 'answer', opt)} 
+                  onChange={() => updateQuestion && updateQuestion(index, 'answer', opt)} 
                   className="w-4 h-4 text-[#258cf4] cursor-pointer" 
                 />
                 <input 
                   type="text" 
                   value={opt || ''} 
                   onChange={e => {
+                    if (!updateQuestion) return;
                     const newOpts = [...safeOptions];
                     newOpts[oIdx] = e.target.value;
                     updateQuestion(index, 'options', newOpts);
+                    // Agar ye purana answer match kar raha tha, toh answer bhi update karo
+                    if (String(q.answer).trim() === String(opt).trim()) {
+                      updateQuestion(index, 'answer', e.target.value);
+                    }
                   }} 
                   className="flex-1 bg-transparent border-none text-sm text-slate-200 focus:outline-none p-0" 
                 />
               </div>
             ))}
+          </div>
+
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">English Explanation</label>
+            <textarea 
+              value={q.explanation || ''} 
+              onChange={e => updateQuestion && updateQuestion(index, 'explanation', e.target.value)} 
+              className="w-full bg-[#0f1115] border border-[#2a3241] text-slate-400 text-sm rounded-xl p-3 min-h-[60px]" 
+            />
           </div>
         </div>
 
@@ -111,15 +124,21 @@ export default function AdminQuestionCard({
             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Hindi Question</label>
             <textarea 
               value={q.questionHindi || ''} 
-              onChange={e => updateQuestion(index, 'questionHindi', e.target.value)} 
+              onChange={e => updateQuestion && updateQuestion(index, 'questionHindi', e.target.value)} 
               className="w-full bg-[#0f1115] border border-[#2a3241] text-slate-200 text-sm rounded-xl p-3 focus:outline-none focus:border-[#258cf4] min-h-[80px]" 
             />
           </div>
+
+          <div className="h-[238px] bg-[#0f1115]/50 border border-dashed border-[#2a3241] rounded-xl flex flex-col items-center justify-center text-slate-500 p-4 text-center">
+            <Languages className="w-6 h-6 mb-2 opacity-50" />
+            <p className="text-xs">Hindi options translation is handled automatically.<br/>Use "Translate All" from the action bar.</p>
+          </div>
+
           <div className="flex flex-col gap-1">
-            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Explanation</label>
+            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Hindi Explanation</label>
             <textarea 
-              value={q.explanation || ''} 
-              onChange={e => updateQuestion(index, 'explanation', e.target.value)} 
+              value={q.explanationHindi || ''} 
+              onChange={e => updateQuestion && updateQuestion(index, 'explanationHindi', e.target.value)} 
               className="w-full bg-[#0f1115] border border-[#2a3241] text-slate-400 text-sm rounded-xl p-3 min-h-[60px]" 
             />
           </div>

@@ -31,4 +31,43 @@ router.get('/user', async (req, res) => {
   }
 });
 
+// 1. User submits a flag (Report issue)
+router.post('/flag', async (req, res) => {
+  try {
+    const { questionId, reason } = req.body;
+    const flag = await prisma.flaggedQuestion.create({
+      data: { questionId, reason }
+    });
+    res.status(201).json(flag);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to flag question' });
+  }
+});
+
+// 2. Admin fetches all OPEN flags
+router.get('/flags', async (req, res) => {
+  try {
+    const flags = await prisma.flaggedQuestion.findMany({
+      where: { status: 'OPEN' },
+      include: { question: true }, // Question ka data bhi sath aayega
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(flags);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch flags' });
+  }
+});
+
+// 3. Admin resolves a flag
+router.patch('/flag/:id', async (req, res) => {
+  try {
+    await prisma.flaggedQuestion.update({
+      where: { id: parseInt(req.params.id) },
+      data: { status: 'RESOLVED' }
+    });
+    res.json({ message: 'Issue Resolved' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to resolve flag' });
+  }
+});
 export default router;

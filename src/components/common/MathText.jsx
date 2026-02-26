@@ -1,27 +1,31 @@
-// src/components/common/MathText.jsx
 import React from 'react';
 import { InlineMath, BlockMath } from 'react-katex';
 
 export default function MathText({ text }) {
   if (!text) return null;
 
-  // Yeh logic text ko $$ (block math) aur $ (inline math) ke basis par todta hai
-  const parts = text.split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/g);
+  const textStr = String(text);
+
+  // Yeh logic text ko $$...$$ aur $...$ ke basis par todta hai.
+  // Regex split se matched formulas hamesha ODD (1,3,5...) index par aate hain.
+  const parts = textStr.split(/(\$\$[\s\S]*?\$\$|\$[\s\S]*?\$)/g);
 
   return (
-    // 🔥 FIX: whitespace-pre-wrap add kiya taaki lines (Enter) properly dikhein
     <span className="font-sans leading-relaxed whitespace-pre-wrap">
       {parts.map((part, index) => {
-        if (part.startsWith('$$') && part.endsWith('$$')) {
-          // Block Math (Alag line me bada formula)
-          return <BlockMath key={index} math={part.slice(2, -2)} />;
-        } else if (part.startsWith('$') && part.endsWith('$')) {
-          // Inline Math (Text ke beech me formula)
-          return <InlineMath key={index} math={part.slice(1, -1)} />;
-        } else {
-          // Normal Text
-          return <span key={index}>{part}</span>;
-        }
+        if (!part) return null; // Empty strings ignore karo
+
+        // Agar ODD index hai, matlab yeh confirm ek mathematical formula hai
+        if (index % 2 === 1) {
+          if (part.startsWith('$$') && part.endsWith('$$')) {
+            return <BlockMath key={index} math={part.slice(2, -2)} />;
+          } else if (part.startsWith('$') && part.endsWith('$')) {
+            return <InlineMath key={index} math={part.slice(1, -1)} />;
+          }
+        } 
+        
+        // EVEN index wale normal text hain (jaise ki akela '$' option)
+        return <span key={index}>{part}</span>;
       })}
     </span>
   );

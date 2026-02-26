@@ -1,45 +1,69 @@
-// src/components/admin/views/FlaggedQuestionsView.jsx
-import React from 'react';
-import { Flag, CheckCircle, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Flag, CheckCircle2, AlertTriangle } from 'lucide-react';
 
 export default function FlaggedQuestionsView() {
-  // Mock Data (Replace with API fetch from DB later)
-  const flags = [
-    { id: 1, qText: "What is the capital of India?", issue: "Option is wrong, it should be New Delhi, not Mumbai.", reporter: "bhabesh@mail.com", date: "Today" }
-  ];
+  const [flags, setFlags] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => { fetchFlags(); }, []);
+
+  const fetchFlags = async () => {
+    try {
+      const res = await axios.get('/api/admin/flags');
+      setFlags(res.data);
+    } catch (err) { console.error("Failed to load flags", err); }
+    finally { setIsLoading(false); }
+  };
+
+  const markResolved = async (id) => {
+    try {
+      await axios.patch(`/api/admin/flag/${id}`);
+      setFlags(flags.filter(f => f.id !== id)); // Remove from screen
+    } catch (err) { alert("Failed to resolve"); }
+  };
+
+  if (isLoading) return <div className="p-8 text-white">Loading flagged issues...</div>;
 
   return (
-    <div className="p-6 md:p-8 h-full overflow-y-auto text-slate-200 custom-scrollbar">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-          <Flag className="text-red-500 w-8 h-8" /> User Reported Issues
-        </h1>
-        <p className="text-slate-400 mt-1 pl-11 text-sm">Review questions flagged by students for errors.</p>
-      </header>
+    <div className="p-6 md:p-8 overflow-y-auto h-full text-slate-200">
+      <h2 className="text-3xl font-bold mb-8 text-white flex items-center gap-3">
+        <Flag className="text-red-500 w-8 h-8" /> Flagged Questions
+      </h2>
 
-      <div className="space-y-4">
-        {flags.length === 0 ? (
-          <p className="text-slate-500 text-center py-10">No questions flagged. Great job!</p>
-        ) : (
-          flags.map(flag => (
-            <div key={flag.id} className="bg-[#181b21]/80 backdrop-blur-xl border border-red-500/30 rounded-2xl p-5 shadow-lg flex justify-between gap-6">
-              <div className="flex-1">
-                <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest bg-red-500/10 px-2 py-1 rounded border border-red-500/20 mb-3 inline-block">Reported</span>
-                <p className="text-white font-medium mb-2">Q: "{flag.qText}"</p>
-                <div className="bg-[#0f1115] p-3 rounded-lg border border-[#2a3241]">
-                  <p className="text-sm text-yellow-500 font-medium">Issue: {flag.issue}</p>
+      {flags.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20 text-slate-500 border border-dashed border-[#2a3241] rounded-2xl bg-[#181b21]/30">
+          <CheckCircle2 className="w-16 h-16 mb-4 text-emerald-500/50" />
+          <p className="text-lg font-medium text-slate-300">All Good!</p>
+          <p className="text-sm mt-1 opacity-70">No reported issues found in the database.</p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {flags.map(flag => (
+            <div key={flag.id} className="bg-[#181b21] border border-red-500/30 rounded-xl p-5 shadow-lg relative">
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex items-center gap-2 text-red-400 font-bold bg-red-500/10 px-3 py-1 rounded-full text-xs uppercase tracking-wider">
+                  <AlertTriangle className="w-4 h-4" /> Issue: {flag.reason}
                 </div>
-                <p className="text-xs text-slate-500 mt-3">Reported by: {flag.reporter} • {flag.date}</p>
+                <button 
+                  onClick={() => markResolved(flag.id)}
+                  className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <CheckCircle2 className="w-4 h-4" /> Mark Resolved
+                </button>
               </div>
-              <div className="flex flex-col gap-2">
-                <button className="px-4 py-2 bg-[#258cf4] text-white rounded-lg text-xs font-bold hover:bg-blue-600">Edit Question</button>
-                <button className="px-4 py-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-bold hover:bg-emerald-500/20 flex items-center justify-center gap-1"><CheckCircle className="w-3 h-3"/> Mark Resolved</button>
-                <button className="px-4 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold hover:bg-red-500/20 flex items-center justify-center gap-1"><Trash2 className="w-3 h-3"/> Delete Q</button>
-              </div>
+
+              {flag.question && (
+                <div className="bg-[#0f1115] rounded-lg p-4 border border-[#2a3241]">
+                  <div className="text-xs text-slate-500 mb-2 font-mono">Q-ID: {flag.question.id} | Subject: {flag.question.subject}</div>
+                  <p className="text-slate-200 text-sm font-medium">{flag.question.question}</p>
+                </div>
+              )}
+              <p className="text-xs text-slate-500 mt-4">Reported on: {new Date(flag.createdAt).toLocaleString()}</p>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

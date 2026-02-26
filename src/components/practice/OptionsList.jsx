@@ -33,7 +33,9 @@ export default function OptionsList({ currentQuestionData, answers, currentQ, ha
               ${isCorrect ? 'text-[#00d26a]' : ''}
               ${isWrongSelected ? 'text-[#f8312f]' : ''}
               ${!isCorrect && !isWrongSelected ? 'text-slate-300' : ''}`}>
+              
               <MathText text={opt} />
+              
             </div>
           </button>
         );

@@ -26,6 +26,7 @@ model Question {
   examReference    String?
   geometryType     String?
   geometryData     String?
+  flags            FlaggedQuestion[]
 }
 
 // ... aapka purana Question model yahan upar rahega ...
@@ -65,4 +66,13 @@ model SupportTicket {
   status     String   @default("OPEN") // "OPEN" ya "RESOLVED"
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model FlaggedQuestion {
+  id          Int      @id @default(autoincrement())
+  questionId  Int
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  reason      String   // "Wrong Answer", "Typo", etc.
+  status      String   @default("OPEN") // "OPEN" ya "RESOLVED"
+  createdAt   DateTime @default(now())
 }
