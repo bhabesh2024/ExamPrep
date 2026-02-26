@@ -91,10 +91,27 @@ model Notification {
 model CommunityPost {
   id                 String   @id @default(uuid())
   question           String
-  options            String[] // Array of strings for 4 options
+  options            String[]
   correctOptionIndex Int
   likes              Int      @default(0)
   views              Int      @default(0)
   comments           Int      @default(0)
   createdAt          DateTime @default(now())
+  // 🔥 NEW FIELDS FOR SMART CURRENT AFFAIRS SYSTEM
+  isCurrentAffair    Boolean  @default(false)
+  region             String?  // e.g., "Assam" or "General"
+  topic              String?  // e.g., "Sports", "Science"
+  explanation        String?
+  publishDate        String?  // Format: "YYYY-MM-DD"
+  commentsList       CommunityComment[]
+}
+
+// 🔥 NEW: Comment Model
+model CommunityComment {
+  id        String   @id @default(uuid())
+  text      String
+  author    String   // Store user's name
+  postId    String
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }

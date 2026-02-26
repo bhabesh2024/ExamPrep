@@ -11,7 +11,8 @@ import paymentRoutes    from './routes/payment.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import supportRoutes from './routes/support.routes.js';
 import notificationRoutes from './routes/notifications.routes.js';
-const communityRoutes = require('./routes/community.routes.js');
+import communityRoutes from './routes/community.routes.js';
+import caRoutes from './routes/ca.routes.js';
 
 dotenv.config();
 
@@ -30,4 +31,6 @@ app.use('/api/payment',   paymentRoutes);   // /api/payment/create-order, /api/p
 app.use('/api/admin', adminRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/community', communityRoutes);
+app.use('/api/ca', caRoutes);
 app.listen(5000, () => console.log('✅ Server running on http://localhost:5000'));

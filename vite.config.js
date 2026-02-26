@@ -47,7 +47,6 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
-      // 👇 🔥 ADMIN AUR SUPPORT KE NAYE PROXIES YAHAN HAIN 🔥 👇
       '/api/admin': {
         target: 'http://localhost:5000',
         changeOrigin: true,
@@ -59,7 +58,12 @@ export default defineConfig({
       '/api/notifications': {
         target: 'http://localhost:5000',
         changeOrigin: true,
-      }
+      },
+      // This is the new proxy for the community API
+      '/api/community': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
     }
   }
 })
