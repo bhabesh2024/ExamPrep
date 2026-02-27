@@ -15,12 +15,16 @@ router.post('/bulk', async (req, res) => {
     const createdPosts = await prisma.communityPost.createMany({
       data: posts.map(post => ({
         question: post.question,
+        // 🔥 FIX 1: Hindi fields added here for Bulk Upload
+        questionHindi: post.questionHindi || null,
         options: post.options,
         correctOptionIndex: post.correctOptionIndex,
         isCurrentAffair: post.isCurrentAffair || false,
         region: post.region || "General",
         topic: post.topic || "Others",
         explanation: post.explanation || "",
+        // 🔥 FIX 2: Hindi explanation added here
+        explanationHindi: post.explanationHindi || null,
         publishDate: post.publishDate || new Date().toISOString().split('T')[0]
       })),
       skipDuplicates: true,
@@ -46,7 +50,7 @@ router.get('/posts', async (req, res) => {
   }
 });
 
-// Admin: Create a new post
+// Admin: Create a new post (Single)
 router.post('/posts', async (req, res) => {
   try {
     const { question, options, correctOptionIndex } = req.body;
@@ -55,8 +59,35 @@ router.post('/posts', async (req, res) => {
     });
     res.json(newPost);
   } catch (error) {
-    console.error("Error creating post:", error); // Detailed error logging
+    console.error("Error creating post:", error);
     res.status(500).json({ error: "Failed to create post", details: error.message });
+  }n});
+
+// 🔥 RESTORED: Admin: Update a post (Edit Functionality)
+router.put('/posts/:id', async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const { question, questionHindi, options, correctOptionIndex, explanation, explanationHindi } = req.body;
+    
+    const safeOptions = Array.isArray(options) ? options : [];
+    const safeCorrectIndex = Number(correctOptionIndex) || 0;
+
+    const updatedPost = await prisma.communityPost.update({
+      where: { id: postId },
+      data: { 
+        question: question || "", 
+        questionHindi: questionHindi || null,
+        options: safeOptions, 
+        correctOptionIndex: safeCorrectIndex,
+        explanation: explanation || "",
+        explanationHindi: explanationHindi || null
+      }
+    });
+    
+    res.json(updatedPost);
+  } catch (error) {
+    console.error("🚨 BACKEND UPDATE ERROR DETAILS:", error);
+    res.status(500).json({ error: "Failed to update post", details: error.message });
   }
 });
 
@@ -88,7 +119,7 @@ router.post('/posts/:id/view', async (req, res) => {
 // User: Toggle Like count
 router.post('/posts/:id/like', async (req, res) => {
   try {
-    const { action } = req.body; // 'like' or 'unlike'
+    const { action } = req.body;
     await prisma.communityPost.update({
       where: { id: req.params.id },
       data: { likes: { [action === 'like' ? 'increment' : 'decrement']: 1 } }
@@ -101,7 +132,7 @@ router.post('/posts/:id/like', async (req, res) => {
 });
 
 // ==========================================
-// 🔥 NEW: COMMENTS SYSTEM ROUTES
+// COMMENTS SYSTEM ROUTES
 // ==========================================
 
 // Get comments for a specific post
@@ -120,14 +151,12 @@ router.get('/posts/:id/comments', async (req, res) => {
 // Add a new comment to a post
 router.post('/posts/:id/comments', async (req, res) => {
   try {
-    const { text, author } = req.body;
+    const { text, author, userId } = req.body;
     
-    // 1. Create the comment
     const newComment = await prisma.communityComment.create({
-      data: { text, author, postId: req.params.id }
+      data: { text, author, postId: req.params.id, userId }
     });
 
-    // 2. Increment the comment count in the main post
     await prisma.communityPost.update({
       where: { id: req.params.id },
       data: { comments: { increment: 1 } }

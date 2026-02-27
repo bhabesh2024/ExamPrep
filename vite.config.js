@@ -8,6 +8,9 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
+    // 🔥 FIX 1: Ye line automatically aapke laptop ko phone ke network (Wi-Fi) par expose kar degi
+    host: true, 
+    
     proxy: {
       // 1. Groq API Proxy
       '/api/groq': {
@@ -59,8 +62,12 @@ export default defineConfig({
         target: 'http://localhost:5000',
         changeOrigin: true,
       },
-      // This is the new proxy for the community API
       '/api/community': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      // 🔥 FIX 2: MISSING CURRENT AFFAIRS PROXY ADDED HERE
+      '/api/ca': {
         target: 'http://localhost:5000',
         changeOrigin: true,
       },

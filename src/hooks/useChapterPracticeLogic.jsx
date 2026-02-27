@@ -1,8 +1,9 @@
 // src/hooks/useChapterPracticeLogic.jsx
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { applyStrictMathFilter, cleanMarkdown } from '../utils/textUtils';
+// 🔥 FIX 1: IMPORT cleanAITags here
+import { applyStrictMathFilter, cleanMarkdown, cleanAITags } from '../utils/textUtils';
 
 const safeFormat = (text) => {
   if (!text) return "";
@@ -56,6 +57,15 @@ const clearSessionState = (topicId) => {
 export default function useChapterPracticeLogic() {
   const { subjectId, topicId } = useParams();
   const navigate = useNavigate();
+  
+  // 🔥 FETCH URL PARAMS FOR SMART CA SYSTEM
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const isCA = searchParams.get('isCA') === 'true';
+  const caType = searchParams.get('caType');
+  const caValue = searchParams.get('caValue');
+  const caRegion = searchParams.get('caRegion');
+  const caTopic = searchParams.get('caTopic');
 
   const [allQuestions, setAllQuestions] = useState([]);
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(true);
@@ -66,31 +76,44 @@ export default function useChapterPracticeLogic() {
   const [review, setReview] = useState({});
   const [visited, setVisited] = useState({ 0: true });
 
- // ── Smart Fetching Logic ──
+// ── Smart Fetching Logic ──
  useEffect(() => {
   const fetchQuestionsFromDB = async () => {
     setIsLoadingQuestions(true);
     
     try {
-      // 1. CACHE BUSTER ADDED: &t=${Date.now()}
-      // Ye Hostinger/Vercel/Browser ko force karega ki wo hamesha fresh data laye, cache use na kare.
-      const res = await axios.get(`/api/questions?chapterId=${topicId}&t=${Date.now()}`);
-      let freshQuestions = [];
-      
-      if (res.data && res.data.length > 0) {
-        freshQuestions = smartShuffle(res.data);
+      let res;
+      if (isCA) {
+        let caUrl = `/api/ca/practice?region=${caRegion}&type=${caType}&value=${caValue}&t=${Date.now()}`;
+        if (caTopic) caUrl += `&topic=${encodeURIComponent(caTopic)}`;
+        res = await axios.get(caUrl);
+      } else {
+        res = await axios.get(`/api/questions?chapterId=${topicId}&t=${Date.now()}`);
       }
 
-      // 2. Ab check karo kya student ka koi aadhura progress (session) bacha hai?
-      const savedSession = loadSessionState(topicId);
+      let freshQuestions = [];
+      if (res.data && res.data.length > 0) {
+        
+        // 🔥 FIX 2: THE DATA CLEANING INTERCEPTOR 🔥
+        const cleanedData = res.data.map(q => ({
+          ...q,
+          question: cleanAITags(q.question),
+          explanation: cleanAITags(q.explanation),
+          questionHindi: cleanAITags(q.questionHindi),
+          explanationHindi: cleanAITags(q.explanationHindi),
+          options: q.options ? q.options.map(opt => cleanAITags(opt)) : []
+        }));
 
-      // 3. SMART SYNC CHECK
-      // Check karo ki kya DB ke questions aur Session ke questions barabar hain?
+        // Shuffle the cleaned data instead of raw data
+        freshQuestions = smartShuffle(cleanedData);
+      }
+
+      // Session Restore Logic
+      const savedSession = loadSessionState(topicId);
       const hasProgress = savedSession && savedSession.answers && Object.keys(savedSession.answers).length > 0;
       const isDbUnchanged = savedSession && savedSession.questions && savedSession.questions.length === freshQuestions.length;
 
       if (hasProgress && isDbUnchanged) {
-        // Agar DB change nahi hua hai aur progress hai, toh wahi se resume karo
         setAllQuestions(savedSession.questions);
         setCurrentQ(savedSession.currentQ || 0);
         setAnswers(savedSession.answers || {});
@@ -98,11 +121,7 @@ export default function useChapterPracticeLogic() {
         setVisited(savedSession.visited || { 0: true });
         setShowResult(savedSession.showResult || false);
       } else {
-        // Agar Admin ne questions ADD ya DELETE kiye hain, ya test ekdum naya hai
-        // Toh purana session clear karke fresh questions load karo
-        if (savedSession) {
-           clearSessionState(topicId); 
-        }
+        if (savedSession) clearSessionState(topicId); 
         setAllQuestions(freshQuestions);
         setCurrentQ(0);
         setAnswers({});
@@ -112,16 +131,15 @@ export default function useChapterPracticeLogic() {
       }
 
     } catch (error) {
-      console.error("Failed to fetch questions from DB:", error);
+      console.error("Failed to fetch questions:", error);
     } finally {
       setIsLoadingQuestions(false);
     }
   };
 
   fetchQuestionsFromDB();
-}, [subjectId, topicId]);
+}, [subjectId, topicId, isCA, caType, caValue, caRegion, caTopic]);
 
-  // 💾 Har click par progress background me save hota rahega
   useEffect(() => {
     if (allQuestions.length > 0 && topicId) {
       saveSessionState(topicId, { questions: allQuestions, currentQ, answers, review, visited, showResult });
@@ -181,10 +199,25 @@ export default function useChapterPracticeLogic() {
       const userStr = localStorage.getItem('user');
       if (userStr) {
         try {
+          // 🔥 SMART RESULT SAVING FOR CA
+          let saveSubject = subjectId;
+          let saveTopic = topicId;
+
+          if (isCA) {
+            saveSubject = 'Current Affairs';
+            let label = caValue;
+            if (caType === 'daily') label = `Daily CA (${caValue})`;
+            if (caType === 'weekly') label = `Weekly CA (${caValue})`;
+            if (caType === 'monthly') label = `Monthly CA (${caValue})`;
+            if (caTopic) label = `${caTopic} (${caValue})`;
+            
+            saveTopic = `${caRegion} - ${label}`;
+          }
+
           await axios.post('/api/results', {
             userId: JSON.parse(userStr).id,
-            subject: subjectId,
-            topic: topicId,
+            subject: saveSubject,
+            topic: saveTopic,
             score: correct,
             total: totalQuestions
           });
@@ -217,10 +250,7 @@ export default function useChapterPracticeLogic() {
   };
 
   const handleRetake = () => {
-    // 🚀 Smooth Retake: Bina page refresh kiye test reset hoga
     clearSessionState(topicId);
-    
-    // Naya shuffle karke states ko zero par set kar do
     const reshuffled = smartShuffle([...allQuestions]);
     setAllQuestions(reshuffled);
     setCurrentQ(0);
@@ -234,22 +264,17 @@ export default function useChapterPracticeLogic() {
     setShowQHindi(false);
   };
 
-  // 🔥 NAYA LOGIC: Browser ke Back button ya Exit button par session clear karna
   const handleExit = () => {
-    clearSessionState(topicId); // Pehle session clear karo
-    navigate(-1); // Phir bahar niklo
+    clearSessionState(topicId); 
+    navigate(-1); 
   };
 
-  // 🔥 Agar user browser ka Back (<-) arrow use kare
   useEffect(() => {
-    const handlePopState = () => {
-      clearSessionState(topicId);
-    };
+    const handlePopState = () => { clearSessionState(topicId); };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, [topicId]);
 
-  // ── Computations ──
   let correctCount = 0, wrongCount = 0;
   if (showResult) {
     Object.entries(answers).forEach(([idx, opt]) => {
@@ -270,7 +295,6 @@ export default function useChapterPracticeLogic() {
     explanationRef, isTranslating, showHindi, hindiExplanation, isTranslatingQ, showQHindi,
     hindiQuestionText, currentQuestionData, correctCount, wrongCount, skippedCount, isAnswered,
     handleSelect, handleClear, handleMarkReview, handlePrev, handleNext, jumpTo,
-    handleViewInHindi, handleTranslateQuestion, handleRetake,
-    handleExit // 🔥 YE NAYA FUNCTION EXPORT KIYA HAI
+    handleViewInHindi, handleTranslateQuestion, handleRetake, handleExit
   };
 }

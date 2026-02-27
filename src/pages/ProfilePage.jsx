@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom'; // 1. IMPORT useSearchParams
 import axios from 'axios';
 
 // Components
@@ -14,26 +14,29 @@ import SavedQuestionsView from '../components/profile/SavedQuestionsView';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  
+  // 2. USE SEARCH PARAMS INSTEAD OF LOCAL STATE FOR ACTIVE VIEW
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeView = searchParams.get('view') || 'hub'; // Default 'hub' rahega agar URL me kuch nahi hai
+  
+  const setActiveView = (viewName) => {
+    setSearchParams({ view: viewName }); // Jab bhi view change hoga, URL update ho jayega
+  };
+
   const [user, setUser] = useState(null);
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [activeView, setActiveView] = useState('hub');
 
   const [tickets, setTickets] = useState([]);
   const [supportSubject, setSupportSubject] = useState('');
   const [supportMessage, setSupportMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // 🌟 NAYA STATE: Feed Data
   const [feedData, setFeedData] = useState([]);
-
-  // Social States
   const [savedPosts, setSavedPosts] = useState(() => JSON.parse(localStorage.getItem('savedPosts')) || []);
   const [likedPosts, setLikedPosts] = useState(() => JSON.parse(localStorage.getItem('likedPosts')) || []);
   const [viewedPosts, setViewedPosts] = useState(() => JSON.parse(localStorage.getItem('viewedPosts')) || []);
 
-  // 🌟 UPDATE EFFECT: Fetch Community Posts from API
   useEffect(() => {
     const fetchUserDataAndResults = async () => {
       const storedUser = localStorage.getItem('user');
@@ -45,12 +48,11 @@ export default function ProfilePage() {
         const [resResponse, ticketsResponse, feedResponse] = await Promise.all([
           axios.get(`/api/results/${parsedUser.id}`),
           axios.get(`/api/support?userId=${parsedUser.id}`),
-          axios.get('/api/community/posts') // 🌟 Fetching Real DB Posts
+          axios.get('/api/community/posts') 
         ]);
         setResults(Array.isArray(resResponse.data) ? resResponse.data : []);
         setTickets(Array.isArray(ticketsResponse.data) ? ticketsResponse.data : []);
         
-        // Handle Post Time Formatting
         const formattedFeed = (feedResponse.data || []).map(post => ({
           ...post,
           time: new Date(post.createdAt).toLocaleDateString('en-GB')
@@ -62,7 +64,6 @@ export default function ProfilePage() {
     fetchUserDataAndResults();
   }, [navigate]);
 
-  // 🌟 UPDATE INTERACTION LOGIC TO PING BACKEND
   const handleToggleLike = async (postId) => {
     const isLiking = !likedPosts.includes(postId);
     setLikedPosts(prev => {
@@ -70,7 +71,6 @@ export default function ProfilePage() {
       localStorage.setItem('likedPosts', JSON.stringify(newLikes));
       return newLikes;
     });
-    // Tell backend to increment/decrement
     try { await axios.post(`/api/community/posts/${postId}/like`, { action: isLiking ? 'like' : 'unlike' }); } catch(e){}
   };
 
@@ -89,7 +89,6 @@ export default function ProfilePage() {
         localStorage.setItem('viewedPosts', JSON.stringify(newViews));
         return newViews;
       });
-      // Tell backend to increment view count only once per user device
       try { await axios.post(`/api/community/posts/${postId}/view`); } catch(e){}
     }
   };
@@ -151,7 +150,6 @@ export default function ProfilePage() {
         {activeView === 'support' && <SupportView setActiveView={setActiveView} supportSubject={supportSubject} setSupportSubject={setSupportSubject} supportMessage={supportMessage} setSupportMessage={setSupportMessage} handleSupportSubmit={handleSupportSubmit} isSubmitting={isSubmitting} tickets={tickets} />}
         {activeView === 'orders' && <OrdersView user={user} setActiveView={setActiveView} navigate={navigate} />}
         {activeView === 'settings' && <SettingsView setActiveView={setActiveView} handleLogout={handleLogout} navigate={navigate} />}
-        
         {activeView === 'community' && <CommunityView setActiveView={setActiveView} feedData={feedData} savedPosts={savedPosts} likedPosts={likedPosts} viewedPosts={viewedPosts} handleToggleLike={handleToggleLike} handleToggleSave={handleToggleSave} handleMarkViewed={handleMarkViewed} />}
         {activeView === 'saved' && <SavedQuestionsView setActiveView={setActiveView} feedData={feedData} savedPosts={savedPosts} likedPosts={likedPosts} viewedPosts={viewedPosts} handleToggleLike={handleToggleLike} handleToggleSave={handleToggleSave} handleMarkViewed={handleMarkViewed} />}
       </main>

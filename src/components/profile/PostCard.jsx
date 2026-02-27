@@ -44,7 +44,8 @@ export default function PostCard({ post, isLiked, isSaved, hasViewed, onToggleLi
     try {
       const res = await axios.post(`/api/community/posts/${post.id}/comments`, {
         text: newComment,
-        author: currentUser?.name || 'Anonymous Student'
+        author: currentUser?.name || 'Anonymous Student',
+        userId: currentUser?.id
       });
       // Add new comment to the top of the list locally
       setCommentsList([res.data, ...commentsList]);

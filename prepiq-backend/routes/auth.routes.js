@@ -51,4 +51,25 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// DELETE /api/user/:id - Permanently delete user account
+router.delete('/user/:id', async (req, res) => {
+  try {
+    const userId = req.params.id; 
+    
+    // Agar aapka ID Prisma mein integer (Int) hai, toh isko parseInt(userId) karna padega. 
+    // Agar String (UUID) hai toh direct use kar sakte hain. Main Int maan ke chal raha hu:
+    const parsedId = isNaN(userId) ? userId : parseInt(userId);
+
+    // Ye command user ko DB se uda degi
+    await prisma.user.delete({
+      where: { id: parsedId }
+    });
+
+    res.status(200).json({ message: 'Account permanently deleted!' });
+  } catch (err) {
+    console.error('Delete Account Error:', err);
+    res.status(500).json({ error: 'Account delete karne mein problem aayi.' });
+  }
+});
+
 export default router;

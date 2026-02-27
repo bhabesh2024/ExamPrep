@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { subjectsData } from '../data/syllabusData'; 
+import { cleanAITags } from '../utils/textUtils';
 
 export default function useQuizLogic(type, testId) {
   const navigate = useNavigate();
@@ -47,8 +48,18 @@ export default function useQuizLogic(type, testId) {
           
           const res = await axios.get(caUrl);
           if (res.data && res.data.length > 0) {
-            finalShuffled = res.data;
-            // Optionally shuffle CA questions
+            
+            // 🔥 FIX 2: DATA CLEANER
+            const cleanedData = res.data.map(q => ({
+              ...q,
+              question: cleanAITags(q.question),
+              explanation: cleanAITags(q.explanation),
+              questionHindi: cleanAITags(q.questionHindi),
+              explanationHindi: cleanAITags(q.explanationHindi),
+              options: q.options ? q.options.map(opt => cleanAITags(opt)) : []
+            }));
+
+            finalShuffled = cleanedData;
             finalShuffled.sort(() => 0.5 - Math.random());
           }
         } 

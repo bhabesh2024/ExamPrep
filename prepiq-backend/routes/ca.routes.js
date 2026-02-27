@@ -88,7 +88,7 @@ router.get('/hub/:region', async (req, res) => {
   }
 });
 
-// 🚀 2. FETCH SPECIFIC TEST QUESTIONS
+// 🚀 2. FETCH SPECIFIC TEST QUESTIONS (With Hindi Support)
 router.get('/practice', async (req, res) => {
   try {
     const { region, type, value, topic } = req.query;
@@ -123,7 +123,10 @@ router.get('/practice', async (req, res) => {
       answer: q.options[q.correctOptionIndex], 
       explanation: q.explanation || "No explanation provided.",
       topic: q.topic,
-      difficulty: "Medium"
+      difficulty: "Medium",
+      // 🔥 NAYA HINDI DATA YAHAN BHEJ RAHE HAIN
+      questionHindi: q.questionHindi || null,
+      explanationHindi: q.explanationHindi || null
     }));
 
     res.json(formattedQuestions);

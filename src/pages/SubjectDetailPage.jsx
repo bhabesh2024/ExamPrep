@@ -20,7 +20,6 @@ export default function SubjectDetailPage() {
   
   // 🔥 SMART CURRENT AFFAIRS STATES
   const isCA = subjectId?.toLowerCase().includes('current-affairs') || subjectId?.toLowerCase() === 'ca';
-  const caRegion = subjectId?.toLowerCase().includes('assam') ? 'Assam' : 'General';
   const [dynamicCACategories, setDynamicCACategories] = useState([]);
   const [isLoadingCA, setIsLoadingCA] = useState(isCA);
 
@@ -54,26 +53,51 @@ export default function SubjectDetailPage() {
       } catch (error) {}
     };
 
-    // 🔥 FETCH SMART CURRENT AFFAIRS DATA
+    // 🔥 FETCH SMART CURRENT AFFAIRS DATA (BOTH GENERAL & ASSAM)
     const fetchCAData = async () => {
       if (!isCA) return;
       try {
-        const res = await axios.get(`/api/ca/hub/${caRegion}`);
-        const data = res.data;
+        // Fetch Dono regions ek sath
+        const [generalRes, assamRes] = await Promise.all([
+          axios.get('/api/ca/hub/General'),
+          axios.get('/api/ca/hub/Assam')
+        ]);
+
+        const gData = generalRes.data;
+        const aData = assamRes.data;
         const autoCategories = [];
 
-        if (data.daily?.length > 0) {
-          autoCategories.push({ id: 'ca-daily', title: 'Daily Current Affairs', topics: data.daily });
+        // Helper function to attach region
+        const addRegion = (arr, region) => (arr || []).map(item => ({ ...item, caRegion: region }));
+
+        // 🌍 GENERAL CA CATEGORIES
+        if (gData.daily?.length > 0) {
+          autoCategories.push({ id: 'ca-daily', title: 'Daily Current Affairs (National/Int.)', topics: addRegion(gData.daily, 'General') });
         }
-        if (data.weekly?.length > 0) {
-          autoCategories.push({ id: 'ca-weekly', title: 'Weekly Mega Tests', topics: data.weekly });
+        if (gData.weekly?.length > 0) {
+          autoCategories.push({ id: 'ca-weekly', title: 'Weekly Mega Tests (National/Int.)', topics: addRegion(gData.weekly, 'General') });
         }
-        if (data.monthly?.length > 0) {
-          autoCategories.push({ id: 'ca-monthly', title: 'Monthly Revisions', topics: data.monthly });
+        if (gData.monthly?.length > 0) {
+          autoCategories.push({ id: 'ca-monthly', title: 'Monthly Revisions (National/Int.)', topics: addRegion(gData.monthly, 'General') });
         }
-        if (data.topics?.length > 0) {
-          autoCategories.push({ id: 'ca-topics', title: 'Topic-wise Current Affairs', topics: data.topics });
+        if (gData.topics?.length > 0) {
+          autoCategories.push({ id: 'ca-topics', title: 'Topic-wise Current Affairs', topics: addRegion(gData.topics, 'General') });
         }
+
+        // 🦏 ASSAM CA CATEGORIES
+        if (aData.daily?.length > 0) {
+          autoCategories.push({ id: 'assam-daily', title: 'Assam Daily CA', topics: addRegion(aData.daily, 'Assam') });
+        }
+        if (aData.weekly?.length > 0) {
+          autoCategories.push({ id: 'assam-weekly', title: 'Assam Weekly Tests', topics: addRegion(aData.weekly, 'Assam') });
+        }
+        if (aData.monthly?.length > 0) {
+          autoCategories.push({ id: 'assam-monthly', title: 'Assam Monthly Revisions', topics: addRegion(aData.monthly, 'Assam') });
+        }
+        if (aData.topics?.length > 0) {
+          autoCategories.push({ id: 'assam-topics', title: 'Assam Topic-wise CA', topics: addRegion(aData.topics, 'Assam') });
+        }
+
         setDynamicCACategories(autoCategories);
       } catch (error) {
         console.error("Failed to load CA Hub");
@@ -85,7 +109,7 @@ export default function SubjectDetailPage() {
     fetchUserProgress();
     fetchQuestionCounts(); 
     fetchCAData();
-  }, [subjectId, isCA, caRegion]);
+  }, [subjectId, isCA]);
 
   if (!subject) {
     return (
@@ -98,13 +122,12 @@ export default function SubjectDetailPage() {
 
   const SubjectIcon = IconMap[subject.iconName] || BookOpen;
   
-  // 🔥 COMPLETE REPLACEMENT LOGIC FOR CA
   const categoriesToRender = isCA ? dynamicCACategories : (subject.categories || []);
 
   const handlePracticeClick = (topicObj) => {
     if (isCA) {
-      // Pass all metadata to the URL for the practice engine
-      let url = `/quiz/${subject.id}/${topicObj.id}?isCA=true&caType=${topicObj.caType}&caValue=${topicObj.caValue}&caRegion=${caRegion}`;
+      // Pass ACTUAL region from topic object to the quiz engine
+      let url = `/quiz/${subject.id}/${topicObj.id}?isCA=true&caType=${topicObj.caType}&caValue=${topicObj.caValue}&caRegion=${topicObj.caRegion}`;
       if (topicObj.caTopic) url += `&caTopic=${encodeURIComponent(topicObj.caTopic)}`;
       navigate(url);
     } else {
@@ -177,7 +200,7 @@ export default function SubjectDetailPage() {
         {!isLoadingCA && (
           <div className="space-y-12 relative z-10">
             {categoriesToRender?.length === 0 && isCA && (
-               <div className="text-center py-10 bg-white dark:bg-[#121214] rounded-[2rem] border border-zinc-200 dark:border-white/5">
+               <div className="text-center py-10 bg-white dark:bg-[#121214] rounded-[2rem] border border-zinc-200 dark:border-white/5 shadow-sm">
                  <Globe className="w-12 h-12 text-zinc-300 dark:text-slate-700 mx-auto mb-3" />
                  <h3 className="font-black text-zinc-900 dark:text-white">No Current Affairs yet!</h3>
                  <p className="text-zinc-500 text-sm mt-1">Admin needs to post CA in the community feed first.</p>
